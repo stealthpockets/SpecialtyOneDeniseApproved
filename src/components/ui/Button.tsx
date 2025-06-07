@@ -1,0 +1,66 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'outline' | 'text';
+  size?: 'sm' | 'md' | 'lg';
+  to?: string;
+  href?: string;
+  onClick?: () => void;
+  className?: string;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  to,
+  href,
+  onClick,
+  className = '',
+  icon,
+  iconPosition = 'left',
+}) => {
+  const sizeClasses = {
+    sm: 'py-1.5 px-3 text-sm',
+    md: 'py-2.5 px-5 text-base',
+    lg: 'py-3 px-6 text-lg',
+  };
+
+  const variantClasses = {
+    primary: 'button-gradient',
+    secondary: 'button-secondary',
+    outline: 'bg-transparent border border-plum text-plum hover:bg-plum/5',
+    text: 'bg-transparent text-plum hover:bg-plum/5',
+  };
+
+  const baseClasses = `
+    inline-flex items-center justify-center rounded-md font-semibold transition-all duration-300
+    ${sizeClasses[size]} ${variantClasses[variant]} ${className}
+  `;
+
+  const content = (
+    <>
+      {icon && iconPosition === 'left' && <span className="mr-2">{icon}</span>}
+      {children}
+      {icon && iconPosition === 'right' && <span className="ml-2">{icon}</span>}
+    </>
+  );
+
+  if (to) {
+    return <Link to={to} className={baseClasses}>{content}</Link>;
+  }
+
+  if (href) {
+    return <a href={href} className={baseClasses}>{content}</a>;
+  }
+
+  return (
+    <button onClick={onClick} className={baseClasses}>
+      {content}
+    </button>
+  );
+};

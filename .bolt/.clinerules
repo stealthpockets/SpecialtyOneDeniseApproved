@@ -1,0 +1,29 @@
+# Specialty One Website - Development Patterns
+
+## Core Architecture
+- Bolt.new/StackBlitz origin: Use standard Vite + React + TypeScript patterns
+- Component structure: Layout/ (wrappers), home/ (sections), ui/ (reusables), pages/ (routes)
+- Design system: Custom Tailwind with plum/amethyst/evergreen brand colors + sand background
+
+## Content & Data Patterns  
+- Mock data in useCaseStudies.ts ready for Supabase integration
+- Asset paths expect /dist/assets/ structure for images
+- Case studies use slug-based routing (/success/:slug)
+- TypeScript interfaces comprehensive and production-ready
+
+## Styling Conventions
+- Lucide React for all icons
+- Staggered animations with animationDelay: `${0.2 * index}s`
+- Gradient backgrounds: plum→amethyst, evergreen→sage
+- Button variants: primary (gradient), secondary (outline), custom hover states
+
+## Business Context
+- Alternative commercial real estate (manufactured housing, RV parks, self-storage)
+- Key messaging: "$1B+ transactions", "100% success", "specialist vs generalist" positioning
+- Lead generation focus: contact forms, exclusive networks, market reports
+
+## Development Notes
+- Ready for production at ~85% completion
+- Missing: real content, backend integration, professional photography
+- Dependencies installed, no custom WebContainer configs needed
+- When fixing linting issues do not remove code or make fixes for issues that are due to project features in developement/unfinished. After fixing linting issues summarize these as well as the feature at the end

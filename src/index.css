@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-plum: #8a0067;
+  --color-amethyst: #500f61;
+  --color-evergreen: #1a473a;
+  --color-sage: #6dae94;
+  --color-obsidian: #000000;
+  --color-cloud: #f8f9fa;
+  --color-sand: #F0EAE0;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply font-sans text-obsidian;
+    background-color: #F0EAE0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+}
+
+@layer components {
+  /* Container Classes */
+  .container-custom {
+    @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Linear Gradient Backgrounds */
+  .bg-gradient-hero {
+    @apply bg-gradient-to-br from-plum via-amethyst to-evergreen;
+  }
+
+  .bg-gradient-cool {
+    @apply bg-gradient-to-r from-plum to-sage;
+  }
+
+  .bg-gradient-subtle {
+    @apply bg-gradient-to-br from-cloud to-sand;
+  }
+
+  /* Radial Gradient Backgrounds */
+  .bg-radial-dark {
+    background: radial-gradient(circle at center, var(--color-obsidian), var(--color-amethyst));
+  }
+
+  .bg-radial-purple {
+    background: radial-gradient(circle at center, var(--color-plum), var(--color-amethyst));
+  }
+
+  .bg-radial-green {
+    background: radial-gradient(circle at center, var(--color-evergreen), var(--color-sage));
+  }
+
+  /* Text Gradient */
+  .text-gradient {
+    background: linear-gradient(to right, var(--color-plum), var(--color-amethyst));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+  }
+
+  /* Button Gradient */
+  .button-gradient {
+    @apply bg-gradient-to-r from-plum to-amethyst text-white py-3 px-6 rounded-md font-semibold transition-all duration-300;
+  }
+
+  .button-gradient:hover {
+    @apply brightness-110 shadow-lg;
+  }
+
+  /* Button Secondary */
+  .button-secondary {
+    @apply bg-white text-plum border border-plum py-3 px-6 rounded-md font-semibold transition-all duration-300;
+  }
+
+  .button-secondary:hover {
+    @apply bg-cloud shadow-md;
+  }
+
+  /* Gradient Overlay */
+  .gradient-overlay {
+    position: relative;
+  }
+
+  .gradient-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 50%, var(--color-obsidian));
+    border-radius: inherit;
+  }
+  
+  /* Card Styles */
+  .card {
+    @apply bg-white rounded-lg shadow-card overflow-hidden transition-all duration-300;
+  }
+  
+  .card:hover {
+    @apply shadow-card-hover;
+  }
+  
+  /* Animation Classes */
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  /* Animation Keyframes */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}

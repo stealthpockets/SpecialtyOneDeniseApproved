@@ -1,0 +1,378 @@
+import { Building2, ArrowRight } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import { Card, CardContent } from '../components/ui/Card';
+
+const stats = [
+  {
+    value: '$304M+',
+    label: 'in MH & RV Transactions'
+  },
+  {
+    value: '80+',
+    label: 'Offers on Single MH Community'
+  },
+  {
+    value: '<3%',
+    label: 'Cap Rate Exit Mid-COVID'
+  },
+  {
+    value: '100%',
+    label: 'Success on Exclusive Listings'
+  }
+];
+
+const testimonials = [
+  {
+    quote: "Andrew took charge of everything. We closed at full price—even during COVID.",
+    author: "Pericles Wyatt",
+    property: "Desert Trails RV Park"
+  },
+  {
+    quote: "We realized much more than expected. My parents would've been proud.",
+    author: "James & Phillip Weech",
+    property: "The Palms"
+  },
+  {
+    quote: "Exceptionally thorough. Andrew's OM built immediate buyer trust.",
+    author: "George Han",
+    title: "Head of Acquisitions",
+    company: "Three Pillar"
+  }
+];
+
+const caseStudies = [
+  {
+    title: "The Palms",
+    subtitle: "80+ Offers, Sub-3% Cap Rate, Strategic Roll-Up",
+    location: "Apache Junction, AZ",
+    details: "88 Sites | Confidential Sale Price",
+    description: "Generated 80+ buyer offers, achieved sub-3% cap rate, and closed without retrades.",
+    image: "/dist/assets/success-stories/the-palms.webp"
+  },
+  {
+    title: "Confidential Senior MHC",
+    subtitle: "Discreet Exit with Zero Fallout",
+    location: "Nevada",
+    details: "50 Sites | Confidential Sale Price",
+    description: "Quietly marketed and sold to an institutional buyer with no public exposure or price adjustment.",
+    image: "/dist/assets/property-types/manufactured-housing-community-investment.webp"
+  }
+];
+
+const insights = [
+  {
+    title: "The Surprising Month That Gets MH Sellers 8% More",
+    category: "Market Timing"
+  },
+  {
+    title: "How to Underwrite All-Tenant-Owned Communities",
+    category: "Due Diligence"
+  },
+  {
+    title: "Rent Control Watchlist: What's Coming in 2025",
+    category: "Legislative Alert"
+  }
+];
+
+const ManufacturedHousingPage = () => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 bg-gradient-hero text-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center text-sand">
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+              Other Brokers List.
+              <span className="block">We Deliver.</span>
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+              Most overpromise, misprice, and retrade.<br />
+              We've never failed to close a manufactured housing listing.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+              <Button 
+                to="/contact" 
+                variant="primary"
+                size="lg"
+              >
+                Get Listings or Request Valuation
+              </Button>
+            </div>
+            <p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+              One form. Whether you're buying, selling, or planning a 1031.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Edge as Seller Section */}
+      <section className="py-16 bg-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+              The Last Thing You Need Is Another Bidding War That Falls Apart.
+            </h2>
+            <p className="text-lg mb-8 text-gray-700">
+              You've seen it: brokers chase top-dollar offers, only to renegotiate mid-deal or fall out of escrow altogether.
+              We don't play that game. We pre-underwrite, qualify buyers, and build deal certainty before we go live.
+            </p>
+            <Button 
+              to="/contact" 
+              variant="primary"
+              size="lg"
+              icon={<ArrowRight size={20} />}
+              iconPosition="right"
+            >
+              Talk Through Your Exit Strategy—Confidentially
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Grid */}
+      <section className="py-16 bg-cloud">
+        <div className="container-custom">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+            Zero Escrow Failures. 100% Success Rate on Exclusive Listings.
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <Card 
+                key={index}
+                className="text-center py-8 animate-fade-in"
+                style={{ animationDelay: `${0.1 * index}s` }}
+              >
+                <CardContent>
+                  <div className="font-display text-4xl font-bold text-plum mb-2">
+                    {stat.value}
+                  </div>
+                  <div className="text-gray-700">
+                    {stat.label}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 bg-white">
+        <div className="container-custom">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+            What Sellers Say After the Wire Hits
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div 
+                key={index}
+                className="bg-cloud rounded-lg p-8 animate-fade-in"
+                style={{ animationDelay: `${0.2 * index}s` }}
+              >
+                <div className="text-5xl text-plum opacity-20 mb-4">"</div>
+                <blockquote className="text-lg font-medium mb-6">
+                  {testimonial.quote}
+                </blockquote>
+                <div>
+                  <p className="font-bold">
+                    {testimonial.author}
+                  </p>
+                  <p className="text-gray-600">
+                    {testimonial.property}
+                  </p>
+                  {testimonial.title && (
+                    <p className="text-gray-600">
+                      {testimonial.title}, {testimonial.company}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Case Studies */}
+      <section className="py-16 bg-cloud">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {caseStudies.map((study, index) => (
+              <div 
+                key={index}
+                className="relative rounded-lg overflow-hidden gradient-overlay animate-fade-in"
+                style={{ animationDelay: `${0.2 * index}s` }}
+              >
+                <img 
+                  src={study.image}
+                  alt={study.title}
+                  className="w-full h-[400px] object-cover"
+                />
+                <div className="absolute bottom-0 left-0 w-full p-6 z-10">
+                  <h3 className="text-white text-2xl font-bold mb-2">
+                    {study.title}
+                  </h3>
+                  <p className="text-white text-lg mb-2">
+                    {study.subtitle}
+                  </p>
+                  <p className="text-white/90 mb-4">
+                    {study.location}
+                  </p>
+                  <Button 
+                    to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    variant="primary"
+                  >
+                    See Case Study
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* For Buyers */}
+      <section className="py-16 bg-gradient-hero text-white">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+              Serious Buyers See the Deal. The Internet Doesn't.
+            </h2>
+            <p className="text-lg mb-8 opacity-90">
+              We don't email-blast sensitive details to 5,000 "investors."<br />
+              If you're in our network, you'll see high-quality opportunities early—before they're over-shopped or priced down.<br />
+              If you're not, you won't.
+            </p>
+            <Button 
+              to="/exclusive-buyers"
+              variant="primary"
+              size="lg"
+            >
+              Apply for Buyer Access
+            </Button>
+            <p className="text-sm mt-4 opacity-75">
+              We prioritize family offices, long-term buyers, and serious 1031 investors.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Insights */}
+      <section className="py-16 bg-white">
+        <div className="container-custom">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+            Insights That Actually Help You Operate—and Exit
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {insights.map((insight, index) => (
+              <Card 
+                key={index}
+                className="animate-fade-in"
+                style={{ animationDelay: `${0.2 * index}s` }}
+              >
+                <CardContent className="p-6">
+                  <div className="text-sm text-plum font-medium mb-2">
+                    {insight.category}
+                  </div>
+                  <h3 className="text-xl font-bold mb-4">
+                    {insight.title}
+                  </h3>
+                  <Button 
+                    to={`/insights/${insight.title.toLowerCase().replace(/\s+/g, '-')}`}
+                    variant="outline"
+                  >
+                    Read Article
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Button 
+              to="/insights?filter=MH"
+              variant="primary"
+              icon={<ArrowRight size={20} />}
+              iconPosition="right"
+            >
+              Browse All MH Insights
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Talk to Specialist */}
+      <section className="py-16 bg-cloud">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto">
+            <div className="bg-white rounded-lg p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center mx-auto mb-6">
+                <Building2 size={40} className="text-white" />
+              </div>
+              <h3 className="font-display text-2xl font-bold mb-2">
+                Andrew Warner, CCIM
+              </h3>
+              <p className="text-gray-600 mb-4">
+                President | Manufactured Housing & RV
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                <a href="tel:602-708-7305" className="text-plum hover:text-amethyst">
+                  📞 602-708-7305
+                </a>
+                <a href="mailto:andrew@specialtyone.com" className="text-plum hover:text-amethyst">
+                  📧 andrew@specialtyone.com
+                </a>
+              </div>
+              <blockquote className="text-lg italic mb-8">
+                "I've never listed an MH property I didn't close. That's not marketing. That's just how we operate."
+              </blockquote>
+              <Button 
+                to="/contact"
+                variant="primary"
+                size="lg"
+              >
+                Talk to Andrew—Before You Miss the Next Deal
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Services */}
+      <section className="py-16 bg-white">
+        <div className="container-custom">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Button 
+              to="/1031-exchange"
+              variant="outline"
+              className="text-center py-6"
+            >
+              🔁 1031 Exchange Strategy
+            </Button>
+            <Button 
+              to="/exclusive-buyers"
+              variant="outline"
+              className="text-center py-6"
+            >
+              🔒 Exclusive Buyer Network
+            </Button>
+            <Button 
+              to="/advantage"
+              variant="outline"
+              className="text-center py-6"
+            >
+              📖 Our Sales Framework
+            </Button>
+            <Button 
+              to="/insights"
+              variant="outline"
+              className="text-center py-6"
+            >
+              🧠 Insights Hub
+            </Button>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default ManufacturedHousingPage;
