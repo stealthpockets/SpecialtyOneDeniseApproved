@@ -36,7 +36,7 @@ const CaseStudyDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-sand">
         <div className="pt-32 pb-20 flex items-center justify-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-plum"></div>
         </div>
@@ -46,12 +46,12 @@ const CaseStudyDetailPage = () => {
 
   if (!caseStudy) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-sand">
         <section className="pt-32 pb-20 bg-white">
           <div className="container-custom text-center">
             <h1 className="font-display text-4xl font-bold mb-4">Case Study Not Found</h1>
             <p className="text-lg text-gray-600 mb-8">The case study you're looking for doesn't exist.</p>
-            <Button to="/success" variant="primary">
+            <Button to="/success-stories" variant="primary">
               View All Success Stories
             </Button>
           </div>
@@ -61,7 +61,7 @@ const CaseStudyDetailPage = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 relative">
         <div className="absolute inset-0 z-0">
@@ -78,7 +78,7 @@ const CaseStudyDetailPage = () => {
             {/* Breadcrumb */}
             <div className="mb-6">
               <Link 
-                to="/success" 
+                to="/success-stories" 
                 className="inline-flex items-center text-white/80 hover:text-white transition-colors"
               >
                 <ArrowLeft size={20} className="mr-2" />
@@ -133,7 +133,7 @@ const CaseStudyDetailPage = () => {
       </section>
 
       {/* Key Results */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
             <h2 className="font-display text-3xl font-bold mb-8 text-center">
@@ -212,7 +212,7 @@ const CaseStudyDetailPage = () => {
       </section>
 
       {/* Related Case Studies */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Related Success Stories

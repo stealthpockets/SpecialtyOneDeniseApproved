@@ -1,6 +1,8 @@
 import { Building2, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { usePropertyTypeTestimonials } from '../hooks/useTestimonials';
+import { getTestimonialImagePath } from '../utils/imageHelpers';
 
 const stats = [
   {
@@ -21,24 +23,6 @@ const stats = [
   }
 ];
 
-const testimonials = [
-  {
-    quote: "Andrew took charge of everything. We closed at full price—even during COVID.",
-    author: "Pericles Wyatt",
-    property: "Desert Trails RV Park"
-  },
-  {
-    quote: "We realized much more than expected. My parents would've been proud.",
-    author: "James & Phillip Weech",
-    property: "The Palms"
-  },
-  {
-    quote: "Exceptionally thorough. Andrew's OM built immediate buyer trust.",
-    author: "George Han",
-    title: "Head of Acquisitions",
-    company: "Three Pillar"
-  }
-];
 
 const caseStudies = [
   {
@@ -75,8 +59,10 @@ const insights = [
 ];
 
 const ManufacturedHousingPage = () => {
+  const { testimonials, loading: testimonialsLoading, error: testimonialsError } = usePropertyTypeTestimonials('Manufactured Housing');
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -106,7 +92,7 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Edge as Seller Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
@@ -157,38 +143,54 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Sellers Say After the Wire Hits
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                className="bg-cloud rounded-lg p-8 animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="text-5xl text-plum opacity-20 mb-4">"</div>
-                <blockquote className="text-lg font-medium mb-6">
-                  {testimonial.quote}
-                </blockquote>
-                <div>
-                  <p className="font-bold">
-                    {testimonial.author}
-                  </p>
-                  <p className="text-gray-600">
-                    {testimonial.property}
-                  </p>
-                  {testimonial.title && (
-                    <p className="text-gray-600">
-                      {testimonial.title}, {testimonial.company}
-                    </p>
-                  )}
+          
+          {testimonialsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((index) => (
+                <div key={index} className="bg-cloud rounded-lg p-8 animate-fade-in">
+                  <div className="text-center text-gray-500">Loading testimonials...</div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : testimonialsError ? (
+            <div className="text-center text-gray-600">
+              <p>Unable to load testimonials at this time.</p>
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="text-center text-gray-600">
+              <p>No testimonials available for this property type.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <div 
+                  key={testimonial.id || index}
+                  className="bg-cloud rounded-lg p-8 animate-fade-in"
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <div className="text-5xl text-plum opacity-20 mb-4">"</div>
+                  <blockquote className="text-lg font-medium mb-6">
+                    {testimonial.quote}
+                  </blockquote>
+                  <div>
+                    <p className="font-bold">
+                      {testimonial.author}
+                    </p>
+                    {testimonial.property && (
+                      <p className="text-gray-600">
+                        {testimonial.property}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -257,7 +259,7 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Insights */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Insights That Actually Help You Operate—and Exit
@@ -337,7 +339,7 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Related Services */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Button 

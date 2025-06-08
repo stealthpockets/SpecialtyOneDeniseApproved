@@ -182,7 +182,7 @@ const ExclusiveBuyerNetworkPage = () => {
 
   if (isSubmitted) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-sand">
         <section className="pt-32 pb-20 bg-gradient-hero text-white flex-grow flex items-center">
           <div className="container-custom">
             <div className="max-w-2xl mx-auto text-center">
@@ -221,7 +221,7 @@ const ExclusiveBuyerNetworkPage = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -253,7 +253,6 @@ const ExclusiveBuyerNetworkPage = () => {
             <Button 
               href="#application"
               variant="primary"
-              className="bg-white text-plum hover:bg-cloud"
               size="lg"
             >
               Apply for Access
@@ -266,7 +265,7 @@ const ExclusiveBuyerNetworkPage = () => {
       </section>
 
       {/* Network Benefits */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Why Join Our Network?
@@ -370,7 +369,7 @@ const ExclusiveBuyerNetworkPage = () => {
       </section>
 
       {/* Buyer Types */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Who We Work With
@@ -442,7 +441,7 @@ const ExclusiveBuyerNetworkPage = () => {
       </section>
 
       {/* Application Requirements */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Application Requirements
@@ -730,7 +729,7 @@ const ExclusiveBuyerNetworkPage = () => {
                     </div>
 
                     <Button 
-                      type="submit"
+                      onClick={() => handleSubmit({} as React.FormEvent)}
                       variant="primary"
                       size="lg"
                       className="w-full"

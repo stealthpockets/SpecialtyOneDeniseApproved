@@ -10,7 +10,7 @@ import { FinalCTA } from '../components/home/FinalCTA';
 
 const HomePage = () => {
   return (
-    <>
+    <div className="bg-sand">
       <HeroSection />
       <TrustMetrics />
       <PropertyTypes />
@@ -19,7 +19,7 @@ const HomePage = () => {
       <ExclusiveNetworks />
       <Testimonials />
       <FinalCTA />
-    </>
+    </div>
   );
 };
 

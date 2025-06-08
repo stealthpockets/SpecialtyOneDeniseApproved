@@ -63,7 +63,7 @@ export const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/success" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/success-stories" className="text-gray-300 hover:text-white transition-colors flex items-center">
                   <ChevronRight size={16} className="mr-1" />
                   Success Stories
                 </Link>

@@ -55,7 +55,7 @@ export const HeroSection = () => {
       </div>
       
       {/* Decorative Elements */}
-      <div className="absolute -bottom-8 left-0 right-0 h-16 bg-white transform skew-y-1 z-1"></div>
+      <div className="absolute -bottom-8 left-0 right-0 h-16 bg-sand transform skew-y-1 z-1"></div>
     </section>
   );
 };

@@ -1,6 +1,8 @@
 import { ArrowRight, CheckCircle, Building2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { usePropertyTypeTestimonials } from '../hooks/useTestimonials';
+import { getTestimonialImagePath } from '../utils/imageHelpers';
 
 const specializations = [
   {
@@ -44,23 +46,6 @@ const stats = [
   }
 ];
 
-const testimonials = [
-  {
-    quote: "Denise knows storage like no one else. She positioned our facility perfectly and delivered the right buyer at the right price.",
-    author: "Michael Chen",
-    property: "Phoenix Storage Center"
-  },
-  {
-    quote: "Professional, knowledgeable, and results-driven. Denise made what could have been a complex sale look effortless.",
-    author: "Sarah Martinez",
-    property: "Desert View Self Storage"
-  },
-  {
-    quote: "She understood our expansion plans and found a buyer who valued the development potential. Exceeded our expectations.",
-    author: "Robert Kim",
-    property: "Scottsdale Storage Solutions"
-  }
-];
 
 const caseStudies = [
   {
@@ -118,8 +103,10 @@ const marketTrends = [
 ];
 
 const SelfStoragePage = () => {
+  const { testimonials, loading: testimonialsLoading, error: testimonialsError } = usePropertyTypeTestimonials('Self-Storage');
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -235,28 +222,49 @@ const SelfStoragePage = () => {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Storage Owners Say About Denise
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-lg p-8 animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="text-5xl text-plum opacity-20 mb-4">"</div>
-                <blockquote className="text-lg font-medium mb-6">
-                  {testimonial.quote}
-                </blockquote>
-                <div>
-                  <p className="font-bold">
-                    {testimonial.author}
-                  </p>
-                  <p className="text-gray-600">
-                    {testimonial.property}
-                  </p>
+          
+          {testimonialsLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {[1, 2, 3].map((index) => (
+                <div key={index} className="bg-white rounded-lg p-8 animate-fade-in">
+                  <div className="text-center text-gray-500">Loading testimonials...</div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : testimonialsError ? (
+            <div className="text-center text-gray-600">
+              <p>Unable to load testimonials at this time.</p>
+            </div>
+          ) : testimonials.length === 0 ? (
+            <div className="text-center text-gray-600">
+              <p>No testimonials available for this property type.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {testimonials.map((testimonial, index) => (
+                <div 
+                  key={testimonial.id || index}
+                  className="bg-white rounded-lg p-8 animate-fade-in"
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <div className="text-5xl text-plum opacity-20 mb-4">"</div>
+                  <blockquote className="text-lg font-medium mb-6">
+                    {testimonial.quote}
+                  </blockquote>
+                  <div>
+                    <p className="font-bold">
+                      {testimonial.author}
+                    </p>
+                    {testimonial.property && (
+                      <p className="text-gray-600">
+                        {testimonial.property}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -466,7 +474,7 @@ const SelfStoragePage = () => {
               🔁 1031 Exchange Strategy
             </Button>
             <Button 
-              to="/success"
+              to="/success-stories"
               variant="outline"
               className="text-center py-6"
             >

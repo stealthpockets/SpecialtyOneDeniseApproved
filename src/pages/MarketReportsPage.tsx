@@ -179,7 +179,7 @@ const MarketReportsPage = () => {
   });
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -195,7 +195,6 @@ const MarketReportsPage = () => {
               <Button 
                 to="/newsletter" 
                 variant="primary"
-                className="bg-white text-plum hover:bg-cloud"
                 size="lg"
                 icon={<Download size={20} />}
                 iconPosition="right"
@@ -211,7 +210,7 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Market Metrics Dashboard */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Current Market Snapshot
@@ -311,7 +310,7 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Market Reports Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-display text-3xl md:text-4xl font-bold">
@@ -479,7 +478,6 @@ const MarketReportsPage = () => {
                 to="/newsletter"
                 variant="primary"
                 size="lg"
-                className="bg-white text-plum hover:bg-cloud"
                 icon={<ArrowRight size={20} />}
                 iconPosition="right"
               >
@@ -500,7 +498,7 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Related Links */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Button 

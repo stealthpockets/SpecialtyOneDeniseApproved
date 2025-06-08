@@ -1,79 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CaseStudy, CaseStudyFilters } from '../types/caseStudy';
-
-// Mock data - replace with actual Supabase queries
-const mockCaseStudies: CaseStudy[] = [
-  {
-    id: '1',
-    slug: 'caravan-oasis',
-    title: 'Caravan Oasis',
-    subtitle: 'Complex Utilities, Clean Close',
-    location: 'Yuma, AZ',
-    propertyType: 'RV Park',
-    status: 'completed',
-    siteCount: 550,
-    timeToSale: '45 Days',
-    challenge: 'Mixed waste issues and high operating costs threatened the sale.',
-    solution: 'Resolved ADEQ concerns and found a buyer who saw the potential.',
-    results: [
-      '$20,000+ annual cost savings',
-      'Resolved complex waste management',
-      'Clean close despite challenges'
-    ],
-    heroImage: '/dist/assets/success-stories/caravan-oasis.webp',
-    agent: 'Russ Warner and Andrew Warner',
-    createdAt: '2024-01-15',
-    updatedAt: '2024-01-15',
-    publishedAt: '2024-01-15'
-  },
-  {
-    id: '2',
-    slug: 'desert-trails-rv-park',
-    title: 'Desert Trails RV Park',
-    subtitle: 'Full Price Despite COVID & Zoning',
-    location: 'Tucson, AZ',
-    propertyType: 'RV Park',
-    status: 'completed',
-    siteCount: 200,
-    timeToSale: '30 Days',
-    challenge: 'Zoning issues and COVID uncertainty threatened the deal.',
-    solution: 'Structured clean terms and found the right buyer—closed at full price.',
-    results: [
-      'Closed at full asking price during COVID',
-      'Resolved complex zoning challenges',
-      'Zero price adjustments or retrades'
-    ],
-    heroImage: '/dist/assets/success-stories/desert-trails.webp',
-    agent: 'Andrew Warner',
-    createdAt: '2024-01-10',
-    updatedAt: '2024-01-10',
-    publishedAt: '2024-01-10'
-  },
-  {
-    id: '3',
-    slug: 'the-palms',
-    title: 'The Palms',
-    subtitle: '80+ Offers, Sub-3% Cap Rate',
-    location: 'Apache Junction, AZ',
-    propertyType: 'Manufactured Housing',
-    status: 'completed',
-    siteCount: 88,
-    capRate: '<3%',
-    timeToSale: '60 Days',
-    challenge: 'Needed maximum value while maintaining confidentiality.',
-    solution: 'Generated 80+ qualified offers through targeted marketing.',
-    results: [
-      'Achieved sub-3% cap rate',
-      '80+ qualified offers',
-      'Seamless, confidential process'
-    ],
-    heroImage: '/dist/assets/success-stories/the-palms.webp',
-    agent: 'Andrew Warner',
-    createdAt: '2024-01-05',
-    updatedAt: '2024-01-05',
-    publishedAt: '2024-01-05'
-  }
-];
+import { supabase } from '../lib/supabase';
+import { snakeToCamel, parseJsonFields } from '../utils/dataTransformers';
 
 export const useCaseStudies = (filters?: CaseStudyFilters) => {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
@@ -85,39 +13,45 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
       try {
         setLoading(true);
         
-        // TODO: Replace with actual Supabase query
-        // let query = supabase
-        //   .from('case_studies')
-        //   .select('*')
-        //   .eq('status', 'completed')
-        //   .order('published_at', { ascending: false });
+        // Create Supabase query
+        let query = supabase
+          .from('case_studies')
+          .select('*')
+          .eq('status', 'completed');
         
-        // if (filters?.propertyType) {
-        //   query = query.eq('property_type', filters.propertyType);
-        // }
-        
-        // if (filters?.agent) {
-        //   query = query.ilike('agent', `%${filters.agent}%`);
-        // }
-        
-        // const { data, error } = await query;
-        
-        // Mock implementation
-        let filteredStudies = [...mockCaseStudies];
-        
+        // Apply filters if provided
         if (filters?.propertyType) {
-          filteredStudies = filteredStudies.filter(
-            study => study.propertyType === filters.propertyType
-          );
+          query = query.eq('property_type', filters.propertyType);
         }
         
         if (filters?.agent) {
-          filteredStudies = filteredStudies.filter(
-            study => study.agent.toLowerCase().includes(filters.agent!.toLowerCase())
-          );
+          query = query.ilike('agent', `%${filters.agent}%`);
         }
         
-        setCaseStudies(filteredStudies);
+        // Add order by published date (newest first)
+        query = query.order('published_at', { ascending: false });
+        
+        const { data, error: supabaseError } = await query;
+        
+        if (supabaseError) {
+          throw new Error(supabaseError.message);
+        }
+        
+        if (!data) {
+          setCaseStudies([]);
+          return;
+        }
+        
+        // Transform the data from database format to application format
+        const transformedData = data.map(item => {
+          // First parse any JSON fields that come as strings
+          const parsedItem = parseJsonFields(item, ['results', 'testimonial', 'additional_images', 'tags']);
+          
+          // Then convert snake_case to camelCase
+          return snakeToCamel(parsedItem) as CaseStudy;
+        });
+        
+        setCaseStudies(transformedData);
         setError(null);
       } catch (err) {
         setError('Failed to fetch case studies');
@@ -143,17 +77,32 @@ export const useCaseStudy = (slug: string) => {
       try {
         setLoading(true);
         
-        // TODO: Replace with actual Supabase query
-        // const { data, error } = await supabase
-        //   .from('case_studies')
-        //   .select('*')
-        //   .eq('slug', slug)
-        //   .single();
+        // Fetch single case study by slug
+        const { data, error: supabaseError } = await supabase
+          .from('case_studies')
+          .select('*')
+          .eq('slug', slug)
+          .maybeSingle();
         
-        // Mock implementation
-        const foundStudy = mockCaseStudies.find(study => study.slug === slug);
-        setCaseStudy(foundStudy || null);
-        setError(foundStudy ? null : 'Case study not found');
+        if (supabaseError) {
+          throw new Error(supabaseError.message);
+        }
+        
+        if (!data) {
+          setCaseStudy(null);
+          setError('Case study not found');
+          return;
+        }
+        
+        // Transform the data from database format to application format
+        // First parse any JSON fields that come as strings
+        const parsedData = parseJsonFields(data, ['results', 'testimonial', 'additional_images', 'tags']);
+        
+        // Then convert snake_case to camelCase
+        const transformedData = snakeToCamel(parsedData) as CaseStudy;
+        
+        setCaseStudy(transformedData);
+        setError(null);
       } catch (err) {
         setError('Failed to fetch case study');
         console.error('Error fetching case study:', err);

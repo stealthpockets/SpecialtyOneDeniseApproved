@@ -1,195 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ArrowRight, Building2, MapPin, Building } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Modal } from '../components/ui/Modal';
-
-interface SuccessStory {
-  title: string;
-  location: string;
-  type: string;
-  challenge: string;
-  solution: string;
-  results: string[];
-  image: string;
-  agent: string;
-  fullStory?: {
-    introduction: string;
-    challenge: string;
-    approach: string;
-    testimonial?: {
-      quote: string;
-      author: string;
-    };
-    outcome: string;
-  };
-}
-
-const successStories: SuccessStory[] = [
-  {
-    title: "Caravan Oasis",
-    location: "Yuma, AZ",
-    type: "RV Park",
-    challenge: "Mixed waste issues and high operating costs threatened the sale.",
-    solution: "Resolved ADEQ concerns and found a buyer who saw the potential.",
-    results: [
-      "$20,000+ annual cost savings",
-      "Resolved complex waste management",
-      "Clean close despite challenges"
-    ],
-    image: "/dist/assets/success-stories/caravan-oasis.webp",
-    agent: "Russ Warner and Andrew Warner",
-    fullStory: {
-      introduction: "Caravan Oasis, a 550-site RV park (with planned expansion to 750 sites) in Yuma, Arizona, was a hidden gem with untapped potential. Its prime location drew RV travelers seeking warm weather, but a tangle of operational issues threatened to derail its sale.",
-      challenge: "Mixed wastewater systems—combining older septic tanks with a newer treatment plant—created regulatory headaches, including Arizona Department of Environmental Quality (ADEQ) scrutiny over a misplaced test well. Add to that excessive septic pumping costs of over $20,000 annually and a large-scale solar installation with questionable returns, and buyers were hesitant, fearing hidden risks.",
-      approach: "Russ Warner and Andrew Warner thrive on complex deals. They started by diving deep into the issues, working with environmental consultants and engineers to map out the wastewater systems and clarify ADEQ requirements. They discovered that the annual septic pumping was unnecessary, as it disrupted natural waste breakdown—a finding they validated with ADEQ contacts.",
-      testimonial: {
-        quote: "Russ and Andrew were instrumental in overcoming the hurdles we faced with Caravan Oasis. Their expertise and dedication led to a successful sale and significant cost savings. They found a buyer who not only saw the potential but enhanced the property's value.",
-        author: "Anonymous Client"
-      },
-      outcome: "Their strategy paid off. The sale closed successfully, with the buyer implementing changes that slashed annual operating costs by over $20,000. This boosted the property's net operating income (NOI) and long-term value, proving Russ and Andrew's ability to turn complex challenges into profitable outcomes."
-    }
-  },
-  {
-    title: "Desert Trails RV Park",
-    location: "Tucson, AZ",
-    type: "RV Park",
-    challenge: "Zoning issues and COVID uncertainty threatened the deal.",
-    solution: "Structured clean terms and found the right buyer—closed at full price.",
-    results: [
-      "Closed at full asking price during COVID",
-      "Resolved complex zoning challenges",
-      "Zero price adjustments or retrades"
-    ],
-    image: "/dist/assets/success-stories/desert-trails.webp",
-    agent: "Andrew Warner"
-  },
-  {
-    title: "The Palms",
-    location: "Apache Junction, AZ",
-    type: "Manufactured Housing",
-    challenge: "Needed maximum value while maintaining confidentiality.",
-    solution: "Generated 80+ qualified offers through targeted marketing.",
-    results: [
-      "Achieved sub-3% cap rate",
-      "80+ qualified offers",
-      "Seamless, confidential process"
-    ],
-    image: "/dist/assets/success-stories/the-palms.webp",
-    agent: "Andrew Warner"
-  },
-  {
-    title: "American Self Storage",
-    location: "Chandler, AZ",
-    type: "Self-Storage",
-    challenge: "Below-market rents and outdated facilities limited appeal.",
-    solution: "Positioned value-add opportunity with expansion potential.",
-    results: [
-      "Sold for $8.35M at 5% cap rate",
-      "Minimal days on market",
-      "Buyer executed expansion plan"
-    ],
-    image: "/dist/assets/success-stories/american-ss-mail.webp",
-    agent: "Denise Nuñez"
-  },
-  {
-    title: "Desert Retreat",
-    location: "Tucson, AZ",
-    type: "Manufactured Housing",
-    challenge: "Failed listing with another broker and market fatigue.",
-    solution: "Fresh strategy and targeted marketing to value-add investors.",
-    results: [
-      "30% NOI increase",
-      "Swift sale at strong price",
-      "Overcame rising rates"
-    ],
-    image: "/dist/assets/success-stories/desert-retreat.webp",
-    agent: "Andrew Warner"
-  },
-  {
-    title: "Confidential RV Park",
-    location: "Central Arizona",
-    type: "RV Park",
-    challenge: "Required total confidentiality and premium pricing.",
-    solution: "Discreet marketing to vetted buyers with proven track records.",
-    results: [
-      "5% above market comps",
-      "60-day close timeline",
-      "Complete confidentiality maintained"
-    ],
-    image: "/dist/assets/success-stories/confidential-rv-resort.webp",
-    agent: "Russ Warner and Andrew Warner"
-  },
-  {
-    title: "Confidential Acquisition",
-    location: "Phoenix, AZ",
-    type: "Manufactured Housing",
-    challenge: "Needed off-market trophy asset with tight timeline.",
-    solution: "Leveraged relationships for first-look opportunity.",
-    results: [
-      "40-day close achieved",
-      "Met strict return hurdles",
-      "Zero post-close surprises"
-    ],
-    image: "/dist/assets/success-stories/confidential-mhc-buyer.webp",
-    agent: "Russ Warner and Andrew Warner"
-  },
-  {
-    title: "Mogollon RV",
-    location: "Forest Lake, AZ",
-    type: "RV Park",
-    challenge: "Infrastructure limitations and perceived value constraints.",
-    solution: "Highlighted unique market position and demand dynamics.",
-    results: [
-      "Premium 5% cap rate",
-      "Set new market comp",
-      "Found visionary buyer"
-    ],
-    image: "/dist/assets/success-stories/mogollon-rv.webp",
-    agent: "Andrew Warner"
-  }
-];
-
-const DetailedStory = ({ id, title, type, location, agent, children }: {
-  id: string;
-  title: string;
-  type: string;
-  location: string;
-  agent: string;
-  children: React.ReactNode;
-}) => (
-  <div id={id} className="py-16 border-b border-gray-200">
-    <div className="max-w-4xl mx-auto">
-      <Badge color="primary" variant="gradient" className="mb-4">
-        {type}
-      </Badge>
-      
-      <h2 className="font-display text-3xl font-bold mb-4">
-        {title}
-      </h2>
-      
-      <div className="flex items-center gap-4 text-gray-600 mb-6">
-        <div className="flex items-center gap-2">
-          <MapPin size={16} />
-          <span>{location}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Building size={16} />
-          <span>{agent}</span>
-        </div>
-      </div>
-      
-      {children}
-    </div>
-  </div>
-);
+import { useCaseStudies } from '../hooks/useCaseStudies';
+import { CaseStudy } from '../types/caseStudy';
 
 const SuccessPage = () => {
-  const [selectedStory, setSelectedStory] = useState<SuccessStory | null>(null);
+  const { caseStudies, loading, error } = useCaseStudies();
+  const [selectedStory, setSelectedStory] = useState<CaseStudy | null>(null);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -206,7 +29,6 @@ const SuccessPage = () => {
               <Button 
                 to="/contact" 
                 variant="primary"
-                className="bg-white text-plum hover:bg-cloud"
                 size="lg"
               >
                 Write Your Success Story
@@ -217,7 +39,7 @@ const SuccessPage = () => {
       </section>
 
       {/* Stats Grid */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="text-center py-8 animate-fade-in">
@@ -274,22 +96,34 @@ const SuccessPage = () => {
             Featured Success Stories
           </h2>
           
+          {loading && (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading success stories...</p>
+            </div>
+          )}
+          
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-red-600">Error loading success stories: {error}</p>
+            </div>
+          )}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {successStories.map((story, index) => (
+            {caseStudies.map((story: CaseStudy, index: number) => (
               <Card 
-                key={index}
+                key={story.id}
                 className="overflow-hidden animate-fade-in"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
                 <div className="relative h-48">
                   <img 
-                    src={story.image}
+                    src={story.heroImage}
                     alt={story.title}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute top-4 right-4">
                     <Badge color="primary" variant="gradient">
-                      {story.type}
+                      {story.propertyType}
                     </Badge>
                   </div>
                 </div>
@@ -313,7 +147,7 @@ const SuccessPage = () => {
                     </p>
                     
                     <div className="space-y-2">
-                      {story.results.map((result, idx) => (
+                      {story.results.map((result: string, idx: number) => (
                         <div key={idx} className="flex items-start gap-2">
                           <span className="text-sage">✓</span>
                           <span className="text-gray-600">{result}</span>
@@ -348,11 +182,11 @@ const SuccessPage = () => {
         isOpen={!!selectedStory}
         onClose={() => setSelectedStory(null)}
       >
-        {selectedStory && selectedStory.fullStory && (
+        {selectedStory && (
           <div className="prose max-w-none">
             <div className="flex items-center gap-4 mb-6">
               <Badge color="primary" variant="gradient">
-                {selectedStory.type}
+                {selectedStory.propertyType}
               </Badge>
               <div className="flex items-center gap-2 text-gray-600">
                 <MapPin size={16} />
@@ -368,34 +202,67 @@ const SuccessPage = () => {
               {selectedStory.title}
             </h2>
 
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-3">Introduction</h3>
-              <p>{selectedStory.fullStory.introduction}</p>
-            </div>
+            {selectedStory.introduction && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-3">Introduction</h3>
+                <p>{selectedStory.introduction}</p>
+              </div>
+            )}
 
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-3">The Challenge</h3>
-              <p>{selectedStory.fullStory.challenge}</p>
-            </div>
+            {selectedStory.detailedChallenge && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-3">The Challenge</h3>
+                <p>{selectedStory.detailedChallenge}</p>
+              </div>
+            )}
 
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-3">Our Approach</h3>
-              <p>{selectedStory.fullStory.approach}</p>
-            </div>
+            {selectedStory.approach && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-3">Our Approach</h3>
+                <p>{selectedStory.approach}</p>
+              </div>
+            )}
 
-            {selectedStory.fullStory.testimonial && (
+            {selectedStory.testimonial && (
               <blockquote className="italic border-l-4 border-plum pl-4 my-8 bg-cloud p-6 rounded-lg">
-                <p className="mb-4">{selectedStory.fullStory.testimonial.quote}</p>
+                <p className="mb-4">{selectedStory.testimonial.quote}</p>
                 <footer className="font-medium">
-                  — {selectedStory.fullStory.testimonial.author}
+                  — {selectedStory.testimonial.author}
+                  {selectedStory.testimonial.title && (
+                    <span className="text-gray-500">, {selectedStory.testimonial.title}</span>
+                  )}
+                  {selectedStory.testimonial.company && (
+                    <span className="text-gray-500"> at {selectedStory.testimonial.company}</span>
+                  )}
                 </footer>
               </blockquote>
             )}
 
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-3">The Outcome</h3>
-              <p>{selectedStory.fullStory.outcome}</p>
-            </div>
+            {selectedStory.outcome && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-3">The Outcome</h3>
+                <p>{selectedStory.outcome}</p>
+              </div>
+            )}
+
+            {/* Fallback content if no detailed story available */}
+            {!selectedStory.introduction && !selectedStory.detailedChallenge && !selectedStory.approach && !selectedStory.outcome && (
+              <div className="mb-8">
+                <h3 className="text-xl font-bold mb-3">Summary</h3>
+                <div className="space-y-4">
+                  <p><strong>Challenge:</strong> {selectedStory.challenge}</p>
+                  <p><strong>Solution:</strong> {selectedStory.solution}</p>
+                  <div>
+                    <strong>Results:</strong>
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                      {selectedStory.results.map((result: string, idx: number) => (
+                        <li key={idx}>{result}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </Modal>
@@ -416,7 +283,6 @@ const SuccessPage = () => {
                 to="/contact"
                 variant="primary"
                 size="lg"
-                className="bg-white text-plum hover:bg-cloud"
                 icon={<ArrowRight size={20} />}
                 iconPosition="right"
               >
@@ -437,7 +303,7 @@ const SuccessPage = () => {
       </section>
 
       {/* Related Links */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <Button 

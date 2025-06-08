@@ -123,7 +123,7 @@ const ContactPage = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -146,7 +146,7 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Reasons */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             How Can We Help You?
@@ -355,16 +355,13 @@ const ContactPage = () => {
                   </div>
                 </div>
 
-                <Button 
+                <button 
                   type="submit"
-                  variant="primary"
-                  size="lg"
-                  className="w-full"
-                  icon={<Send size={20} />}
-                  iconPosition="right"
+                  className="w-full px-6 py-3 bg-gradient-to-r from-plum to-amethyst text-white font-medium rounded-md hover:from-amethyst hover:to-plum transition-all duration-200 flex items-center justify-center gap-2"
                 >
                   Send Message
-                </Button>
+                  <Send size={20} />
+                </button>
 
                 <p className="text-sm text-gray-600 text-center">
                   We typically respond within 24 hours. For urgent matters, please call us directly.
@@ -442,7 +439,7 @@ const ContactPage = () => {
                     📊 Download Market Reports
                   </Button>
                   <Button 
-                    to="/success"
+                    to="/success-stories"
                     variant="outline"
                     className="justify-start"
                   >
@@ -456,7 +453,7 @@ const ContactPage = () => {
       </section>
 
       {/* Team Members */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Meet Your Specialists

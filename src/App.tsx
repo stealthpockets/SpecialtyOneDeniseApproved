@@ -1,6 +1,6 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { MainLayout } from './components/Layout/MainLayout';
+import ScrollToTop from './components/ui/ScrollToTop';
 import HomePage from './pages/HomePage';
 import ManufacturedHousingPage from './pages/ManufacturedHousingPage';
 import RVParksPage from './pages/RVParksPage';
@@ -19,6 +19,7 @@ import CaseStudyDetailPage from './pages/CaseStudyDetailPage';
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <MainLayout>
         <Routes>
           <Route path="/" element={<HomePage />} />

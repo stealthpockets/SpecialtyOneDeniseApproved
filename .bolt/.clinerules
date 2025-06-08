@@ -27,3 +27,5 @@
 - Missing: real content, backend integration, professional photography
 - Dependencies installed, no custom WebContainer configs needed
 - When fixing linting issues do not remove code or make fixes for issues that are due to project features in developement/unfinished. After fixing linting issues summarize these as well as the feature at the end
+-Whenever given a task that may corrupt or end in substantial changes that are difficult to reverse first save/commit/push existing project to github
+-whenever you fix an issue or problem or make a change to something that is listed/mentioned in the memory-bank update the memory bank to account for that change

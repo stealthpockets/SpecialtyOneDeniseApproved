@@ -205,7 +205,7 @@ const ExclusiveSellerNetworkPage = () => {
 
   if (isSubmitted) {
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen bg-sand">
         <section className="pt-32 pb-20 bg-gradient-hero text-white flex-grow flex items-center">
           <div className="container-custom">
             <div className="max-w-2xl mx-auto text-center">
@@ -254,7 +254,7 @@ const ExclusiveSellerNetworkPage = () => {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -286,7 +286,6 @@ const ExclusiveSellerNetworkPage = () => {
             <Button 
               href="#consultation"
               variant="primary"
-              className="bg-white text-plum hover:bg-cloud"
               size="lg"
             >
               Request Confidential Consultation
@@ -299,7 +298,7 @@ const ExclusiveSellerNetworkPage = () => {
       </section>
 
       {/* Why Choose Confidential Sales */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
@@ -416,7 +415,7 @@ const ExclusiveSellerNetworkPage = () => {
       </section>
 
       {/* Seller Types */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Who Benefits from Confidential Sales?
@@ -511,7 +510,7 @@ const ExclusiveSellerNetworkPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Sellers Say About Our Process
@@ -573,7 +572,7 @@ const ExclusiveSellerNetworkPage = () => {
       </section>
 
       {/* Confidential Consultation Form */}
-      <section id="consultation" className="py-16 bg-white">
+      <section id="consultation" className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
@@ -820,7 +819,7 @@ const ExclusiveSellerNetworkPage = () => {
                     </div>
 
                     <Button 
-                      type="submit"
+                      onClick={() => handleSubmit({} as React.FormEvent)}
                       variant="primary"
                       size="lg"
                       className="w-full"

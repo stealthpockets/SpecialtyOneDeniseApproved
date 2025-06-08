@@ -65,7 +65,7 @@ const InsightsPage = () => {
   const [sortBy, setSortBy] = useState("editor");
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -85,7 +85,6 @@ const InsightsPage = () => {
             <Button 
               to="/newsletter"
               variant="primary"
-              className="bg-white text-plum hover:bg-cloud"
               size="lg"
             >
               Subscribe for Insights
@@ -164,7 +163,7 @@ const InsightsPage = () => {
       </section>
 
       {/* Featured Articles Carousel */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {articles.map((article, index) => (
@@ -235,7 +234,6 @@ const InsightsPage = () => {
               to="/tools"
               variant="primary"
               size="lg"
-              className="bg-white text-plum hover:bg-cloud"
               icon={<ArrowRight size={20} />}
               iconPosition="right"
             >
@@ -246,7 +244,7 @@ const InsightsPage = () => {
       </section>
 
       {/* Success Story Tie-In */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto">
             <Card>

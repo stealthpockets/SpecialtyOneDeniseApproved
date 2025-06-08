@@ -96,7 +96,7 @@ const insights = [
 
 const RVParksPage = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -126,7 +126,7 @@ const RVParksPage = () => {
       </section>
 
       {/* Specialization Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-8 text-center">
@@ -177,7 +177,7 @@ const RVParksPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What RV Park Sellers Say After the Deal Closes
@@ -282,7 +282,7 @@ const RVParksPage = () => {
       </section>
 
       {/* For Buyers */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
@@ -351,7 +351,7 @@ const RVParksPage = () => {
       </section>
 
       {/* Talk to Specialist */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto">
             <div className="bg-cloud rounded-lg p-8 text-center">
@@ -413,7 +413,7 @@ const RVParksPage = () => {
               🔁 1031 Exchange Strategy
             </Button>
             <Button 
-              to="/success"
+              to="/success-stories"
               variant="outline"
               className="text-center py-6"
             >

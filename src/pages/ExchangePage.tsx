@@ -54,7 +54,7 @@ const caseStudies = [
 
 const ExchangePage = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
@@ -85,7 +85,7 @@ const ExchangePage = () => {
       </section>
 
       {/* Strategies Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Solutions That Keep Your Capital Working
@@ -151,7 +151,7 @@ const ExchangePage = () => {
       </section>
 
       {/* Market Intel Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
@@ -215,8 +215,8 @@ const ExchangePage = () => {
           </div>
           
           <div className="text-center mt-8">
-            <Button 
-              to="/success"
+            <Button
+              to="/success-stories"
               variant="primary"
               icon={<ArrowRight size={20} />}
               iconPosition="right"
@@ -228,7 +228,7 @@ const ExchangePage = () => {
       </section>
 
       {/* Commitment Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
@@ -317,7 +317,7 @@ const ExchangePage = () => {
       </section>
 
       {/* Related Links */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <Button 
@@ -327,8 +327,8 @@ const ExchangePage = () => {
             >
               🔁 1031 Exchange Overview
             </Button>
-            <Button 
-              to="/success"
+            <Button
+              to="/success-stories"
               variant="outline"
               className="text-center py-6"
             >
