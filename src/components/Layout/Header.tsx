@@ -32,7 +32,7 @@ const DropdownLink = ({
       </button>
       
       <div
-        className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 z-50 ${
+        className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 z-[100] ${
           isOpen ? 'opacity-100 visible' : 'opacity-0 invisible group-hover:opacity-100 group-hover:visible'
         }`}
       >
@@ -80,7 +80,7 @@ export const Header = () => {
   
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-300 ${
         scrolled ? 'bg-sand shadow-md py-3' : 'bg-sand py-5'
       }`}
     >

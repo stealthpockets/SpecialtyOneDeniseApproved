@@ -15,6 +15,7 @@ export default {
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
         display: ['Montserrat', 'sans-serif'],
+        serif: ['Playfair Display', 'serif'],
       },
       fontSize: {
         '4xl': '2.5rem',

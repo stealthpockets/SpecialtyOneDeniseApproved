@@ -14,7 +14,7 @@ export const HeroSection = () => {
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-fade-in">
             We Sell What Generalist Brokers 
             <span className="relative">
-              <span className="relative z-10">Don't Understand.</span>
+              <span className="relative z-10"> Don't Understand.</span>
               <span className="absolute bottom-0 left-0 w-full h-3 bg-sage opacity-30"></span>
             </span>
           </h1>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { LayeredHeroSection } from '../components/home/LayeredHeroSection';
 import { HeroSection } from '../components/home/HeroSection';
 import { TrustMetrics } from '../components/home/TrustMetrics';
 import { PropertyTypes } from '../components/home/PropertyTypes';
@@ -11,6 +12,7 @@ import { FinalCTA } from '../components/home/FinalCTA';
 const HomePage = () => {
   return (
     <div className="bg-sand">
+      <LayeredHeroSection />
       <HeroSection />
       <TrustMetrics />
       <PropertyTypes />
