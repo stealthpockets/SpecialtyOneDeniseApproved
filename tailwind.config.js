@@ -10,7 +10,7 @@ export default {
         sage: '#6dae94',
         obsidian: '#000000',
         cloud: '#f8f9fa',
-        sand: '#F0EAE0',
+        sand: '#F5E8D1',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],

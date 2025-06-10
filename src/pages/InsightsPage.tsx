@@ -202,7 +202,7 @@ const InsightsPage = () => {
                     {article.excerpt}
                   </p>
                   <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm lg:text-base text-gray-500">
                       By {article.author} • {article.readingTime} min read
                     </div>
                     <Button 

@@ -6,7 +6,7 @@ import { Logo } from '../ui/Logo';
 const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link
     to={to}
-    className="text-obsidian hover:text-plum transition-colors duration-200 font-medium"
+    className="text-obsidian hover:text-plum transition-colors duration-200 font-medium text-base lg:text-lg"
   >
     {children}
   </Link>
@@ -24,7 +24,7 @@ const DropdownLink = ({
   return (
     <div className="relative group">
       <button
-        className="flex items-center text-obsidian hover:text-plum transition-colors duration-200 font-medium"
+        className="flex items-center text-obsidian hover:text-plum transition-colors duration-200 font-medium text-base lg:text-lg"
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
@@ -41,7 +41,7 @@ const DropdownLink = ({
             <Link
               key={item.path}
               to={item.path}
-              className="block px-4 py-2 text-sm text-obsidian hover:bg-plum hover:text-white"
+              className="block px-4 py-2 text-sm lg:text-base text-obsidian hover:bg-plum hover:text-white"
               onClick={() => setIsOpen(false)}
             >
               {item.name}
@@ -130,7 +130,7 @@ export const Header = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="block py-1 text-obsidian hover:text-plum"
+                    className="block py-1 text-sm lg:text-base text-obsidian hover:text-plum"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -141,7 +141,7 @@ export const Header = () => {
             
             <Link
               to="/advantage"
-              className="block py-2 border-b border-gray-100"
+              className="block py-2 border-b border-gray-100 text-sm lg:text-base"
               onClick={() => setIsMenuOpen(false)}
             >
               The Advantage
@@ -149,7 +149,7 @@ export const Header = () => {
             
             <Link
               to="/1031-exchange"
-              className="block py-2 border-b border-gray-100"
+              className="block py-2 border-b border-gray-100 text-sm lg:text-base"
               onClick={() => setIsMenuOpen(false)}
             >
               1031 Exchange
@@ -168,7 +168,7 @@ export const Header = () => {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="block py-1 text-obsidian hover:text-plum"
+                    className="block py-1 text-sm lg:text-base text-obsidian hover:text-plum"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -179,7 +179,7 @@ export const Header = () => {
             
             <Link
               to="/about"
-              className="block py-2 border-b border-gray-100"
+              className="block py-2 border-b border-gray-100 text-sm lg:text-base"
               onClick={() => setIsMenuOpen(false)}
             >
               About

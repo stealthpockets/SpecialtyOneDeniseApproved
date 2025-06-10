@@ -60,11 +60,11 @@ export const TrustMetrics = () => {
                     <div className="text-lg font-medium mb-1">
                       {metric.label}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm lg:text-base text-gray-500">
                       {metric.subtext}
                     </div>
                     {metric.isClickable && (
-                      <div className="mt-2 text-xs text-plum font-medium">
+                      <div className="mt-2 text-xs lg:text-sm text-plum font-medium">
                         Click to view case study →
                       </div>
                     )}
@@ -75,7 +75,7 @@ export const TrustMetrics = () => {
           })}
         </div>
         
-        <p className="text-center text-sm text-gray-500 mt-8">
+        <p className="text-center text-sm lg:text-base text-gray-500 mt-8">
           Self-storage closings led by Denise Nuñez, President of the Storage Group.
         </p>
       </div>

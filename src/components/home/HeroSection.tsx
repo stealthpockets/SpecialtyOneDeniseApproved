@@ -48,7 +48,7 @@ export const HeroSection = () => {
             </Button>
           </div>
           
-          <p className="text-sm opacity-75 max-w-xl mx-auto animate-fade-in" style={{ animationDelay: "0.5s" }}>
+          <p className="text-sm lg:text-base opacity-75 max-w-xl mx-auto animate-fade-in" style={{ animationDelay: "0.5s" }}>
             Buyers, sellers, and 1031 investors—this is your entry point.
           </p>
         </div>

@@ -202,7 +202,7 @@ const MarketReportsPage = () => {
                 Subscribe for Reports
               </Button>
             </div>
-            <p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <p className="text-sm lg:text-base mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
               Get quarterly reports and market updates delivered to your inbox.
             </p>
           </div>
@@ -354,12 +354,12 @@ const MarketReportsPage = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-2 text-gray-600 mb-3">
                     <Calendar size={16} />
-                    <span>{report.date}</span>
+                    <span className="text-sm lg:text-base">{report.date}</span>
                     {report.pages && (
                       <>
                         <span>•</span>
                         <FileText size={16} />
-                        <span>{report.pages} pages</span>
+                        <span className="text-sm lg:text-base">{report.pages} pages</span>
                       </>
                     )}
                   </div>

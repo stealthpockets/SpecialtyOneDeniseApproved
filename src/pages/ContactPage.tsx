@@ -195,7 +195,7 @@ const ContactPage = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="firstName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       First Name *
                     </label>
                     <input
@@ -209,7 +209,7 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="lastName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Last Name *
                     </label>
                     <input
@@ -226,7 +226,7 @@ const ContactPage = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Email Address *
                     </label>
                     <input
@@ -240,7 +240,7 @@ const ContactPage = () => {
                     />
                   </div>
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phone" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Phone Number
                     </label>
                     <input
@@ -255,7 +255,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="company" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                     Company/Organization
                   </label>
                   <input
@@ -270,7 +270,7 @@ const ContactPage = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="propertyType" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="propertyType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Property Type of Interest
                     </label>
                     <select
@@ -288,7 +288,7 @@ const ContactPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="inquiryType" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="inquiryType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Inquiry Type
                     </label>
                     <select
@@ -310,7 +310,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="message" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                     Message *
                   </label>
                   <textarea
@@ -326,7 +326,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                     Preferred Contact Method
                   </label>
                   <div className="flex gap-4">
@@ -363,7 +363,7 @@ const ContactPage = () => {
                   <Send size={20} />
                 </button>
 
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm lg:text-base text-gray-600 text-center">
                   We typically respond within 24 hours. For urgent matters, please call us directly.
                 </p>
               </form>
@@ -504,7 +504,7 @@ const ContactPage = () => {
                       {member.specialties.map((specialty, idx) => (
                         <span 
                           key={idx}
-                          className="text-xs bg-cloud text-gray-700 px-2 py-1 rounded-full"
+                          className="text-xs lg:text-sm bg-cloud text-gray-700 px-2 py-1 rounded-full"
                         >
                           {specialty}
                         </span>
@@ -550,7 +550,7 @@ const ContactPage = () => {
                 Call Now: 602-730-9967
               </Button>
             </div>
-            <p className="text-sm mt-4 opacity-75">
+            <p className="text-sm lg:text-base mt-4 opacity-75">
               Available Monday - Friday, 8:00 AM - 6:00 PM MST
             </p>
           </div>

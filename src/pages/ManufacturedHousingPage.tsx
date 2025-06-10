@@ -84,7 +84,7 @@ const ManufacturedHousingPage = () => {
                 Get Listings or Request Valuation
               </Button>
             </div>
-            <p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <p className="text-sm lg:text-base mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
               One form. Whether you're buying, selling, or planning a 1031.
             </p>
           </div>

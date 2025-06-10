@@ -270,16 +270,15 @@ const ExclusiveSellerNetworkPage = () => {
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="font-bold text-2xl">100%</div>
-                  <div className="text-sm opacity-90">Confidentiality Maintained</div>
+                  <div className="font-bold text-2xl">100%</div>                  <div className="text-sm lg:text-base opacity-90">Confidentiality Maintained</div>
                 </div>
                 <div>
                   <div className="font-bold text-2xl">$1B+</div>
-                  <div className="text-sm opacity-90">Confidential Sales Volume</div>
+                  <div className="text-sm lg:text-base opacity-90">Confidential Sales Volume</div>
                 </div>
                 <div>
                   <div className="font-bold text-2xl">Zero</div>
-                  <div className="text-sm opacity-90">Information Leaks</div>
+                  <div className="text-sm lg:text-base opacity-90">Information Leaks</div>
                 </div>
               </div>
             </div>
@@ -389,12 +388,11 @@ const ExclusiveSellerNetworkPage = () => {
                     {sale.description}
                   </p>
                   
-                  <div className="border-t border-gray-200 pt-4">
-                    <h4 className="font-medium mb-2">Challenge:</h4>
-                    <p className="text-sm text-gray-600 mb-3">{sale.challenge}</p>
+                  <div className="border-t border-gray-200 pt-4">                    <h4 className="font-medium mb-2">Challenge:</h4>
+                    <p className="text-sm lg:text-base text-gray-600 mb-3">{sale.challenge}</p>
                     
                     <h4 className="font-medium mb-2">Solution:</h4>
-                    <p className="text-sm text-gray-600">{sale.solution}</p>
+                    <p className="text-sm lg:text-base text-gray-600">{sale.solution}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -439,8 +437,7 @@ const ExclusiveSellerNetworkPage = () => {
                   </p>
                   <div className="space-y-1">
                     <h4 className="font-medium text-sm">Common Concerns:</h4>
-                    {type.concerns.map((concern, idx) => (
-                      <div key={idx} className="text-xs text-gray-500">
+                    {type.concerns.map((concern, idx) => (                      <div key={idx} className="text-xs lg:text-sm text-gray-500">
                         • {concern}
                       </div>
                     ))}
@@ -529,11 +526,10 @@ const ExclusiveSellerNetworkPage = () => {
                 <div>
                   <p className="font-bold">
                     {testimonial.author}
-                  </p>
-                  <p className="text-gray-600 text-sm">
+                  </p>                  <p className="text-gray-600 text-sm lg:text-base">
                     {testimonial.property}
                   </p>
-                  <p className="text-plum text-sm font-medium mt-1">
+                  <p className="text-plum text-sm lg:text-base font-medium mt-1">
                     {testimonial.outcome}
                   </p>
                 </div>
@@ -591,8 +587,7 @@ const ExclusiveSellerNetworkPage = () => {
                   <div>
                     <h3 className="font-bold text-xl mb-4">Contact Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                      <div>                        <label htmlFor="firstName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                           First Name *
                         </label>
                         <input
@@ -605,8 +600,7 @@ const ExclusiveSellerNetworkPage = () => {
                           className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
                         />
                       </div>
-                      <div>
-                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                      <div>                        <label htmlFor="lastName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                           Last Name *
                         </label>
                         <input
@@ -623,8 +617,7 @@ const ExclusiveSellerNetworkPage = () => {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <div>                      <label htmlFor="email" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                         Email Address *
                       </label>
                       <input
@@ -637,8 +630,7 @@ const ExclusiveSellerNetworkPage = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <div>                      <label htmlFor="phone" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                         Phone Number *
                       </label>
                       <input
@@ -657,8 +649,7 @@ const ExclusiveSellerNetworkPage = () => {
                   <div>
                     <h3 className="font-bold text-xl mb-4">Property Information</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="propertyType" className="block text-sm font-medium text-gray-700 mb-2">
+                      <div>                        <label htmlFor="propertyType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                           Property Type *
                         </label>
                         <select
@@ -676,8 +667,7 @@ const ExclusiveSellerNetworkPage = () => {
                           <option value="portfolio">Portfolio / Multiple Properties</option>
                         </select>
                       </div>
-                      <div>
-                        <label htmlFor="propertyLocation" className="block text-sm font-medium text-gray-700 mb-2">
+                      <div>                        <label htmlFor="propertyLocation" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                           Property Location *
                         </label>
                         <input
@@ -696,8 +686,7 @@ const ExclusiveSellerNetworkPage = () => {
 
                   {/* Ownership and Timeline */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="ownershipType" className="block text-sm font-medium text-gray-700 mb-2">
+                    <div>                      <label htmlFor="ownershipType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                         Ownership Type *
                       </label>
                       <select
@@ -716,8 +705,7 @@ const ExclusiveSellerNetworkPage = () => {
                         <option value="fund">Fund/Institutional</option>
                       </select>
                     </div>
-                    <div>
-                      <label htmlFor="timeline" className="block text-sm font-medium text-gray-700 mb-2">
+                    <div>                      <label htmlFor="timeline" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                         Sale Timeline *
                       </label>
                       <select
@@ -738,8 +726,7 @@ const ExclusiveSellerNetworkPage = () => {
                   </div>
 
                   {/* Confidentiality Level */}
-                  <div>
-                    <label htmlFor="confidentialityLevel" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div>                    <label htmlFor="confidentialityLevel" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Confidentiality Requirements *
                     </label>
                     <select
@@ -759,8 +746,7 @@ const ExclusiveSellerNetworkPage = () => {
                   </div>
 
                   {/* Current Situation */}
-                  <div>
-                    <label htmlFor="currentSituation" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div>                    <label htmlFor="currentSituation" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Current Situation *
                     </label>
                     <textarea
@@ -776,8 +762,7 @@ const ExclusiveSellerNetworkPage = () => {
                   </div>
 
                   {/* Goals */}
-                  <div>
-                    <label htmlFor="goals" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div>                    <label htmlFor="goals" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Sale Goals & Objectives
                     </label>
                     <textarea
@@ -792,8 +777,7 @@ const ExclusiveSellerNetworkPage = () => {
                   </div>
 
                   {/* Additional Information */}
-                  <div>
-                    <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div>                    <label htmlFor="additionalInfo" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                       Additional Information
                     </label>
                     <textarea
@@ -809,8 +793,7 @@ const ExclusiveSellerNetworkPage = () => {
 
                   <div className="border-t border-gray-200 pt-6">
                     <div className="bg-cloud rounded-lg p-4 mb-6">
-                      <h4 className="font-medium mb-2">Confidentiality Commitment</h4>
-                      <ul className="text-sm text-gray-600 space-y-1">
+                      <h4 className="font-medium mb-2">Confidentiality Commitment</h4>                      <ul className="text-sm lg:text-base text-gray-600 space-y-1">
                         <li>• All information shared is strictly confidential</li>
                         <li>• No property details will be shared without your explicit consent</li>
                         <li>• Initial consultation is completely obligation-free</li>
@@ -827,9 +810,7 @@ const ExclusiveSellerNetworkPage = () => {
                       iconPosition="right"
                     >
                       Submit Confidential Inquiry
-                    </Button>
-
-                    <p className="text-sm text-gray-600 text-center mt-4">
+                    </Button>                    <p className="text-sm lg:text-base text-gray-600 text-center mt-4">
                       By submitting this form, you acknowledge that all information will be kept strictly confidential 
                       and used solely for the purpose of providing you with a consultation.
                     </p>
@@ -870,8 +851,7 @@ const ExclusiveSellerNetworkPage = () => {
               >
                 Send Secure Message
               </Button>
-            </div>
-            <p className="text-sm mt-4 opacity-75">
+            </div>            <p className="text-sm lg:text-base mt-4 opacity-75">
               All conversations are confidential and protected by broker-client privilege.
             </p>
           </div>

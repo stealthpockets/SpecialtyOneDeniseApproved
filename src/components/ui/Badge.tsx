@@ -41,7 +41,7 @@ export const Badge: React.FC<BadgeProps> = ({
     },
   };
 
-  const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+  const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs lg:text-sm font-medium';
   const variantClasses = variant === 'outline' ? 'bg-transparent border' : '';
 
   return (

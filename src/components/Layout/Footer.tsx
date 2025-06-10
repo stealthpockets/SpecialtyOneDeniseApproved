@@ -35,19 +35,19 @@ export const Footer = () => {
             <h3 className="text-lg font-bold mb-4">Property Types</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/manufactured-housing" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/manufactured-housing" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Manufactured Housing
                 </Link>
               </li>
               <li>
-                <Link to="/rv-parks" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/rv-parks" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   RV Parks
                 </Link>
               </li>
               <li>
-                <Link to="/self-storage" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/self-storage" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Self-Storage
                 </Link>
@@ -57,19 +57,19 @@ export const Footer = () => {
             <h3 className="text-lg font-bold mt-6 mb-4">Resources</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/insights" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/insights" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Insights
                 </Link>
               </li>
               <li>
-                <Link to="/success-stories" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/success-stories" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Success Stories
                 </Link>
               </li>
               <li>
-                <Link to="/market-reports" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/market-reports" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Market Reports
                 </Link>
@@ -82,37 +82,37 @@ export const Footer = () => {
             <h3 className="text-lg font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/advantage" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/advantage" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   The Advantage
                 </Link>
               </li>
               <li>
-                <Link to="/1031-exchange" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/1031-exchange" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   1031 Exchange
                 </Link>
               </li>
               <li>
-                <Link to="/exclusive-buyers" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/exclusive-buyers" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Exclusive Buyer Network
                 </Link>
               </li>
               <li>
-                <Link to="/exclusive-sellers" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/exclusive-sellers" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Exclusive Seller Network
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/about" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
                   <ChevronRight size={16} className="mr-1" />
                   Contact
                 </Link>
@@ -162,14 +162,14 @@ export const Footer = () => {
         
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
+          <p className="text-gray-400 text-sm lg:text-base">
             &copy; {new Date().getFullYear()} Specialty One. All rights reserved.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-gray-400 text-sm hover:text-white transition-colors">
+            <Link to="/privacy" className="text-gray-400 text-sm lg:text-base hover:text-white transition-colors">
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-gray-400 text-sm hover:text-white transition-colors">
+            <Link to="/terms" className="text-gray-400 text-sm lg:text-base hover:text-white transition-colors">
               Terms of Service
             </Link>
           </div>

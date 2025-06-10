@@ -143,7 +143,7 @@ const ExchangePage = () => {
             >
               Speak With a Strategist
             </Button>
-            <p className="text-sm mt-4 text-gray-600">
+            <p className="text-sm lg:text-base mt-4 text-gray-600">
               Confidential. No pressure. Just strategy.
             </p>
           </div>
@@ -166,7 +166,7 @@ const ExchangePage = () => {
             >
               Sign Up for Investor Intel
             </Button>
-            <p className="text-sm mt-4 text-gray-600">
+            <p className="text-sm lg:text-base mt-4 text-gray-600">
               Monthly insights on 1031 timing, DST demand, and strategic exit windows.
             </p>
           </div>

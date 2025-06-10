@@ -361,7 +361,7 @@ const SelfStoragePage = () => {
             >
               Apply for Buyer Access
             </Button>
-            <p className="text-sm mt-4 text-gray-600">
+            <p className="text-sm lg:text-base mt-4 text-gray-600">
               We prioritize experienced operators, institutional capital, and serious 1031 buyers.
             </p>
           </div>

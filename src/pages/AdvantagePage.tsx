@@ -308,7 +308,7 @@ const AdvantagePage = () => {
                         <div className="text-gray-700 mb-2">
                           {stat.label}
                         </div>
-                        <div className="text-xs text-plum font-medium">
+                        <div className="text-xs lg:text-sm text-plum font-medium">
                           Click to view case study →
                         </div>
                       </CardContent>
