@@ -5,7 +5,8 @@ export interface CaseStudy {
   subtitle?: string;
   location: string;
   propertyType: 'Manufactured Housing' | 'RV Park' | 'Self-Storage' | 'Multi-Asset';
-  status: 'completed' | 'in-progress' | 'confidential';
+  status: 'completed' | 'in-progress' | 'confidential'; // Will be 'confidential' if isConfidential is true
+  isConfidential?: boolean; // Maps to DB is_confidential
   
   // Basic Info
   siteCount?: number;
@@ -53,7 +54,8 @@ export interface CaseStudy {
 
 export interface CaseStudyFilters {
   propertyType?: string;
-  status?: string;
+  status?: 'completed' | 'in-progress'; // 'confidential' status is handled by isConfidential
   agent?: string;
   tags?: string[];
+  isConfidential?: boolean; // New filter for confidential deals
 }

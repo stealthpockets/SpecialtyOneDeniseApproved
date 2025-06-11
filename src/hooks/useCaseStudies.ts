@@ -13,22 +13,35 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
       try {
         setLoading(true);
         
-        // Create Supabase query
         let query = supabase
           .from('case_studies')
-          .select('*')
-          .eq('status', 'completed');
+          .select('*');
         
-        // Apply filters if provided
-        if (filters?.propertyType) {
-          query = query.eq('property_type', filters.propertyType);
+        // Revised filter application logic
+        if (filters) {
+          if (filters.isConfidential === true) {
+            query = query.eq('is_confidential', true);
+          } else if (filters.isConfidential === false) {
+            query = query.eq('is_confidential', false);
+          } else if (filters.status) { // Only apply status if isConfidential was not explicitly true/false
+            query = query.eq('status', filters.status);
+          } else {
+            // Default if filters object is present but doesn't set isConfidential (true/false) or status
+            query = query.eq('status', 'completed').eq('is_confidential', false);
+          }
+
+          // Apply other filters additively
+          if (filters.propertyType) {
+            query = query.eq('property_type', filters.propertyType);
+          }
+          if (filters.agent) {
+            query = query.ilike('agent', `%${filters.agent}%`);
+          }
+        } else {
+          // Default when filters object itself is not provided
+          query = query.eq('status', 'completed').eq('is_confidential', false);
         }
         
-        if (filters?.agent) {
-          query = query.ilike('agent', `%${filters.agent}%`);
-        }
-        
-        // Add order by published date (newest first)
         query = query.order('published_at', { ascending: false });
         
         const { data, error: supabaseError } = await query;
@@ -44,12 +57,45 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
         
         // Transform the data from database format to application format
         const transformedData = data.map(item => {
-          // First parse any JSON fields that come as strings
-          const parsedItem = parseJsonFields(item, ['results', 'testimonial', 'additional_images', 'tags']);
-          
-          // Then convert snake_case to camelCase
-          return snakeToCamel(parsedItem) as CaseStudy;
-        });
+          try {
+            // Ensure item is a valid object before proceeding
+            if (!item || typeof item !== 'object') {
+              console.error('Invalid item received from database:', item);
+              return null;
+            }
+
+            // First parse any JSON fields that come as strings
+            const parsedItem = parseJsonFields(item, ['results', 'testimonial', 'additional_images', 'tags']);
+            // snakeToCamel expects an object. If parsedItem is not, or item was bad, it could fail.
+            if (!parsedItem || typeof parsedItem !== 'object') {
+                console.error('Invalid item after parsing JSON fields:', parsedItem, 'Original item:', item);
+                return null;
+            }
+            
+            // Then convert snake_case to camelCase
+            const camelCaseItem = snakeToCamel(parsedItem) as CaseStudy;
+            if (!camelCaseItem || typeof camelCaseItem !== 'object') {
+                console.error('Invalid item after snakeToCamel:', camelCaseItem, 'Parsed item:', parsedItem);
+                return null;
+            }
+            
+            // Explicitly map is_confidential to isConfidential and set status if needed
+            // Ensure item.is_confidential exists before accessing
+            if (Object.prototype.hasOwnProperty.call(item, 'is_confidential')) {
+              camelCaseItem.isConfidential = item.is_confidential;
+              if (item.is_confidential) {
+                camelCaseItem.status = 'confidential';
+              }
+            } else {
+              // Default if is_confidential is missing, though schema should prevent this
+              camelCaseItem.isConfidential = false; 
+            }
+            return camelCaseItem;
+          } catch (transformError) {
+            console.error('Error transforming individual case study item:', item, transformError);
+            return null; // Skip this item if transformation fails
+          }
+        }).filter(Boolean) as CaseStudy[]; // Filter out any nulls introduced by errors or invalid items
         
         setCaseStudies(transformedData);
         setError(null);
@@ -63,6 +109,14 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
 
     fetchCaseStudies();
   }, [filters]);
+
+  // <<< DIAGNOSTIC LOG >>>
+  console.log('[useCaseStudies] Hook state before return:', { 
+    caseStudies_INTERNAL: caseStudies, 
+    loading_INTERNAL: loading, 
+    error_INTERNAL: error 
+  });
+  // <<< END DIAGNOSTIC LOG >>>
 
   return { caseStudies, loading, error };
 };

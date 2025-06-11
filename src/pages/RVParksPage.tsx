@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle, Building2 } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 
@@ -355,9 +355,11 @@ const RVParksPage = () => {
         <div className="container-custom">
           <div className="max-w-3xl mx-auto">
             <div className="bg-cloud rounded-lg p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center mx-auto mb-6">
-                <Building2 size={40} className="text-white" />
-              </div>
+              <img 
+                src="/assets/Leadership/andrew-headshot-image.webp" 
+                alt="Andrew Warner" 
+                className="w-32 h-32 rounded-full mx-auto object-cover mb-6" 
+              />
               <h3 className="font-display text-2xl font-bold mb-2">
                 Andrew Warner, CCIM
               </h3>
@@ -365,8 +367,8 @@ const RVParksPage = () => {
                 President | Manufactured Housing & RV
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                <a href="tel:602-708-7305" className="text-plum hover:text-amethyst">
-                  📞 602-708-7305
+                <a href="tel:602-730-9967" className="text-plum hover:text-amethyst">
+                  📞 602-730-9967
                 </a>
                 <a href="mailto:andrew@specialtyone.com" className="text-plum hover:text-amethyst">
                   📧 andrew@specialtyone.com

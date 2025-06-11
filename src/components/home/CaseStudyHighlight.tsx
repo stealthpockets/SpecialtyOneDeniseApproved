@@ -18,6 +18,7 @@ export const CaseStudyHighlight = () => {
               src="/dist/assets/success-stories/desert-trails.webp" 
               alt="Desert Trails RV Park" 
               className="w-full h-full object-cover"
+              loading="lazy"
             />
             <div className="absolute bottom-0 left-0 w-full p-6 z-10">
               <span className="bg-white/90 text-plum px-3 py-1 rounded-full text-sm font-medium">

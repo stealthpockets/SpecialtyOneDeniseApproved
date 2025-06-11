@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
 
@@ -6,7 +5,7 @@ export const HeroSection = () => {
   return (
     <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 lg:pt-40 lg:pb-32 overflow-hidden">
       {/* Background Gradient with Radial Effect */}
-      <div className="absolute inset-0 bg-radial-purple opacity-90 z-0"></div>
+      <div className="absolute inset-0 bg-radial-modern-hero-inverted opacity-90 z-0"></div>
       
       {/* Content */}
       <div className="container-custom relative z-10">

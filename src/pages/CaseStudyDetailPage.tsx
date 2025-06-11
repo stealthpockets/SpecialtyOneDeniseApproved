@@ -269,17 +269,17 @@ const CaseStudyDetailPage = () => {
               Let's talk about your goals and create a strategy that delivers results.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button 
+              <Button
                 to="/contact"
                 variant="primary"
                 size="lg"
-                className="bg-white text-plum hover:bg-cloud"
+                className="bg-white text-obsidian hover:bg-white/80" // Changed text-plum to text-obsidian and updated hover
                 icon={<ArrowRight size={20} />}
                 iconPosition="right"
               >
                 Start Your Story
               </Button>
-              
+
               <Button 
                 to="/advantage"
                 variant="outline"

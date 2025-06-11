@@ -28,6 +28,7 @@ export default {
         'gradient-subtle': 'linear-gradient(to bottom right, var(--tw-gradient-stops))',
         'radial-dark': 'radial-gradient(circle at center, var(--color-obsidian), var(--color-cloud))',
         'radial-purple': 'radial-gradient(circle at center, var(--color-plum), var(--color-amethyst))',
+        'radial-modern-hero-inverted': 'radial-gradient(circle at center, var(--color-plum), var(--color-amethyst), #111827)', // New gradient with dark on outside
         'radial-green': 'radial-gradient(circle at center, var(--color-evergreen), var(--color-sage))',
       },
       boxShadow: {

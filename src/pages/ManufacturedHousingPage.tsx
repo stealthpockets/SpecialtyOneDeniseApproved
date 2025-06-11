@@ -1,8 +1,7 @@
-import { Building2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { usePropertyTypeTestimonials } from '../hooks/useTestimonials';
-import { getTestimonialImagePath } from '../utils/imageHelpers';
 
 const stats = [
   {
@@ -27,19 +26,19 @@ const stats = [
 const caseStudies = [
   {
     title: "The Palms",
-    subtitle: "80+ Offers, Sub-3% Cap Rate, Strategic Roll-Up",
+    subtitle: "Achieving a Sub-3% Cap Rate through Strategic Synergy",
     location: "Apache Junction, AZ",
-    details: "88 Sites | Confidential Sale Price",
-    description: "Generated 80+ buyer offers, achieved sub-3% cap rate, and closed without retrades.",
+    details: "88 Sites | Sub-3% Cap Rate",
+    description: "Over 80 offers generated, closed at a sub-3% cap rate, and the buyer realized operational efficiencies, achieving a record-setting valuation.",
     image: "/dist/assets/success-stories/the-palms.webp"
   },
   {
-    title: "Confidential Senior MHC",
-    subtitle: "Discreet Exit with Zero Fallout",
-    location: "Nevada",
-    details: "50 Sites | Confidential Sale Price",
-    description: "Quietly marketed and sold to an institutional buyer with no public exposure or price adjustment.",
-    image: "/dist/assets/property-types/manufactured-housing-community-investment.webp"
+    title: "Desert Retreat – Resurrected Listing, 30% NOI Growth",
+    subtitle: "Sold after failed listing | 30% NOI gain",
+    location: "Tucson, AZ",
+    details: "43 Sites | 30% NOI Lift",
+    description: "Achieved a 30% NOI lift in 12 months, secured multiple full-price offers, and closed above guidance after a previous failed listing.",
+    image: "/assets/success-stories/desert-retreat.webp"
   }
 ];
 
@@ -119,7 +118,7 @@ const ManufacturedHousingPage = () => {
       <section className="py-16 bg-cloud">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Zero Escrow Failures. 100% Success Rate on Exclusive Listings.
+            100% Success Rate on Exclusive Listings.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
@@ -197,6 +196,9 @@ const ManufacturedHousingPage = () => {
       {/* Case Studies */}
       <section className="py-16 bg-cloud">
         <div className="container-custom">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+            Real Stories, Real Numbers, Real Results
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {caseStudies.map((study, index) => (
               <div 
@@ -208,6 +210,7 @@ const ManufacturedHousingPage = () => {
                   src={study.image}
                   alt={study.title}
                   className="w-full h-[400px] object-cover"
+                  loading="lazy"
                 />
                 <div className="absolute bottom-0 left-0 w-full p-6 z-10">
                   <h3 className="text-white text-2xl font-bold mb-2">
@@ -306,9 +309,12 @@ const ManufacturedHousingPage = () => {
         <div className="container-custom">
           <div className="max-w-3xl mx-auto">
             <div className="bg-white rounded-lg p-8 text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center mx-auto mb-6">
-                <Building2 size={40} className="text-white" />
-              </div>
+              <img 
+                src="/assets/Leadership/andrew-headshot-image.webp" 
+                alt="Andrew Warner" 
+                className="w-32 h-32 rounded-full mx-auto object-cover mb-6"
+                loading="lazy"
+              />
               <h3 className="font-display text-2xl font-bold mb-2">
                 Andrew Warner, CCIM
               </h3>
@@ -316,8 +322,8 @@ const ManufacturedHousingPage = () => {
                 President | Manufactured Housing & RV
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                <a href="tel:602-708-7305" className="text-plum hover:text-amethyst">
-                  📞 602-708-7305
+                <a href="tel:602-730-9967" className="text-plum hover:text-amethyst">
+                  📞 602-730-9967
                 </a>
                 <a href="mailto:andrew@specialtyone.com" className="text-plum hover:text-amethyst">
                   📧 andrew@specialtyone.com

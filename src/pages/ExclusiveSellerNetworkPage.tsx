@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Shield, Eye, Users, Target, CheckCircle, ArrowRight, Building2, Clock, Award, Lock } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Shield, Eye, Users, Target, CheckCircle, ArrowRight, Building2, Clock, Award, Lock, MapPin } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { useCaseStudies } from '../hooks/useCaseStudies';
+import { CaseStudy } from '../types/caseStudy';
 
 const sellerBenefits = [
   {
@@ -28,42 +30,6 @@ const sellerBenefits = [
     title: 'Controlled Exposure',
     description: 'You control every step of the process. Nothing happens without your explicit approval.',
     details: ['Seller-controlled timeline', 'Approved buyer list', 'Staged information release']
-  }
-];
-
-const confidentialSales = [
-  {
-    title: 'Premium MH Community',
-    location: 'Central Arizona',
-    type: 'Manufactured Housing',
-    size: '150+ Sites',
-    outcome: 'Sold Above Market',
-    timeframe: '45 Days',
-    description: 'Family legacy property sold discreetly to institutional buyer without public exposure.',
-    challenge: 'Required complete confidentiality due to family dynamics and employee concerns.',
-    solution: 'Structured private sale process with vetted institutional buyers only.'
-  },
-  {
-    title: 'Confidential Storage Portfolio',
-    location: 'Phoenix MSA',
-    type: 'Self-Storage',
-    size: '3 Facilities',
-    outcome: 'Portfolio Premium',
-    timeframe: '60 Days',
-    description: 'Multi-facility sale to strategic buyer seeking market consolidation.',
-    challenge: 'Owner needed to maintain operations while exploring exit options.',
-    solution: 'Quiet marketing to strategic buyers with operational expertise.'
-  },
-  {
-    title: 'Luxury RV Resort',
-    location: 'Scottsdale Area',
-    type: 'RV Park',
-    size: '200 Sites',
-    outcome: 'Record Price/Site',
-    timeframe: '30 Days',
-    description: 'High-end resort sold to family office seeking trophy asset.',
-    challenge: 'Maintaining guest experience during sale process.',
-    solution: 'Discreet due diligence process with minimal operational disruption.'
   }
 ];
 
@@ -188,6 +154,13 @@ const ExclusiveSellerNetworkPage = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const confidentialSalesFilters = useMemo(() => ({ isConfidential: true }), []);
+  const { 
+    caseStudies: confidentialSalesData, 
+    loading: isLoadingConfidentialSales, 
+    error: errorConfidentialSales 
+  } = useCaseStudies(confidentialSalesFilters);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -343,61 +316,95 @@ const ExclusiveSellerNetworkPage = () => {
       </section>
 
       {/* Confidential Sales Success Stories */}
+      {/* The console logs added above will give insight into why this block might not be rendering as expected */}
       <section className="py-16 bg-cloud">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Recent Confidential Sales
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {confidentialSales.map((sale, index) => (
-              <Card 
-                key={index}
-                className="animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge color="success" variant="gradient">
-                      {sale.outcome}
-                    </Badge>
-                    <Badge color="primary" variant="outline">
-                      {sale.timeframe}
-                    </Badge>
-                  </div>
-                  
-                  <h3 className="font-display text-xl font-bold mb-2">
-                    {sale.title}
-                  </h3>
-                  
-                  <div className="space-y-2 mb-4 text-gray-600">
-                    <div className="flex justify-between">
-                      <span>Location:</span>
-                      <span>{sale.location}</span>
+          {isLoadingConfidentialSales && <p className="text-center">Loading confidential sales...</p>}
+          {errorConfidentialSales && <p className="text-center text-red-500">Error loading confidential sales: {errorConfidentialSales}</p>}
+          {!isLoadingConfidentialSales && !errorConfidentialSales && confidentialSalesData && confidentialSalesData.length === 0 && (
+            <p className="text-center text-gray-700">No confidential sales to display at this time.</p>
+          )}
+          {!isLoadingConfidentialSales && !errorConfidentialSales && confidentialSalesData && confidentialSalesData.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {confidentialSalesData.map((deal: CaseStudy, index: number) => (
+                <Card 
+                  key={deal.id || index}
+                  className="animate-fade-in flex flex-col" // Added flex flex-col
+                  style={{ animationDelay: `${0.1 * index}s` }}
+                >
+                  <CardContent className="p-6 flex flex-col flex-grow"> {/* Added flex flex-col flex-grow */}
+                    <div className="flex items-center justify-between mb-4">
+                      <Badge variant="outline">
+                        {deal.subtitle || 'Confidential Sale'} {/* Using subtitle for outcome */}
+                      </Badge>
+                      {deal.timeToSale && (
+                        <Badge variant="outline">
+                          <Clock size={14} className="mr-1 inline" />
+                          {deal.timeToSale}
+                        </Badge>
+                      )}
                     </div>
-                    <div className="flex justify-between">
-                      <span>Type:</span>
-                      <span>{sale.type}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Size:</span>
-                      <span>{sale.size}</span>
-                    </div>
-                  </div>
-                  
-                  <p className="text-gray-700 mb-4">
-                    {sale.description}
-                  </p>
-                  
-                  <div className="border-t border-gray-200 pt-4">                    <h4 className="font-medium mb-2">Challenge:</h4>
-                    <p className="text-sm lg:text-base text-gray-600 mb-3">{sale.challenge}</p>
                     
-                    <h4 className="font-medium mb-2">Solution:</h4>
-                    <p className="text-sm lg:text-base text-gray-600">{sale.solution}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <h3 className="font-display text-xl font-bold mb-2">
+                      {deal.title}
+                    </h3>
+                    
+                    <div className="space-y-1 mb-4 text-gray-600 text-sm">
+                      {deal.location && (
+                        <div className="flex items-center">
+                          <MapPin size={14} className="mr-2 text-plum flex-shrink-0" />
+                          <span>{deal.location}</span>
+                        </div>
+                      )}
+                      {deal.propertyType && (
+                        <div className="flex items-center">
+                          <Building2 size={14} className="mr-2 text-plum flex-shrink-0" />
+                          <span>{deal.propertyType}</span>
+                        </div>
+                      )}
+                      {(deal.siteCount || deal.squareFootage) && (
+                        <div className="flex items-center">
+                          {/* Using a generic icon or deciding based on type might be better */}
+                          <Target size={14} className="mr-2 text-plum flex-shrink-0" /> 
+                          <span>
+                            {deal.siteCount ? `${deal.siteCount} Sites` : ''}
+                            {deal.siteCount && deal.squareFootage ? ' / ' : ''}
+                            {deal.squareFootage ? `${deal.squareFootage.toLocaleString()} SF` : ''}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {deal.subtitle && (
+                        <p className="text-gray-700 mb-4 text-sm flex-grow"> {/* Added flex-grow */}
+                        {deal.subtitle}
+                        </p>
+                    )}
+                    
+                    {(deal.challenge || deal.solution) && (
+                        <div className="border-t border-gray-200 pt-4 mt-auto"> {/* Added mt-auto */}
+                        {deal.challenge && (
+                            <>
+                            <h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wider mb-1">Challenge:</h4>
+                            <p className="text-sm text-gray-600 mb-3">{deal.challenge}</p>
+                            </>
+                        )}
+                        {deal.solution && (
+                            <>
+                            <h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wider mb-1">Solution:</h4>
+                            <p className="text-sm text-gray-600">{deal.solution}</p>
+                            </>
+                        )}
+                        </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
           <div className="text-center mt-8">
             <p className="text-gray-600 mb-4">
               All sales completed without public exposure or market speculation.

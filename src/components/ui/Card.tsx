@@ -65,11 +65,13 @@ export const CardImage: React.FC<{
   alt: string;
   overlay?: boolean;
   className?: string;
+  loading?: "eager" | "lazy"; // Added loading prop
 }> = ({ 
   src, 
   alt,
   overlay = false,
-  className = '' 
+  className = '',
+  loading = "lazy" // Default to "lazy"
 }) => {
   return (
     <div className={`relative ${overlay ? 'gradient-overlay' : ''} ${className}`}>
@@ -77,6 +79,7 @@ export const CardImage: React.FC<{
         src={src} 
         alt={alt} 
         className="w-full h-full object-cover"
+        loading={loading} // Apply loading prop
       />
     </div>
   );

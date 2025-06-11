@@ -67,7 +67,6 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-fill-color: transparent;
   }
 
   /* Button Gradient */
@@ -141,5 +140,24 @@
       transform: translateY(0);
       opacity: 1;
     }
+  }
+
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@layer utilities {
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+  
+  .animation-paused {
+    animation-play-state: paused;
   }
 }

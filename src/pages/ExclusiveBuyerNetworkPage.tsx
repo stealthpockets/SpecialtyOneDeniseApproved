@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Lock, Shield, Eye, Users, CheckCircle, ArrowRight, Building2, TrendingUp, Clock, Star } from 'lucide-react';
+import React, { useState, useMemo } from 'react'; // Added useMemo
+import { Lock, Shield, Eye, Users, CheckCircle, ArrowRight, Building2, TrendingUp, Clock, Star, MapPin } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { useCaseStudies } from '../hooks/useCaseStudies';
+import { CaseStudy } from '../types/caseStudy';
 
 const networkBenefits = [
   {
@@ -28,39 +30,6 @@ const networkBenefits = [
     title: 'Market Intelligence',
     description: 'Get insights on pricing trends, buyer behavior, and market timing before making moves.',
     details: ['Quarterly market reports', 'Deal flow analytics', 'Pricing guidance']
-  }
-];
-
-const recentDeals = [
-  {
-    title: 'Desert Oasis MHC',
-    location: 'Phoenix, AZ',
-    type: 'Manufactured Housing',
-    size: '124 Sites',
-    status: 'Sold Off-Market',
-    timeToSale: '18 Days',
-    description: 'Premium community with expansion potential. Sold to network buyer before public marketing.',
-    image: '/dist/assets/property-types/manufactured-housing-community-investment.webp'
-  },
-  {
-    title: 'Confidential Storage Facility',
-    location: 'Scottsdale, AZ',
-    type: 'Self-Storage',
-    size: '85,000 SF',
-    status: 'Sold Off-Market',
-    timeToSale: '12 Days',
-    description: 'Climate-controlled facility with below-market rents. Institutional buyer acquisition.',
-    image: '/dist/assets/property-types/self-storage-facility-investment.webp'
-  },
-  {
-    title: 'Mountain View RV Resort',
-    location: 'Tucson, AZ',
-    type: 'RV Park',
-    size: '200 Sites',
-    status: 'Sold Off-Market',
-    timeToSale: '25 Days',
-    description: 'Seasonal resort with glamping expansion. Family office acquisition.',
-    image: '/dist/assets/property-types/rv-park-investment-opportunity.webp'
   }
 ];
 
@@ -156,6 +125,12 @@ const ExclusiveBuyerNetworkPage = () => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Memoize the filters object to prevent re-renders in useCaseStudies
+  const recentDealsFilters = useMemo(() => ({ isConfidential: true }), []); 
+  // The empty dependency array [] means recentDealsFilters is created once
+
+  const { caseStudies: recentDeals, loading: recentDealsLoading, error: recentDealsError } = useCaseStudies(recentDealsFilters);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -310,50 +285,95 @@ const ExclusiveBuyerNetworkPage = () => {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Recent Off-Market Successes
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {recentDeals.map((deal, index) => (
-              <Card 
-                key={index}
-                className="overflow-hidden animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="relative h-48">
-                  <img 
-                    src={deal.image}
-                    alt={deal.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge color="success" variant="gradient">
-                      {deal.status}
-                    </Badge>
+          {recentDealsLoading && (
+            <div className="text-center py-12">
+              <p className="text-gray-600">Loading recent deals...</p>
+            </div>
+          )}
+          {recentDealsError && (
+            <div className="text-center py-12">
+              <p className="text-red-600">Error loading deals: {recentDealsError}</p>
+            </div>
+          )}
+          {!recentDealsLoading && !recentDealsError && recentDeals && recentDeals.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {recentDeals.map((deal: CaseStudy, index: number) => (
+                <Card 
+                  key={deal.id}
+                  className="overflow-hidden animate-fade-in flex flex-col" // Added flex flex-col
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <div className="relative h-48">
+                    <img 
+                      src={deal.heroImage || '/dist/assets/property-types/default-property.webp'}
+                      alt={deal.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-4 right-4">
+                      <Badge color="primary" variant="gradient">
+                        {deal.propertyType}
+                      </Badge>
+                    </div>
+                     {/* Display "Sold Off-Market" and TimeToSale if available */}
+                    <div className="absolute top-4 left-4 flex flex-col space-y-1">
+                        <Badge color="success" variant="gradient">
+                            Sold Off-Market
+                        </Badge>
+                        {deal.timeToSale && (
+                            <Badge color="secondary" variant="gradient" className="mt-1">
+                                {deal.timeToSale}
+                            </Badge>
+                        )}
+                    </div>
                   </div>
-                  <div className="absolute top-4 right-4">
-                    <Badge color="primary" variant="gradient">
-                      {deal.timeToSale}
-                    </Badge>
-                  </div>
-                </div>
-                
-                <CardContent className="p-6">
-                  <h3 className="font-display text-xl font-bold mb-2">
-                    {deal.title}
-                  </h3>
-                  <div className="flex items-center gap-4 text-gray-600 mb-3">
-                    <span>{deal.location}</span>
-                    <span>•</span>
-                    <span>{deal.size}</span>
-                  </div>
-                  <Badge color="secondary" variant="outline" className="mb-3">
-                    {deal.type}
-                  </Badge>
-                  <p className="text-gray-600">
-                    {deal.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  
+                  <CardContent className="p-6 flex flex-col flex-grow"> {/* Added flex flex-col flex-grow */}
+                    <div className="flex items-center gap-2 text-gray-600 mb-3">
+                      <MapPin size={16} />
+                      <span>{deal.location}</span>
+                    </div>
+                    
+                    <h3 className="font-display text-xl font-bold mb-3">
+                      {deal.title}
+                    </h3>
+                    
+                    <div className="mb-4 flex-grow"> {/* Added flex-grow */}
+                      {deal.challenge && (
+                        <p className="text-gray-600 mb-2 text-sm">
+                          <strong>Challenge:</strong> {deal.challenge}
+                        </p>
+                      )}
+                      {deal.solution && (
+                        <p className="text-gray-600 mb-2 text-sm">
+                          <strong>Solution:</strong> {deal.solution}
+                        </p>
+                      )}
+                       {!deal.challenge && !deal.solution && deal.subtitle && (
+                        <p className="text-gray-600 mb-2 text-sm">
+                          {deal.subtitle}
+                        </p>
+                      )}
+                    </div>
+                    
+                    {/* Removed agent and full story button, can be added back if needed */}
+                    {/* Example of how to add agent if needed in the future: 
+                    {deal.agent && (
+                      <div className="flex items-center gap-2 mt-auto pt-4 border-t border-gray-100">
+                        <Building2 size={16} className="text-plum" />
+                        <span className="text-gray-600 text-sm">{deal.agent}</span>
+                      </div>
+                    )}
+                    */}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+          {!recentDealsLoading && !recentDealsError && (!recentDeals || recentDeals.length === 0) && (
+            <div className="text-center py-12">
+              <p className="text-gray-600">No confidential off-market deals to display at this time.</p>
+            </div>
+          )}
           <div className="text-center mt-8">
             <p className="text-gray-600 mb-4">
               These deals were available exclusively to our network members.
@@ -761,15 +781,15 @@ const ExclusiveBuyerNetworkPage = () => {
               and the application process.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button 
+              <Button
                 href="tel:602-730-9967"
                 variant="primary"
                 size="lg"
-                className="bg-white text-plum hover:bg-cloud"
+                className="text-white"
               >
                 Call: 602-730-9967
               </Button>
-              
+
               <Button 
                 to="/contact"
                 variant="outline"

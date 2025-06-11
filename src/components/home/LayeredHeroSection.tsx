@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { MarketRateBar } from './MarketRateBar';
+import { useEffect, useState } from 'react';
 import { Button } from '../ui/Button';
 
 interface HeroSlide {
@@ -67,7 +66,7 @@ export const LayeredHeroSection = () => {
     
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 7000); // 7-second interval
+    }, 5000); // 5-second interval
     
     return () => clearInterval(interval);
   }, [isPlaying, isDesktop]);
@@ -77,12 +76,9 @@ export const LayeredHeroSection = () => {
     return null;
   }
 
-  // Desktop: Enhanced hero with market rates and carousel
+  // Desktop: Enhanced hero carousel
   return (
     <div className="relative">
-      {/* Market Rate Bar */}
-      <MarketRateBar isDesktop={isDesktop} />
-
       {/* Enhanced Hero Carousel */}
       <section className="relative min-h-screen overflow-hidden">
         {/* Carousel Slides */}
@@ -102,7 +98,7 @@ export const LayeredHeroSection = () => {
                 style={{ backgroundImage: `url(${slide.image})` }}
               >
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-obsidian/95 via-obsidian/75 via-obsidian/45 to-obsidian/20"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-obsidian/95 via-obsidian/75 to-obsidian/20"></div>
               </div>
 
               {/* Content */}

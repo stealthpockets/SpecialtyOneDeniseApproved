@@ -1,6 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, Linkedin, Facebook, Instagram, ChevronRight } from 'lucide-react';
+import { Phone, Mail, Linkedin, Facebook, Instagram, ChevronRight, Twitter, Youtube } from 'lucide-react';
 
 export const Footer = () => {
   return (
@@ -13,19 +12,26 @@ export const Footer = () => {
               src="/dist/assets/logo/logo-horizontal-blackbackground.svg" 
               alt="Specialty One" 
               className="h-10 w-auto"
+              loading="lazy"
             />
             <p className="text-gray-300 mt-4">
               We specialize in Manufactured Housing, RV Parks, and Self-Storage investments with over $1B in closed transactions.
             </p>
             <div className="flex space-x-4 pt-4">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.linkedin.com/company/specialty-one" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
                 <Linkedin size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.facebook.com/specialtyone" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
                 <Facebook size={20} />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">
+              <a href="https://www.instagram.com/specialtyone" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
                 <Instagram size={20} />
+              </a>
+              <a href="https://x.com/MHRVDrew" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
+                <Twitter size={20} />
+              </a>
+              <a href="https://www.youtube.com/@SpecialtyOneCRE" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-white transition-colors">
+                <Youtube size={20} />
               </a>
             </div>
           </div>
@@ -79,41 +85,15 @@ export const Footer = () => {
           
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-bold mb-4">Quick Links</h3>
+            <h5 className="text-lg font-semibold mb-4">Quick Links</h5>
             <ul className="space-y-2">
               <li>
-                <Link to="/advantage" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
-                  <ChevronRight size={16} className="mr-1" />
-                  The Advantage
-                </Link>
-              </li>
-              <li>
-                <Link to="/1031-exchange" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
-                  <ChevronRight size={16} className="mr-1" />
-                  1031 Exchange
-                </Link>
-              </li>
-              <li>
-                <Link to="/exclusive-buyers" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
-                  <ChevronRight size={16} className="mr-1" />
-                  Exclusive Buyer Network
-                </Link>
-              </li>
-              <li>
-                <Link to="/exclusive-sellers" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
-                  <ChevronRight size={16} className="mr-1" />
-                  Exclusive Seller Network
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
-                  <ChevronRight size={16} className="mr-1" />
+                <Link to="/about" className="text-gray-300 hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors flex items-center text-sm lg:text-base">
-                  <ChevronRight size={16} className="mr-1" />
+                <Link to="/contact" className="text-gray-300 hover:text-white transition-colors">
                   Contact
                 </Link>
               </li>
