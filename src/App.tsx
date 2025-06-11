@@ -15,6 +15,8 @@ import ContactPage from './pages/ContactPage';
 import ExclusiveBuyerNetworkPage from './pages/ExclusiveBuyerNetworkPage';
 import ExclusiveSellerNetworkPage from './pages/ExclusiveSellerNetworkPage';
 import CaseStudyDetailPage from './pages/CaseStudyDetailPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/exclusive-buyers" element={<ExclusiveBuyerNetworkPage />} />
           <Route path="/exclusive-sellers" element={<ExclusiveSellerNetworkPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/success/:slug" element={<CaseStudyDetailPage />} />
           {/* Add other routes as needed */}
         </Routes>
