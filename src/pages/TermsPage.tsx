@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, ChevronUp, Mail, Phone, ArrowUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowUp } from 'lucide-react';
 
 /**
  * Specialty One – Terms of Service page (Version 1.0 – June 11 2025)

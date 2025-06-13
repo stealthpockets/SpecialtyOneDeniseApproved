@@ -102,7 +102,7 @@ const ManufacturedHousingPage = () => {
               We don't play that game. We pre-underwrite, qualify buyers, and build deal certainty before we go live.
             </p>
             <Button 
-              to="/contact" 
+              to="https://form.typeform.com/to/NKQAZkUv" 
               variant="primary"
               size="lg"
               icon={<ArrowRight size={20} />}

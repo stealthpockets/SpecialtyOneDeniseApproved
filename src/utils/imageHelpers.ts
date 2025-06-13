@@ -1,4 +1,4 @@
-// Image helper functions for testimonials
+// Image helper functions for testimonials with Cloudinary integration
 
 import { PROPERTY_TYPES } from '../types/testimonial';
 
@@ -15,27 +15,27 @@ export const getTestimonialImagePath = (
     return image_url;
   }
   
-  // Fallback based on property_type
+  // Fallback based on property_type - using /dist/assets/ prefix for consistency
   switch (property_type) {
     case PROPERTY_TYPES.SELF_STORAGE:
-      return '/assets/property-types/self-storage-investment-arizona.webp';
+      return '/dist/assets/property-types/self-storage-investment-arizona.webp';
     case PROPERTY_TYPES.MANUFACTURED_HOUSING:
-      return '/assets/property-types/rv_resort_investment_arizona.webp';
+      return '/dist/assets/property-types/rv_resort_investment_arizona.webp';
     case PROPERTY_TYPES.RV_PARK:
-      return '/assets/property-types/rv-park-investment.webp';
+      return '/dist/assets/property-types/rv-park-investment.webp';
     case PROPERTY_TYPES.BUYER_VIEW:
-      return '/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
+      return '/dist/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
     case PROPERTY_TYPES.MULTI_ASSET:
-      return '/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
+      return '/dist/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
     default:
-      return '/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
+      return '/dist/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
   }
 };
 
 /**
  * Ultimate fallback image path for error handling
  */
-export const DEFAULT_TESTIMONIAL_IMAGE = '/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
+export const DEFAULT_TESTIMONIAL_IMAGE = '/dist/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp';
 
 /**
  * Handle image load errors by setting a fallback image

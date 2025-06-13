@@ -3,6 +3,7 @@ import { ArrowRight, Filter, SortDesc } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import SlideUpBanner from '../components/ui/SlideUpBanner';
 
 // Mock data - would come from CMS in production
 const articles = [
@@ -286,6 +287,7 @@ const InsightsPage = () => {
           </div>
         </div>
       </div>
+      <SlideUpBanner typeformId="FORM_ID_HERE" utmSource="insights_page" utmCampaign="market_intelligence_cta" />
     </div>
   );
 };

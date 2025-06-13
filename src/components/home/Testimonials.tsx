@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useCarouselTestimonials } from '../../hooks/useTestimonials';
-import { getTestimonialImagePath, handleImageError } from '../../utils/imageHelpers';
+import { getTestimonialImagePath } from '../../utils/imageHelpers';
+import { CloudinaryImage } from '../ui/CloudinaryImage';
 
 export const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -105,11 +106,12 @@ export const Testimonials = () => {
                     <div className="bg-cloud rounded-lg shadow-card overflow-hidden">
                       <div className="md:flex">
                         <div className="md:w-1/3 relative h-64 md:h-auto">
-                          <img 
-                            src={imageToDisplay}
+                          <CloudinaryImage
+                            localPath={imageToDisplay}
                             alt={testimonial.author} 
                             className="w-full h-full object-cover"
-                            onError={handleImageError}
+                            width={400}
+                            height={300}
                           />
                         </div>
                         <div className="md:w-2/3 p-8 md:p-10 flex flex-col justify-center">

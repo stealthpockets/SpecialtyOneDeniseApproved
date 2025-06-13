@@ -28,7 +28,7 @@ export const HeroSection = () => {
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
             <Button 
-              to="/exclusive-buyers" 
+              to="https://form.typeform.com/to/B0GIZ1ht" 
               variant="primary" 
               size="lg"
               icon={<ArrowRight size={20} />}

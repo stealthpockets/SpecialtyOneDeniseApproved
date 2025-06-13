@@ -1,4 +1,5 @@
 import React from 'react';
+import { CloudinaryImage } from './CloudinaryImage';
 
 interface LogoProps {
   className?: string;
@@ -6,8 +7,8 @@ interface LogoProps {
 
 export const Logo: React.FC<LogoProps> = ({ className = '' }) => {
   return (
-    <img 
-      src="/dist/assets/logo/logo-horizontal-lightbackground.svg" 
+    <CloudinaryImage
+      localPath="/assets/logo/logo-horizontal-lightbackground.svg" 
       alt="Specialty One" 
       className={`h-10 w-auto ${className}`}
     />

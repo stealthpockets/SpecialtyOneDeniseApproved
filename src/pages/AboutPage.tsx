@@ -1,6 +1,7 @@
 import { ArrowRight, Award, Users, Target, Shield } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { ProfileImage } from '../components/ui/CloudinaryImage';
 
 const teamMembers = [
 	{
@@ -223,11 +224,11 @@ const AboutPage = () => {
 							>
 								<div className="lg:w-1/3">
 									<div className="relative">
-										<img
-											src={member.image}
+										<ProfileImage
+											localPath={member.image}
 											alt={member.name}
 											className="w-full max-w-sm mx-auto rounded-lg shadow-lg"
-											loading="lazy"
+											size="large"
 										/>
 									</div>
 								</div>

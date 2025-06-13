@@ -77,7 +77,6 @@ const ExchangePage = () => {
 							<Button
 								to="/contact"
 								variant="primary"
-								className="bg-white text-plum hover:bg-cloud"
 								size="lg"
 							>
 								Talk to a Tax Strategy Expert

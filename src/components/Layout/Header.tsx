@@ -146,7 +146,7 @@ export const Header = () => {
             >
               The Advantage
             </Link>
-            
+
             <Link
               to="/1031-exchange"
               className="block py-2 border-b border-gray-100 text-sm lg:text-base"

@@ -14,25 +14,25 @@ export const FinalCTA = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
-            <Button 
-              to="/exclusive-buyers" 
+            <Button
+              to="/exclusive-buyers"
               variant="primary"
               className="w-full sm:w-auto"
               size="lg"
             >
-              Get Exclusive Listings
+              Join Network
             </Button>
           </div>
           
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4 text-sm">
-            <Link to="/valuation" className="text-white hover:text-sage transition-colors inline-flex items-center">
+            <Link to="https://form.typeform.com/to/I3hYeHFX" className="text-white hover:text-sage transition-colors inline-flex items-center">
               Need a property valuation?
               <span className="ml-1 underline">Request One</span>
             </Link>
             
             <span className="hidden sm:inline text-gray-400">•</span>
             
-            <Link to="/1031-exchange" className="text-white hover:text-sage transition-colors inline-flex items-center">
+            <Link to="https://form.typeform.com/to/oX1bWHD5" className="text-white hover:text-sage transition-colors inline-flex items-center">
               Planning a 1031?
               <span className="ml-1 underline">Start Strategy</span>
             </Link>

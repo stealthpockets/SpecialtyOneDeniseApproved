@@ -7,6 +7,7 @@ interface HeroSlide {
   subline: string;
   copy: string;
   cta: string;
+  ctaLink: string;
   image: string;
 }
 
@@ -17,6 +18,7 @@ const heroSlides: HeroSlide[] = [
     subline: "Your Edge in Manufactured Housing, Self-Storage & RV Resorts",
     copy: "We qualify capital, structure the terms, and solve problems before you hit escrow. Whether you need confidentiality or full exposure—we drive results.",
     cta: "Free Property Valuation",
+    ctaLink: "https://form.typeform.com/to/I3hYeHFX", // General Valuation
     image: "/assets/property-types/parkmodel_rv_park_apache_junction_arizona.webp"
   },
   {
@@ -25,6 +27,7 @@ const heroSlides: HeroSlide[] = [
     subline: "Self-Storage | RV Storage",
     copy: "$721M+ in closings. Hundreds of properties sold. Led by one of the most trusted brokers in the storage space. We don't dabble in self-storage. We've built careers in it. If you want real execution—not retail broker guessing—this is where it happens.",
     cta: "Free Property Valuation",
+    ctaLink: "https://form.typeform.com/to/bWvmdW4G", // Self-Storage Valuation
     image: "/assets/property-types/self-storage-investment-arizona.webp"
   },
   {
@@ -33,6 +36,7 @@ const heroSlides: HeroSlide[] = [
     subline: "Manufactured Housing | Mobile Home Parks",
     copy: "Whether you're repositioning, refinancing, or fully exiting, our process ensures you close clean, confidential, and on your timeline—with buyer expectations set up front.",
     cta: "Free Property Valuation",
+    ctaLink: "https://form.typeform.com/to/xOfJMRta", // Manufactured Housing Valuation
     image: "/assets/property-types/rv_park_mhp_resort_apache_junction.webp"
   },
   {
@@ -41,6 +45,7 @@ const heroSlides: HeroSlide[] = [
     subline: "RV Resorts | Outdoor Hospitality",
     copy: "It's not \"Just a Park.\" It's an Operating Business. We know the difference. That's why serious owners trust us to structure clean, efficient exits. $300M+ in MH & RV Transactions. No marketing theater. No retrade culture.",
     cta: "Free Property Valuation",
+    ctaLink: "https://form.typeform.com/to/CpdFYMm6", // RV Resort Valuation
     image: "/assets/property-types/rv_park_resort_arizona.webp"
   }
 ];
@@ -103,7 +108,7 @@ export const LayeredHeroSection = () => {
 
               {/* Content */}
               <div className="relative h-full flex items-center">
-                <div className="container-custom">
+                <div className="container-custom z-10">
                   <div className="max-w-4xl text-sand">
                     <div className="mb-4">
                       <h1 className="font-serif text-2xl lg:text-3xl text-cloud font-bold mb-2">
@@ -121,10 +126,11 @@ export const LayeredHeroSection = () => {
                     </p>
                     
                     <Button 
-                      to="/contact" 
+                      href={slide.ctaLink}
                       variant="primary" 
                       size="lg"
-                      className="text-lg px-8 py-4"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       {slide.cta}
                     </Button>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { PropertyImage } from '../ui/CloudinaryImage';
 
 const propertyTypes = [
 	{
@@ -47,11 +48,10 @@ export const PropertyTypes = () => {
 							<div className="flex flex-col h-full">
 								{/* Image with Gradient Overlay */}
 								<div className="relative h-64 overflow-hidden">
-									<img
-										src={type.image}
+									<PropertyImage
+										localPath={type.image}
 										alt={type.title}
 										className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-										loading="lazy" // Add this attribute
 									/>
 									{/* Darker, more subtle overlay for better text contrast */}
 									<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>

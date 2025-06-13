@@ -85,25 +85,30 @@ const applicationRequirements = [
 
 const testimonials = [
   {
-    quote: "The off-market deal flow from Specialty One has been exceptional. We've acquired three properties through their network that never would have been available publicly.",
-    author: "Michael Chen",
-    title: "Principal",
-    company: "Desert Capital Partners",
-    dealCount: "3 acquisitions"
+    quote: "Andrew Warner at Specialty One has been instrumental in helping me find the right properties for my portfolio. His expertise in identifying off-market and private sale opportunities that other brokers often miss has been invaluable. These exclusive deals have given me a significant advantage, allowing me to secure properties without the competition of a public listing. Andrew’s precision in presenting accurate information and his ability to facilitate seamless transactions ensure that every deal is handled efficiently and professionally. If you’re looking for a broker who can bring you exceptional deals and unique opportunities, I highly recommend Andrew Warner. Joining the Exclusive Buyer Network is a smart move for any buyer seeking an edge in the market.",
+    author: "George Han",
+    company: "Three Pillar Communities",
+    // property: "Multiple Off-Market Acquisitions", // Optional: You can add a property or outcome if desired
+    // outcome: "Significant Portfolio Growth" // Optional
+  }
+];
+
+const faqs = [
+  {
+    question: "What is the Exclusive Buyer Network?",
+    answer: "The Exclusive Buyer Network is a private community for serious real estate investors. Members gain access to off-market deals, pre-qualified opportunities, and exclusive market insights."
   },
   {
-    quote: "Their buyer network gave us first access to exactly the type of storage facility we were seeking. The deal was clean, the process was professional.",
-    author: "Sarah Rodriguez",
-    title: "Investment Director",
-    company: "Southwest Storage Fund",
-    dealCount: "2 acquisitions"
+    question: "How do I qualify for the network?",
+    answer: "Qualification is based on your investment experience, financial capacity, and alignment with our target buyer profiles. We review applications on a case-by-case basis."
   },
   {
-    quote: "As a 1031 buyer, timing is everything. Specialty One's network provided multiple qualified options within our exchange timeline.",
-    author: "David Kim",
-    title: "Managing Partner",
-    company: "Phoenix Real Estate Group",
-    dealCount: "1 exchange completed"
+    question: "What types of properties are available through the network?",
+    answer: "We specialize in off-market opportunities in Manufactured Housing, RV Parks, and Self-Storage. Properties range from value-add opportunities to stabilized assets."
+  },
+  {
+    question: "How do I apply?",
+    answer: "Click the 'Apply for Access' button on our website, complete the application form, and submit. We will review your application and respond within 48 hours."
   }
 ];
 
@@ -432,11 +437,11 @@ const ExclusiveBuyerNetworkPage = () => {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Network Members Say
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-8"> {/* Changed md:grid-cols-3 to md:grid-cols-1 */}
             {testimonials.map((testimonial, index) => (
               <div 
                 key={index}
-                className="bg-white rounded-lg p-8 animate-fade-in"
+                className="bg-white rounded-lg p-8 animate-fade-in text-center transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1" // Added hover animation classes
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
                 <div className="text-5xl text-plum opacity-20 mb-4">"</div>
@@ -448,11 +453,9 @@ const ExclusiveBuyerNetworkPage = () => {
                     {testimonial.author}
                   </p>
                   <p className="text-gray-600">
-                    {testimonial.title}, {testimonial.company}
+                    {testimonial.company} {/* Corrected to display company */}
                   </p>
-                  <p className="text-sm lg:text-base text-plum font-medium mt-1">
-                    {testimonial.dealCount}
-                  </p>
+                  {/* Removed p tag for testimonial.dealCount as it's not in the new data */}
                 </div>
               </div>
             ))}

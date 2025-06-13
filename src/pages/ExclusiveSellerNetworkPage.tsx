@@ -843,9 +843,8 @@ const ExclusiveSellerNetworkPage = () => {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button 
                 href="tel:602-730-9967"
-                variant="primary"
+                variant="secondary"
                 size="lg"
-                className="bg-white text-plum hover:bg-cloud"
               >
                 Call: 602-730-9967
               </Button>

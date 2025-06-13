@@ -11,6 +11,8 @@ interface ButtonProps {
   className?: string;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
+  target?: string; // Added target prop
+  rel?: string;    // Added rel prop
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -23,6 +25,8 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   icon,
   iconPosition = 'left',
+  target, // Added target
+  rel,    // Added rel
 }) => {
   const sizeClasses = {
     sm: 'py-1.5 px-3 text-sm',
@@ -55,7 +59,7 @@ export const Button: React.FC<ButtonProps> = ({
   }
 
   if (href) {
-    return <a href={href} className={baseClasses}>{content}</a>;
+    return <a href={href} className={baseClasses} target={target} rel={rel}>{content}</a>;
   }
 
   return (

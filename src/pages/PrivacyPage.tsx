@@ -113,7 +113,7 @@ const PrivacyPage: React.FC = () => {
                   </tr>
                   <tr className="bg-gray-50">
                     <td className="border border-gray-300 px-4 py-2 text-gray-700">Communications</td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700">Email, text transcripts, call recordings, chatbot logs</td>
+                    <td className="border border-gray-300 px-4 py-2 text-gray-700">Email, text messages, call notes, chatbot logs</td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-700">You, telecom providers</td>
                   </tr>
                   <tr>
@@ -288,37 +288,6 @@ const PrivacyPage: React.FC = () => {
             </p>
             <p className="text-gray-700 leading-relaxed">
               Residents of the EEA/UK may raise unresolved concerns with their local data-protection authority; U.S. residents may contact their state attorney general.
-            </p>
-          </section>
-
-          {/* Key Changes Summary */}
-          <section id="key-changes">
-            <h2 className="text-2xl font-bold text-obsidian mb-4">Key Changes Summary</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-obsidian">Section</th>
-                    <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-obsidian">Old Text</th>
-                    <th className="border border-gray-300 px-4 py-2 text-left font-semibold text-obsidian">New Text</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700">§2 final paragraph</td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700">"We aggregate or de-identify data whenever possible…"</td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700"><strong>Removed obligation; now optional.</strong></td>
-                  </tr>
-                  <tr className="bg-gray-50">
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700">§6 retention</td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700">"We retain… then we delete or de-identify it."</td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-700"><strong>Now: keep as long as any lawful business purpose exists; deletion/anonymization optional.</strong></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p className="text-gray-700 leading-relaxed mt-4 text-sm">
-              This gives you maximum flexibility while still meeting disclosure duties under CCPA/CPRA ("business purpose" exception) and GDPR's "legitimate interests" basis (provided you honour access/erasure requests when legally required).
             </p>
           </section>
         </div>

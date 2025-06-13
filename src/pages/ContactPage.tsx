@@ -129,7 +129,6 @@ const ContactPage = () => {
 								<Button
 									to="/"
 									variant="primary"
-									className="bg-white text-plum hover:bg-cloud"
 									size="lg"
 								>
 									Return Home

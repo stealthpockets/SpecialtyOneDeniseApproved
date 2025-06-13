@@ -3,21 +3,7 @@ import { ArrowRight, Download, Calendar, TrendingUp, BarChart3, FileText, Filter
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-
-interface MarketReport {
-  title: string;
-  type: 'Quarterly' | 'Annual' | 'Special' | 'Market Update';
-  propertyType: 'Manufactured Housing' | 'RV Parks' | 'Self-Storage' | 'Multi-Asset';
-  date: string;
-  quarter?: string;
-  year: number;
-  description: string;
-  keyInsights: string[];
-  downloadUrl?: string;
-  isPremium?: boolean;
-  image: string;
-  pages?: number;
-}
+import { MarketReport } from '../types/MarketReport';
 
 const marketReports: MarketReport[] = [
   {
