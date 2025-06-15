@@ -1,110 +1,15 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Download, Calendar, TrendingUp, BarChart3, FileText, Filter, Search } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
-import { MarketReport } from '../types/MarketReport';
-
-const marketReports: MarketReport[] = [
-  {
-    title: "Arizona Self-Storage Market Report",
-    type: "Quarterly",
-    propertyType: "Self-Storage",
-    date: "Q4 2024",
-    quarter: "Q4",
-    year: 2024,
-    description: "Comprehensive analysis of Arizona's self-storage market including cap rates, occupancy trends, and new supply pipeline.",
-    keyInsights: [
-      "Average cap rates compressed to 5.2% in Phoenix MSA",
-      "Climate-controlled units commanding 40% rent premiums",
-      "New supply pipeline down 15% from 2023 levels"
-    ],
-    image: "/dist/assets/property-types/self-storage-facility-investment.webp",
-    pages: 24,
-    isPremium: false
-  },
-  {
-    title: "Manufactured Housing Investment Outlook",
-    type: "Annual",
-    propertyType: "Manufactured Housing",
-    date: "2024",
-    year: 2024,
-    description: "Annual outlook covering regulatory changes, financing trends, and investment opportunities in the manufactured housing sector.",
-    keyInsights: [
-      "Institutional ownership increased 23% year-over-year",
-      "Average community size trending larger (150+ sites)",
-      "Rent control legislation impacting 3 key markets"
-    ],
-    image: "/dist/assets/property-types/manufactured-housing-community-investment.webp",
-    pages: 36,
-    isPremium: true
-  },
-  {
-    title: "RV Park & Outdoor Hospitality Trends",
-    type: "Special",
-    propertyType: "RV Parks",
-    date: "November 2024",
-    year: 2024,
-    description: "Special report on the evolving RV park landscape, including glamping integration and seasonal vs. long-term strategies.",
-    keyInsights: [
-      "Glamping revenue averaging $180/night vs $45 for standard sites",
-      "Long-term sites (6+ months) showing 95%+ occupancy",
-      "Solar installations ROI improving to 7-9 years"
-    ],
-    image: "/dist/assets/property-types/rv-park-investment-opportunity.webp",
-    pages: 18,
-    isPremium: false
-  },
-  {
-    title: "Southwest Alternative Assets Overview",
-    type: "Quarterly",
-    propertyType: "Multi-Asset",
-    date: "Q3 2024",
-    quarter: "Q3",
-    year: 2024,
-    description: "Cross-asset analysis of MH, RV, and storage performance across Arizona, Nevada, and New Mexico markets.",
-    keyInsights: [
-      "Storage leading performance with 6.8% average returns",
-      "MH communities showing strongest rent growth at 4.2%",
-      "RV parks benefiting from remote work trends"
-    ],
-    image: "/dist/assets/property-types/manufactured-housing-community-investment.webp",
-    pages: 28,
-    isPremium: true
-  },
-  {
-    title: "Interest Rate Impact Analysis",
-    type: "Market Update",
-    propertyType: "Multi-Asset",
-    date: "October 2024",
-    year: 2024,
-    description: "Analysis of how rising interest rates are affecting transaction volume and pricing across our target asset classes.",
-    keyInsights: [
-      "Transaction volume down 35% but pricing holding steady",
-      "Cash buyers increasing market share to 45%",
-      "1031 exchanges driving 60% of MH transactions"
-    ],
-    image: "/dist/assets/property-types/self-storage-facility-investment.webp",
-    pages: 12,
-    isPremium: false
-  },
-  {
-    title: "Climate-Controlled Storage Deep Dive",
-    type: "Special",
-    propertyType: "Self-Storage",
-    date: "September 2024",
-    year: 2024,
-    description: "Detailed analysis of climate-controlled storage demand, pricing strategies, and conversion opportunities.",
-    keyInsights: [
-      "Climate-controlled units achieve 92% average occupancy",
-      "Conversion costs averaging $15-20 per sq ft",
-      "Premium pricing sustainable at 35-50% above standard"
-    ],
-    image: "/dist/assets/property-types/self-storage-facility-investment.webp",
-    pages: 22,
-    isPremium: true
-  }
-];
+import { MarketReport, ContentFilters } from '../types/MarketReport';
+import { PropertyTypeFilter } from '../components/ui/PropertyTypeFilter';
+import { PropertyTypeBadge } from '../components/ui/PropertyTypeBadge';
+import { TickerBox } from '../components/home/TickerBox';
+import { useMarketReports } from '../hooks/useMarketReports';
 
 const marketMetrics = [
   {
@@ -147,21 +52,17 @@ const upcomingReports = [
 ];
 
 const MarketReportsPage = () => {
-  const [selectedPropertyType, setSelectedPropertyType] = useState<string>('All');
-  const [selectedReportType, setSelectedReportType] = useState<string>('All');
+  const [filters, setFilters] = useState<ContentFilters>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  const propertyTypes = ['All', 'Manufactured Housing', 'RV Parks', 'Self-Storage', 'Multi-Asset'];
-  const reportTypes = ['All', 'Quarterly', 'Annual', 'Special', 'Market Update'];
+  const { marketReports, loading, error } = useMarketReports(filters);
 
-  const filteredReports = marketReports.filter(report => {
-    const matchesPropertyType = selectedPropertyType === 'All' || report.propertyType === selectedPropertyType;
-    const matchesReportType = selectedReportType === 'All' || report.type === selectedReportType;
+  const filteredReports = marketReports.filter((report: MarketReport) => {
     const matchesSearch = searchTerm === '' || 
       report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      report.description.toLowerCase().includes(searchTerm.toLowerCase());
+      (report.summary && report.summary.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    return matchesPropertyType && matchesReportType && matchesSearch;
+    return matchesSearch;
   });
 
   return (
@@ -247,6 +148,9 @@ const MarketReportsPage = () => {
         </div>
       </section>
 
+      {/* Market Rate Ticker */}
+      <TickerBox />
+
       {/* Filter and Search */}
       <section className="py-8 bg-cloud sticky top-20 z-30 border-b border-gray-200">
         <div className="container-custom">
@@ -263,34 +167,12 @@ const MarketReportsPage = () => {
               />
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-wrap gap-3">
-              <div className="relative">
-                <select 
-                  className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-4 pr-10 text-gray-700 cursor-pointer hover:border-plum focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                  value={selectedPropertyType}
-                  onChange={(e) => setSelectedPropertyType(e.target.value)}
-                >
-                  {propertyTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-                <Filter className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
-              </div>
-
-              <div className="relative">
-                <select 
-                  className="appearance-none bg-white border border-gray-300 rounded-md py-2 pl-4 pr-10 text-gray-700 cursor-pointer hover:border-plum focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                  value={selectedReportType}
-                  onChange={(e) => setSelectedReportType(e.target.value)}
-                >
-                  {reportTypes.map(type => (
-                    <option key={type} value={type}>{type}</option>
-                  ))}
-                </select>
-                <Filter className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
-              </div>
-            </div>
+            {/* Property Type Filter */}
+            <PropertyTypeFilter
+              selectedFilter={filters}
+              onFilterChange={setFilters}
+              className="flex-shrink-0"
+            />
           </div>
         </div>
       </section>
@@ -307,101 +189,97 @@ const MarketReportsPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredReports.map((report, index) => (
-              <Card 
-                key={index}
-                className="overflow-hidden animate-fade-in"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                <div className="relative h-48">
-                  <img 
-                    src={report.image}
-                    alt={report.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 left-4">
-                    <Badge 
-                      color={report.type === 'Annual' ? 'primary' : report.type === 'Special' ? 'secondary' : 'success'} 
-                      variant="gradient"
-                    >
-                      {report.type}
-                    </Badge>
-                  </div>
-                  {report.isPremium && (
-                    <div className="absolute top-4 right-4">
-                      <Badge color="warning" variant="gradient">
-                        Premium
-                      </Badge>
-                    </div>
-                  )}
-                </div>
-
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-2 text-gray-600 mb-3">
-                    <Calendar size={16} />
-                    <span className="text-sm lg:text-base">{report.date}</span>
-                    {report.pages && (
-                      <>
-                        <span>•</span>
-                        <FileText size={16} />
-                        <span className="text-sm lg:text-base">{report.pages} pages</span>
-                      </>
-                    )}
-                  </div>
-
-                  <h3 className="font-display text-xl font-bold mb-3">
-                    {report.title}
-                  </h3>
-
-                  <Badge color="secondary" variant="outline" className="mb-3">
-                    {report.propertyType}
-                  </Badge>
-
-                  <p className="text-gray-600 mb-4">
-                    {report.description}
-                  </p>
-
-                  <div className="mb-6">
-                    <h4 className="font-medium mb-2">Key Insights:</h4>
-                    <ul className="space-y-1">
-                      {report.keyInsights.slice(0, 2).map((insight, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-600">
-                          <span className="text-sage mt-1">•</span>
-                          <span>{insight}</span>
-                        </li>
-                      ))}
-                      {report.keyInsights.length > 2 && (
-                        <li className="text-sm text-gray-500 italic">
-                          +{report.keyInsights.length - 2} more insights
-                        </li>
+          {loading && (
+            <div className="text-center py-12">
+              <p className="text-lg">Loading market reports...</p>
+            </div>
+          )}
+          
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-lg text-red-600">Error loading reports: {error}</p>
+            </div>
+          )}
+          
+          {!loading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredReports.map((report: any, index: number) => (
+                <Link 
+                  key={report.id || index}
+                  to={`/market-reports/${report.slug}`}
+                  className="block animate-fade-in"
+                  style={{ animationDelay: `${0.1 * index}s` }}
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="relative h-48">
+                      <img 
+                        src={report.image_url || '/assets/property-types/self-storage-facility-investment.webp'}
+                        alt={report.title}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <Badge 
+                          color="primary"
+                          variant="gradient"
+                        >
+                          Report
+                        </Badge>
+                      </div>
+                      {report.is_premium && (
+                        <div className="absolute top-4 right-4">
+                          <Badge color="warning" variant="gradient">
+                            Premium
+                          </Badge>
+                        </div>
                       )}
-                    </ul>
-                  </div>
+                    </div>
 
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="primary"
-                      size="sm"
-                      className="flex-1"
-                      icon={<Download size={16} />}
-                      iconPosition="right"
-                    >
-                      {report.isPremium ? 'Request Access' : 'Download'}
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      size="sm"
-                    >
-                      Preview
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-2 text-gray-600 mb-3">
+                        <Calendar size={16} />
+                        <span className="text-sm lg:text-base">{new Date(report.published_at).toLocaleDateString()}</span>
+                        {report.reading_time && (
+                          <>
+                            <span>•</span>
+                            <FileText size={16} />
+                            <span className="text-sm lg:text-base">{report.reading_time} min read</span>
+                          </>
+                        )}
+                      </div>
 
-          {filteredReports.length === 0 && (
+                      <h3 className="font-display text-xl font-bold mb-3">
+                        {report.title}
+                      </h3>
+
+                      <div className="flex items-center gap-2 mb-3">
+                        <Badge color="secondary" variant="outline">
+                          Market Report
+                        </Badge>
+                        <PropertyTypeBadge 
+                          propertyType={report.property_types}
+                        />
+                      </div>
+
+                      <div className="text-gray-600 mb-4 prose prose-sm max-w-none line-clamp-3">
+                        <ReactMarkdown>{report.summary?.replace(/\\n/g, '\n') || ''}</ReactMarkdown>
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm lg:text-base text-gray-500">
+                          By {report.authors?.name || 'Unknown Author'}
+                        </div>
+                        <div className="px-4 py-2 border border-plum text-plum rounded-lg text-sm font-medium">
+                          View Report
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {!loading && !error && filteredReports.length === 0 && (
             <div className="text-center py-12">
               <FileText size={48} className="text-gray-400 mx-auto mb-4" />
               <h3 className="text-xl font-medium text-gray-600 mb-2">

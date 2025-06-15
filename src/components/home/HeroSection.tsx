@@ -14,7 +14,7 @@ export const HeroSection = () => {
             We Sell What Generalist Brokers 
             <span className="relative">
               <span className="relative z-10"> Don't Understand.</span>
-              <span className="absolute bottom-0 left-0 w-full h-3 bg-sage opacity-30"></span>
+              <span className="absolute bottom-1 left-0 w-full h-3 bg-sage opacity-60"></span>
             </span>
           </h1>
           

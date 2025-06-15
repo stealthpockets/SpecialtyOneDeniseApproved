@@ -1,40 +1,13 @@
 import { useState } from 'react';
-import { ArrowRight, Filter, SortDesc } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Filter, SortDesc, Crown } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import SlideUpBanner from '../components/ui/SlideUpBanner';
-
-// Mock data - would come from CMS in production
-const articles = [
-  {
-    title: "The Surprising Month That Gets MH Sellers 8% More",
-    category: "Market Timing",
-    propertyType: "Manufactured Housing",
-    author: "Andrew Warner",
-    readingTime: 8,
-    excerpt: "Data-driven analysis reveals the optimal timing for MH listings—and it's not when most sellers think.",
-    image: "/dist/assets/property-types/manufactured-housing-community-investment.webp"
-  },
-  {
-    title: "How to Underwrite All-Tenant-Owned Communities",
-    category: "Due Diligence",
-    propertyType: "Manufactured Housing",
-    author: "Andrew Warner",
-    readingTime: 12,
-    excerpt: "A step-by-step guide to valuing and positioning tenant-owned MH communities for maximum value.",
-    image: "/dist/assets/property-types/manufactured-housing-community-investment.webp"
-  },
-  {
-    title: "Rent Control Watchlist: What's Coming in 2025",
-    category: "Legislative Alert",
-    propertyType: "RV Parks",
-    author: "Andrew Warner",
-    readingTime: 6,
-    excerpt: "Stay ahead of upcoming legislation that could impact your property's value and operations.",
-    image: "/dist/assets/property-types/rv-park-investment-opportunity.webp"
-  }
-];
+import { useInsights } from '../hooks/useInsights';
+import { ContentFilters } from '../types/MarketReport';
 
 const propertyTypes = [
   "Manufactured Housing",
@@ -64,6 +37,14 @@ const InsightsPage = () => {
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState("editor");
+  
+  // Build filters object for the hook
+  const filters: ContentFilters = {
+    // TODO: Map property type names to IDs when property_types table is populated
+    // For now, filtering will work once the backend property_types are populated
+  };
+  
+  const { insights, loading, error } = useInsights(filters);
 
   return (
     <div className="flex flex-col min-h-screen bg-sand">
@@ -166,58 +147,84 @@ const InsightsPage = () => {
       {/* Featured Articles Carousel */}
       <section className="py-16 bg-sand">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {articles.map((article, index) => (
-              <Card 
-                key={index}
-                className="animate-fade-in overflow-hidden"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="relative h-48">
-                  <img 
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-full object-cover"
-                  />
-                  {index === 0 && (
-                    <div className="absolute top-4 right-4">
-                      <Badge color="primary" variant="gradient">
-                        🔥 Editor's Pick
-                      </Badge>
+          {loading && (
+            <div className="text-center py-12">
+              <p className="text-lg">Loading insights...</p>
+            </div>
+          )}
+          
+          {error && (
+            <div className="text-center py-12">
+              <p className="text-lg text-red-600">Error loading insights: {error}</p>
+            </div>
+          )}
+          
+          {!loading && !error && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {insights.map((insight, index) => (
+                <Link 
+                  key={insight.id} 
+                  to={`/insights/${insight.slug}`}
+                  className="block animate-fade-in"
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                    <div className="relative h-48">
+                      <img 
+                        src={insight.image_url || '/assets/property-types/manufactured-housing-community-investment.webp'}
+                        alt={insight.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {index === 0 && (
+                        <div className="absolute top-4 right-4">
+                          <Badge color="primary" variant="gradient">
+                            🔥 Editor's Pick
+                          </Badge>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <CardContent className="p-6">
-                  <div className="flex gap-2 mb-3">
-                    <Badge color="secondary" variant="outline">
-                      {article.propertyType}
-                    </Badge>
-                    <Badge color="primary" variant="outline">
-                      {article.category}
-                    </Badge>
-                  </div>
-                  <h3 className="font-display text-xl font-bold mb-3">
-                    {article.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm lg:text-base text-gray-500">
-                      By {article.author} • {article.readingTime} min read
-                    </div>
-                    <Button 
-                      to={`/insights/${article.title.toLowerCase().replace(/\s+/g, '-')}`}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Read Article
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                    <CardContent className="p-6">
+                      <div className="flex gap-2 mb-3">
+                        {insight.is_premium && (
+                          <Badge className="bg-gradient-to-r from-amber-400 to-orange-500 text-white border-0">
+                            <Crown className="w-3 h-3 mr-1" />
+                            Premium
+                          </Badge>
+                        )}
+                        <Badge color="secondary" variant="outline">
+                          Insight
+                        </Badge>
+                        {insight.property_types && (
+                          <Badge color="primary" variant="outline">
+                            {insight.property_types.name}
+                          </Badge>
+                        )}
+                        {insight.views > 0 && (
+                          <Badge color="secondary" variant="outline">
+                            {insight.views} views
+                          </Badge>
+                        )}
+                      </div>
+                      <h3 className="font-display text-xl font-bold mb-3">
+                        {insight.title}
+                      </h3>
+                      <div className="text-gray-600 mb-4 prose prose-sm max-w-none">
+                        <ReactMarkdown>{insight.summary?.replace(/\\n/g, '\n') || ''}</ReactMarkdown>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm lg:text-base text-gray-500">
+                          By {insight.authors?.name || 'Unknown Author'} • {insight.reading_time || 5} min read
+                        </div>
+                        <div className="px-4 py-2 border border-plum text-plum rounded-lg text-sm font-medium">
+                          {insight.is_premium ? 'Preview' : 'Read Article'}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
@@ -270,23 +277,6 @@ const InsightsPage = () => {
         </div>
       </section>
 
-      {/* Newsletter Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 z-50">
-        <div className="container-custom">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="font-medium">
-              Subscribe to receive investor insights that actually matter.
-            </p>
-            <Button 
-              to="/newsletter"
-              variant="primary"
-              size="sm"
-            >
-              Join Now
-            </Button>
-          </div>
-        </div>
-      </div>
       <SlideUpBanner typeformId="FORM_ID_HERE" utmSource="insights_page" utmCampaign="market_intelligence_cta" />
     </div>
   );

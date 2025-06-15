@@ -9,6 +9,7 @@ export default {
         evergreen: '#1a473a',
         sage: '#6dae94',
         obsidian: '#000000',
+        navy: '#181F29',
         cloud: '#f8f9fa',
         sand: '#F5E8D1',
       },

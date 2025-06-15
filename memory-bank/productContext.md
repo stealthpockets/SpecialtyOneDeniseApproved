@@ -74,3 +74,8 @@ Specialty One's website positions the brokerage as the definitive expert in thes
 - **Secondary**: Exclusive network signups
 - **Tertiary**: Content engagement (case studies, market reports)
 - **Supporting**: Site traffic, time on site, page views
+
+## June 2025: Content System & Market Data Integration
+- Added dynamic Insights and Market Reports pages for ongoing investor education and engagement.
+- MarketRateBar (real-time market data ticker) now integrated into all main pages for instant access to rates.
+- Backend schema updated: `image_url` field added to support rich article previews and detail pages.

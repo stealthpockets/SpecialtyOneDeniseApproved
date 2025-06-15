@@ -10,6 +10,45 @@ interface UseTestimonialsReturn {
 }
 
 /**
+ * Stagger testimonials by person to maximize name diversity
+ * Ensures no person repeats until all other unique persons have been shown
+ */
+const staggerTestimonialsByPerson = (testimonials: CarouselTestimonialData[]): CarouselTestimonialData[] => {
+  if (testimonials.length <= 1) return testimonials;
+
+  // Group testimonials by person (author)
+  const groupedByPerson = new Map<string, CarouselTestimonialData[]>();
+  
+  testimonials.forEach(testimonial => {
+    const person = testimonial.author;
+    if (!groupedByPerson.has(person)) {
+      groupedByPerson.set(person, []);
+    }
+    groupedByPerson.get(person)!.push(testimonial);
+  });
+
+  // Round-robin distribution: take one testimonial from each person per round
+  const staggered: CarouselTestimonialData[] = [];
+  const maxTestimonials = Math.max(...Array.from(groupedByPerson.values()).map(group => group.length));
+  
+  for (let round = 0; round < maxTestimonials; round++) {
+    for (const [person, personTestimonials] of groupedByPerson) {
+      if (personTestimonials[round]) {
+        staggered.push(personTestimonials[round]);
+      }
+    }
+  }
+  
+  console.log('Testimonials staggered by person:', {
+    original: testimonials.map(t => t.author),
+    staggered: staggered.map(t => t.author),
+    uniquePersons: groupedByPerson.size
+  });
+  
+  return staggered;
+};
+
+/**
  * Hook to fetch testimonials from Supabase by placement type
  */
 export const useTestimonials = (placementType: string): UseTestimonialsReturn => {
@@ -27,11 +66,14 @@ export const useTestimonials = (placementType: string): UseTestimonialsReturn =>
 
       const { data, error: supabaseError } = await supabase
         .from('testimonials')
-        .select('id, testimonial_text, person, property_name, image_url, property_type')
+        .select('id, testimonial_text, person, property_name, image_url, property_type, placement_type, status, is_strongest')
         .eq('placement_type', placementType)
-        .eq('is_active', true)
+        .eq('status', 'published')
+        .eq('is_strongest', true)
+        .is('deleted_at', null)
         .order('is_strongest', { ascending: false })
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true })
+        .limit(9);
 
       if (supabaseError) {
         console.error("Error fetching:", supabaseError);
@@ -39,6 +81,24 @@ export const useTestimonials = (placementType: string): UseTestimonialsReturn =>
       } else {
         console.log("Fetched data:", data);
         console.log("Data length:", data?.length || 0);
+        console.log("Placement types found:", data?.map(d => d.placement_type));
+        console.log("Statuses found:", data?.map(d => d.status));
+        
+        // Debug: Show unique placement types
+        const uniquePlacementTypes = [...new Set(data?.map(d => d.placement_type) || [])];
+        console.log("Unique placement types:", uniquePlacementTypes);
+        
+        // Debug: Count by placement type
+        const placementTypeCounts: Record<string, number> = {};
+        data?.forEach(d => {
+          placementTypeCounts[d.placement_type] = (placementTypeCounts[d.placement_type] || 0) + 1;
+        });
+        console.log("Placement type counts:", placementTypeCounts);
+        
+        // Debug: Filter specifically for Homepage - Carousel
+        const homepageCarouselItems = data?.filter(d => d.placement_type === 'Homepage - Carousel') || [];
+        console.log("Homepage - Carousel items:", homepageCarouselItems.length);
+        console.log("Homepage - Carousel data:", homepageCarouselItems);
       }
 
       // Transform Supabase data to component format
@@ -52,7 +112,10 @@ export const useTestimonials = (placementType: string): UseTestimonialsReturn =>
       })) || [];
 
       console.log("Formatted testimonials:", formattedData);
-      setTestimonials(formattedData);
+      
+      // Apply staggering to maximize name diversity
+      const staggeredTestimonials = staggerTestimonialsByPerson(formattedData);
+      setTestimonials(staggeredTestimonials);
     } catch (err) {
       console.error('Error fetching testimonials:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch testimonials');

@@ -1,5 +1,5 @@
 -- Add image_url column to existing testimonials table
-ALTER TABLE testimonials ADD COLUMN image_url TEXT;
+-- ALTER TABLE testimonials ADD COLUMN image_url TEXT;
 
 -- Update existing testimonials with specific image URLs from hardcoded data
 -- These match the current testimonials in the React component
@@ -37,3 +37,11 @@ SET placement_type = 'Homepage - Carousel'
 WHERE person IN ('Weech Family', 'George Bunting', 'George Han', 'Pericles Wyatt');
 
 COMMENT ON COLUMN testimonials.image_url IS 'Specific image URL for testimonial. If NULL, fallback logic will be used based on property_type';
+
+-- Ensure status_type enum exists before altering testimonials
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'status_type') THEN
+    CREATE TYPE status_type AS ENUM ('draft','scheduled','published','archived');
+  END IF;
+END $$;

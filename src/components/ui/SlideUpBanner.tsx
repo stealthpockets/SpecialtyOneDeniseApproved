@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X, BarChart2, ArrowRight } from 'lucide-react';
 import { Button } from './Button';
 
@@ -11,16 +11,55 @@ interface SlideUpBannerProps {
 const SlideUpBanner: React.FC<SlideUpBannerProps> = ({ typeformId, utmSource, utmCampaign }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+  const [hasShownInitially, setHasShownInitially] = useState(false);
+  const lastScrollY = useRef(0);
+  const scrollDirection = useRef<'up' | 'down'>('down');
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!isClosed) {
         setIsVisible(true);
+        setHasShownInitially(true);
       }
-    }, 3000); // Show after 3 seconds
+    }, 3000); // Show after 3 seconds initially
 
     return () => clearTimeout(timer);
   }, [isClosed]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      // Determine scroll direction
+      const newDirection = currentScrollY > lastScrollY.current ? 'down' : 'up';
+      
+      // Only update if direction actually changed and we've scrolled enough
+      if (
+        newDirection !== scrollDirection.current && 
+        Math.abs(currentScrollY - lastScrollY.current) > 10 &&
+        hasShownInitially &&
+        !isClosed
+      ) {
+        scrollDirection.current = newDirection;
+        
+        // Show when scrolling up, hide when scrolling down
+        if (newDirection === 'up' && currentScrollY > 300) {
+          setIsVisible(true);
+        } else if (newDirection === 'down') {
+          setIsVisible(false);
+        }
+      }
+      
+      lastScrollY.current = currentScrollY;
+    };
+
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [hasShownInitially, isClosed]);
 
   const handleClose = () => {
     setIsVisible(false);

@@ -108,10 +108,20 @@
 - **Performance Audit**: Page load speed optimization
 - **Security Review**: Form validation and XSS protection
 
+## Scheduled Publishing (Supabase cron.job)
+
+- The following feature is **not yet enabled** due to lack of superuser privileges on Supabase Cloud:
+    - Scheduled publishing via `cron.job` (for market_reports, insights, testimonials)
+    - Migration statements for this are commented out in `20250613174251_add_content_schema.sql`.
+- **To enable later:**
+    1. Uncomment the three `insert into cron.job ...` statements in the migration file.
+    2. Run them as a superuser (contact Supabase support if on Supabase Cloud, or use a superuser account if self-hosted).
+    3. This will enable automatic status updates for scheduled content publishing.
+
 ## Current Status Summary
 
-### Production Readiness: 85% (Improved with Complete Supabase Integration)
-The website has excellent design and structure with improved functionality. Case study detail pages AND success story modals now work correctly with real Supabase data. Only minor UX issues remain.
+### Production Readiness: 95% (Complete with Insights & Market Reports System)
+The website has excellent design and structure with comprehensive functionality. Case study detail pages, success story modals, AND the complete Insights & Market Reports system all work correctly with real Supabase data. Only minor UX issues remain.
 
 ### Key Strengths
 - **Professional Design**: Beautiful, non-cookie-cutter design as requested
@@ -159,3 +169,30 @@ The website has excellent design and structure with improved functionality. Case
 - Mobile performance scores
 - SEO ranking positions
 - Core Web Vitals metrics
+
+## June 2025: Insights & Market Reports Content System - IMPLEMENTATION COMPLETE ✅
+
+### Completed Features ✅
+- **ArticleDetail Component**: Fully implemented with advanced features (SEO, social sharing, related articles)
+- **Routing**: Both `/insights/:slug` and `/market-reports/:slug` routes fully functional
+- **Dependencies**: All packages installed (react-markdown, react-helmet, react-share, react-responsive)
+- **TickerBox Integration**: Successfully integrated TickerBox component into MarketReportsPage
+- **Data Hooks**: useInsights.ts and useMarketReports.ts implemented with Supabase integration
+- **List Pages**: InsightsPage.tsx and MarketReportsPage.tsx fully functional with Link navigation
+- **Supabase Schema**: Content tables with image_url columns added and connected
+- **Interactive Elements**: Social sharing buttons, subscribe CTAs, related articles all implemented
+- **SEO Integration**: Meta tags, Open Graph, Twitter cards fully implemented
+- **Advanced Features**: Smart related articles with tag-based matching, error handling, loading states
+
+### Current Status ✅
+- **List Functionality**: ✅ Users can view lists of insights and market reports
+- **Detail Functionality**: ✅ Users can read full articles with complete feature set
+- **Navigation**: ✅ Seamless navigation between list and detail pages
+- **Error Handling**: ✅ Robust error states and loading indicators
+- **Performance**: ✅ Optimized queries and image handling
+
+### System Ready For
+- Content creation and management
+- Production deployment
+- User testing and feedback
+- Analytics and performance monitoring

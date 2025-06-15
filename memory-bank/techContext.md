@@ -99,3 +99,8 @@ src/
 - **Environment Variables**: Properly configured in `.env`
 - **Database Structure**: Ready for case study management
 - **Frontend Integration**: Hooks prepared but using mock data currently
+
+## June 2025: Content & Market Data System Upgrade
+- **Content System**: Insights and Market Reports pages now fetch from Supabase, support author join, and display images.
+- **MarketRateBar**: Now integrated into MainLayout for all main pages, desktop only, with scroll/hide behavior.
+- **Backend Schema**: `image_url` column added to `insights` and `market_reports` for article images.

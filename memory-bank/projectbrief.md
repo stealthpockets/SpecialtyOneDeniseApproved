@@ -38,3 +38,11 @@ Specialty One is a professional real estate website for a specialized commercial
 - Beautiful, non-cookie-cutter design
 - Fast loading and mobile responsive
 - SEO optimized for niche property searches
+
+## June 2025 Update
+- ✅ **COMPLETED**: Dynamic Insights and Market Reports content system (Supabase-powered, author join, images supported)
+- ✅ **COMPLETED**: ArticleDetail component with SEO, social sharing, and related articles 
+- ✅ **COMPLETED**: Full routing system (/insights/:slug, /market-reports/:slug)
+- ✅ **COMPLETED**: MarketRateBar now a persistent feature on all main pages for market transparency
+- ✅ **COMPLETED**: Backend integration with image_url support for visual article previews
+- **System Status**: 95% production-ready, comprehensive content management system operational

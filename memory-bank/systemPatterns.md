@@ -154,6 +154,27 @@ Components use `animationDelay` for sequenced reveals:
 - **WebP format** for optimal performance
 - **Descriptive naming** for SEO and accessibility
 
+## Content Management System
+
+### Insights & Market Reports System ✅ COMPLETE
+- **ArticleDetail Component**: Full article rendering with SEO, social sharing, related articles
+- **Dynamic Routing**: `/insights/:slug` and `/market-reports/:slug` with proper navigation
+- **Supabase Integration**: Real-time content loading with authors, tags, and metadata
+- **Smart Related Articles**: Tag-based matching with fallback to recent articles
+- **SEO Optimization**: Meta tags, Open Graph, Twitter cards for social sharing
+- **Error Handling**: Robust loading states and graceful error messages
+- **Responsive Design**: Mobile-optimized layout with image fallbacks
+
+### Case Studies & Success Stories
+- **Dynamic content** with slug-based routing, Supabase backend integration
+- **Modal popups** with detailed case information connected to database
+- **Status management** (completed, in-progress, confidential)
+
+### Market Data Integration
+- **FRED API integration** for real-time mortgage rates
+- **TickerBox component** displaying live market data
+- **Persistent rate bar** across all main pages
+
 ## Performance Patterns
 
 ### Build Optimization
@@ -166,3 +187,51 @@ Components use `animationDelay` for sequenced reveals:
 - **Consistent loading patterns** in data hooks
 - **Error boundaries** ready for implementation
 - **Graceful degradation** for failed requests
+
+## Professional Markdown Styling System ✅ NEW
+
+### Enhanced ArticleDetail Styling
+- **Custom CSS Framework**: `src/styles/markdown-content.css` - Professional markdown rendering system
+- **Typography Enhancement**: Inter/Playfair Display/Montserrat font hierarchy with optimized spacing
+- **Brand Integration**: Plum/amethyst color scheme with CSS custom properties
+- **Text Contrast**: Black text (#000000) with `!important` declarations for maximum readability
+- **Professional Elements**: Enhanced tables, blockquotes, lists, and code blocks
+
+### CSS Architecture
+```css
+.markdown-content {
+  /* Base styling with forced contrast */
+  color: #000000 !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Comprehensive text coverage */
+.markdown-content *,
+.markdown-content strong,
+.markdown-content b,
+.markdown-content p,
+.markdown-content li {
+  color: inherit !important;
+}
+```
+
+### Implementation Pattern
+- **ArticleDetail.tsx**: Simple `.markdown-content` class applied to ReactMarkdown wrapper
+- **ReactMarkdown**: GitHub Flavored Markdown (remarkGfm) with custom styling
+- **Override Strategy**: `!important` declarations to override Tailwind/global CSS conflicts
+- **Mobile Optimization**: Responsive typography and table handling
+
+### Dependencies Integration
+- **react-markdown**: Markdown rendering with custom components
+- **remark-gfm**: GitHub Flavored Markdown support (tables, task lists)
+- **react-helmet**: SEO meta tags for articles
+- **react-share**: Social sharing buttons (Twitter, LinkedIn)
+- **react-responsive**: Media query support
+
+### Key Features
+- **Professional Typography**: Publication-quality text rendering with proper hierarchy
+- **Enhanced Tables**: Rounded corners, shadows, hover effects, mobile-responsive overflow
+- **Beautiful Blockquotes**: Gradient backgrounds with decorative quote marks
+- **Brand-Consistent Links**: Plum color with hover transitions
+- **Accessibility**: Focus states, reduced motion support, high contrast ratios
+- **Print Support**: Optimized print styles for professional documents
