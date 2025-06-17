@@ -5,13 +5,11 @@ import { Insight, ContentFilters } from '../types/MarketReport';
 export const useInsights = (filters?: ContentFilters) => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
+  const [error, setError] = useState<string | null>(null);  useEffect(() => {
     const fetchInsights = async () => {
       try {
-        // Build query with all schema fields and joins (matching useMarketReports)
-        let query = supabase
+        setLoading(true);
+        setError(null);let query = supabase
           .from('insights')
           .select(`
             id,
@@ -21,61 +19,63 @@ export const useInsights = (filters?: ContentFilters) => {
             content,
             published_at,
             image_url,
+            pdf_url,
             reading_time,
             is_premium,
             views,
             downloads,
             property_type_id,
             category_id,
-            authors (
-              id,
-              name
-            )
+            authors (id, name),
+            property_types (id, name),
+            categories (id, name)
           `)
           .eq('status', 'published')
           .is('deleted_at', null)
           .order('published_at', { ascending: false });
 
-        // Apply filters
-        if (filters?.propertyTypeId) {
-          query = query.eq('property_type_id', filters.propertyTypeId);
+        // Apply filters if provided
+        if (filters?.propertyType) {
+          query = query.eq('property_type_id', filters.propertyType);
         }
-        if (filters?.categoryId) {
-          query = query.eq('category_id', filters.categoryId);
+
+        if (filters?.category) {
+          query = query.eq('category_id', filters.category);
         }
-        if (filters?.isPremium !== undefined) {
-          query = query.eq('is_premium', filters.isPremium);
+
+        if (filters?.searchQuery) {
+          query = query.or(`title.ilike.%${filters.searchQuery}%,summary.ilike.%${filters.searchQuery}%,content.ilike.%${filters.searchQuery}%`);
         }
 
         const { data, error } = await query;
 
         if (error) {
-          console.error('Error fetching insights:', error);
-          setError('Failed to load insights');
-        } else {
-          // Transform the data to handle joined arrays 
-          const transformedData = (data || []).map(item => ({
+          throw error;
+        }
+
+        if (data) {
+          const transformedData: Insight[] = data.map((item: any): Insight => ({
             ...item,
-            // Add missing required fields for Insight interface
+            property_type_id: item.property_type_id || undefined,
+            category_id: item.category_id || undefined,
+            author_id: (item as any).authors?.[0]?.id || undefined,
             locale: 'en',
             status: 'published' as const,
             created_at: item.published_at || new Date().toISOString(),
             updated_at: item.published_at || new Date().toISOString(),
             deleted_at: undefined,
             pages: undefined,
-            author_id: (item as any).authors?.[0]?.id || undefined,
-            // Transform authors array to single object
+            // Transform joined arrays to single objects
             authors: Array.isArray((item as any).authors) && (item as any).authors.length > 0 ? (item as any).authors[0] : (item as any).authors,
-            // Set property_types and categories to null for now (will add proper joins later)
-            property_types: null,
-            categories: null,
+            property_types: Array.isArray((item as any).property_types) && (item as any).property_types.length > 0 ? (item as any).property_types[0] : (item as any).property_types,
+            categories: Array.isArray((item as any).categories) && (item as any).categories.length > 0 ? (item as any).categories[0] : (item as any).categories,
             tags: []
-          }));
-          setInsights(transformedData);
+          }));          setInsights(transformedData);
         }
       } catch (err) {
         console.error('Error fetching insights:', err);
-        setError('Failed to load insights');
+        setError(err instanceof Error ? err.message : 'Failed to fetch insights');
+        setInsights([]);
       } finally {
         setLoading(false);
       }
@@ -94,45 +94,30 @@ export const useInsight = (slug: string) => {
 
   useEffect(() => {
     const fetchInsight = async () => {
+      if (!slug) return;
+
       try {
-        const { data, error } = await supabase
+        setLoading(true);
+        setError(null);        const { data, error } = await supabase
           .from('insights')
           .select(`
             id,
             slug,
-            locale,
             title,
             summary,
             content,
-            property_type_id,
-            category_id,
-            author_id,
-            status,
             published_at,
-            created_at,
-            updated_at,
-            deleted_at,
+            image_url,
+            pdf_url,
+            reading_time,
             is_premium,
             views,
             downloads,
-            reading_time,
-            pages,
-            image_url,
-            authors (
-              id,
-              name,
-              email,
-              avatar_url
-            ),
-            property_types (
-              id,
-              name,
-              parent_id
-            ),
-            categories (
-              id,
-              name
-            )
+            property_type_id,
+            category_id,
+            authors (id, name),
+            property_types (id, name),
+            categories (id, name)
           `)
           .eq('slug', slug)
           .eq('status', 'published')
@@ -140,22 +125,32 @@ export const useInsight = (slug: string) => {
           .single();
 
         if (error) {
-          console.error('Error fetching insight:', error);
-          setError('Insight not found');
-          setInsight(null);
-        } else {
-          // Transform the data to handle joined arrays (matching useMarketReport)
-          const transformedData = {
+          throw error;
+        }
+
+        if (data) {
+          const transformedData: Insight = {
             ...data,
-            authors: data.authors && data.authors.length > 0 ? data.authors[0] : null,
-            property_types: data.property_types && data.property_types.length > 0 ? data.property_types[0] : null,
-            categories: data.categories && data.categories.length > 0 ? data.categories[0] : null
+            property_type_id: data.property_type_id || undefined,
+            category_id: data.category_id || undefined,
+            author_id: (data as any).authors?.[0]?.id || undefined,
+            locale: 'en',
+            status: 'published' as const,
+            created_at: data.published_at || new Date().toISOString(),
+            updated_at: data.published_at || new Date().toISOString(),
+            deleted_at: undefined,
+            pages: undefined,
+            // Transform joined arrays to single objects
+            authors: Array.isArray((data as any).authors) && (data as any).authors.length > 0 ? (data as any).authors[0] : (data as any).authors,
+            property_types: Array.isArray((data as any).property_types) && (data as any).property_types.length > 0 ? (data as any).property_types[0] : (data as any).property_types,
+            categories: Array.isArray((data as any).categories) && (data as any).categories.length > 0 ? (data as any).categories[0] : (data as any).categories,
+            tags: []
           };
           setInsight(transformedData);
         }
       } catch (err) {
         console.error('Error fetching insight:', err);
-        setError('Failed to load insight');
+        setError(err instanceof Error ? err.message : 'Failed to fetch insight');
         setInsight(null);
       } finally {
         setLoading(false);

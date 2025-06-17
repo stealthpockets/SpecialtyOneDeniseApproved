@@ -29,8 +29,8 @@
 3. **About Page Timeline Inaccuracy** - Shows company history 1999-2024, but Specialty One started this year (needs complete rewrite)
 
 #### Priority 2 - UX Issues (High Priority)
-4. **Page Navigation Bug** - Pages don't scroll to top when navigating between different pages
-5. **Missing Favicons** - Need implementation across all media types for proper branding
+4. ✅ **Page Navigation Bug** - FIXED: Pages now scroll to top when navigating between different pages
+5. ✅ **Missing Favicons** - FIXED: Favicon implementation complete across all media types for proper branding
 6. **Fake Content Labeling** - Buyer network "Recent Off-Market Successes" and testimonials need clear "not real" labels
 
 #### Priority 3 - Content & Feature Gaps (Medium Priority)
@@ -215,3 +215,84 @@ This is a **production-ready React + TypeScript website** for Specialty One, a s
 - ✅ **Frontend-Backend Alignment** - Critical misalignments identified and fixed
 - ✅ **Type System Unification** - Single source of truth for content interfaces
 - ✅ **Premium Content Infrastructure** - UI components and data handling ready
+
+## New Focus: Charts and PDF Downloads Implementation Plan (June 16, 2025)
+
+### Objective
+Enhance the Insights and Market Reports content system by adding professional charts for visual impact and PDF downloads for tangible takeaways, ensuring no user friction and aligning with the project's 95% production-ready status. This plan is documented for future implementation by a developer, focusing on immediate value delivery with minimal complexity.
+
+### Implementation Plan
+#### Phase 1: Setup and Dependencies (15 minutes)
+1. **Install Chart.js**: Since Chart.js is not currently installed, add it via npm to ensure compatibility with the React + TypeScript setup.
+   - Command: `npm install chart.js`
+2. **Add Chart.js to index.html**: Include a script tag in `index.html` for Chart.js to ensure it's loaded globally, addressing potential SSR issues by using a CDN with async loading.
+   - Update: Add `<script src="https://cdn.jsdelivr.net/npm/chart.js" async></script>` to the `<head>` section.
+3. **TypeScript Declarations**: Create a type declaration file to handle `window.Chart` references safely, avoiding TypeScript errors.
+
+#### Phase 2: Database Schema Updates (10 minutes)
+1. **Chart Configurations Table**: Create a new table `chart_configs` in Supabase to store chart data and configurations.
+   - SQL: 
+     ```sql
+     CREATE TABLE chart_configs (
+       id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+       chart_name TEXT UNIQUE NOT NULL,
+       chart_data JSONB NOT NULL,
+       created_at TIMESTAMP DEFAULT NOW()
+     );
+     ```
+   - Insert sample data for initial testing.
+2. **PDF URL Column**: Add a `pdf_url` column to the `insights` table to store PDF download links.
+   - SQL: 
+     ```sql
+     ALTER TABLE insights ADD COLUMN pdf_url TEXT;
+     ```
+
+#### Phase 3: Component Development (30 minutes)
+1. **SimpleChart Component**:
+   - Create `src/components/ui/SimpleChart.tsx` to render charts using Chart.js.
+   - Use Supabase to fetch chart data directly, avoiding API endpoint issues.
+   - Implement error handling and loading states to address potential Chart.js loading delays.
+   - Ensure responsive design aligning with Tailwind CSS and brand colors.
+2. **PDFDownload Component**:
+   - Create `src/components/ui/PDFDownload.tsx` for a styled download button linking to the PDF URL.
+   - Use Cloudinary's "raw" resource type for PDF uploads, ensuring compatibility with the existing setup.
+   - Design with brand consistency (plum/amethyst colors) and accessibility in mind.
+
+#### Phase 4: Content Processing and Integration (25 minutes)
+1. **Chart Processing in Content**:
+   - Develop a utility function in `src/utils/contentProcessors.ts` to process chart placeholders in article content (e.g., `<!--CHART:chart-name-->`).
+   - Ensure compatibility with existing ReactMarkdown rendering by splitting content and preserving prose styling for non-chart sections, addressing the rendering conflict risk.
+2. **Update ArticleDetail.tsx**:
+   - Modify the rendering logic to use the chart processing utility when charts are present, falling back to ReactMarkdown for other content.
+   - Add the PDFDownload component below the article content, conditionally rendering based on the presence of a `pdf_url`.
+3. **Cloudinary PDF Upload**:
+   - Use the existing Cloudinary setup to upload PDFs as "raw" resources, ensuring they are accessible via secure URLs for download.
+
+#### Phase 5: Testing and Validation (10 minutes)
+1. **Regression Testing**: Verify that existing articles without charts or PDFs render correctly with the updated logic.
+2. **Chart Rendering**: Test chart display with sample data in an article, ensuring responsiveness and correct data visualization.
+3. **PDF Download**: Confirm PDF download functionality works across devices, using a sample PDF uploaded to Cloudinary.
+4. **Performance Check**: Assess page load impact from Chart.js and ensure no significant delays.
+
+### Risk Mitigation Strategies
+- **Content Rendering Conflict**: By splitting content around chart placeholders and applying ReactMarkdown to text sections, preserve existing styling and functionality.
+- **Chart.js Loading Issues**: Use async loading and retry logic in the SimpleChart component to handle delays, with TypeScript declarations to avoid errors.
+- **PDF Upload and Download**: Test Cloudinary "raw" resource uploads manually first to confirm configuration, ensuring secure and reliable access.
+- **Backward Compatibility**: Implement fallback rendering to ensure no disruption to existing content display.
+
+### Estimated Timeline
+- Total: **90 minutes**, broken down into the phases above for efficient execution.
+
+### Success Criteria
+- Charts render correctly within articles, enhancing visual credibility.
+- PDF downloads are accessible without user friction, providing immediate value.
+- Existing article styling and functionality remain unaffected.
+- Implementation aligns with Specialty One's brand and technical architecture (React, TypeScript, Supabase, Cloudinary).
+
+### Future Roadmap
+- **Phase 2**: Add analytics to track chart views and PDF downloads for engagement metrics.
+- **Phase 3**: Introduce optional email gating for premium content based on user behavior data.
+- **Phase 4**: Enhance charts with interactivity (e.g., tooltips, filters) for deeper insights.
+
+### Current Status of Task
+- **Planning Complete**: The implementation plan for charts and PDF downloads has been fully documented and is ready for a developer to execute. No implementation has started yet, as per user request.

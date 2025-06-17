@@ -1,0 +1,245 @@
+import React, { useState, useMemo } from 'react';
+import { ChevronUp, ChevronDown, Filter, Search } from 'lucide-react';
+import { Transaction, CLASSIFICATION_MAP } from '../types/Transaction';
+
+interface TransactionTableProps {
+  transactions: Transaction[];
+  onTransactionSelect?: (transaction: Transaction) => void;
+}
+
+type SortField = keyof Transaction;
+type SortDirection = 'asc' | 'desc';
+
+const TransactionTable: React.FC<TransactionTableProps> = ({ 
+  transactions, 
+  onTransactionSelect 
+}) => {
+  const [sortField, setSortField] = useState<SortField>('sale_price');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  const [filterClassification, setFilterClassification] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('desc');
+    }
+  };
+
+  const filteredAndSortedTransactions = useMemo(() => {
+    let filtered = transactions;
+
+    // Apply classification filter
+    if (filterClassification !== 'all') {
+      filtered = filtered.filter(t => t.classification === filterClassification);
+    }
+
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(t => 
+        t.property.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        t.address.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply sorting
+    return filtered.sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      
+      if (aValue === undefined && bValue === undefined) return 0;
+      if (aValue === undefined) return 1;
+      if (bValue === undefined) return -1;
+      
+      let comparison = 0;
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        comparison = aValue.localeCompare(bValue);
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      }
+      
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }, [transactions, sortField, sortDirection, filterClassification, searchTerm]);
+
+  const formatPrice = (price?: number) => {
+    if (!price) return '—';
+    return `$${(price / 1000000).toFixed(2)}M`;
+  };
+
+  const formatSize = (size?: number) => {
+    if (!size) return '—';
+    return size.toLocaleString();
+  };
+
+  const SortIcon: React.FC<{ field: SortField }> = ({ field }) => {
+    if (sortField !== field) return <ChevronUp className="w-4 h-4 text-gray-400" />;
+    return sortDirection === 'asc' ? 
+      <ChevronUp className="w-4 h-4 text-plum" /> : 
+      <ChevronDown className="w-4 h-4 text-plum" />;
+  };
+
+  return (
+    <div className="shadow-card slide-up" style={{ animationDelay: '0.6s' }}>
+      <div className="bg-gradient-to-r from-evergreen to-sage p-6 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-display font-bold mb-2">Transaction Details</h2>
+            <p className="text-sage-100 font-medium">
+              Showing {filteredAndSortedTransactions.length} of {transactions.length} completed transactions
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search properties..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-white/20 rounded-lg text-sm bg-white/10 backdrop-blur-sm text-white placeholder-white/70 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all duration-300"
+              />
+            </div>
+            
+            {/* Filter */}
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <select
+                value={filterClassification}
+                onChange={(e) => setFilterClassification(e.target.value)}
+                className="pl-10 pr-8 py-2 border border-white/20 rounded-lg text-sm bg-white/10 backdrop-blur-sm text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 appearance-none transition-all duration-300"
+              >
+                <option value="all" className="text-obsidian">All Types</option>
+                {Object.entries(CLASSIFICATION_MAP).map(([key, info]) => (
+                  <option key={key} value={key} className="text-obsidian">{info.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gradient-to-r from-sand to-cloud">
+            <tr>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('property')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Property</span>
+                  <SortIcon field="property" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('address')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Location</span>
+                  <SortIcon field="address" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('classification')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Type</span>
+                  <SortIcon field="classification" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('size_nrsf')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Size (NRSF)</span>
+                  <SortIcon field="size_nrsf" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('units')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Units</span>
+                  <SortIcon field="units" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('sale_price')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Sale Price</span>
+                  <SortIcon field="sale_price" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
+                onClick={() => handleSort('date_sold')}
+              >
+                <div className="flex items-center space-x-1">
+                  <span>Date Sold</span>
+                  <SortIcon field="date_sold" />
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-100">
+            {filteredAndSortedTransactions.map((transaction, index) => (
+              <tr 
+                key={index}
+                className="hover:bg-gradient-to-r hover:from-plum/5 hover:to-amethyst/5 transition-all duration-300 cursor-pointer group"
+                onClick={() => onTransactionSelect?.(transaction)}
+              >
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-semibold text-obsidian group-hover:text-plum transition-colors">
+                    {transaction.property}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-evergreen font-medium">{transaction.address}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${CLASSIFICATION_MAP[transaction.classification].bgColor} ${CLASSIFICATION_MAP[transaction.classification].color}`}>
+                    {CLASSIFICATION_MAP[transaction.classification].label}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
+                  {formatSize(transaction.size_nrsf)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
+                  {transaction.units ? transaction.units.toLocaleString() : '—'}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-bold text-plum">
+                    {formatPrice(transaction.sale_price)}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
+                  {transaction.date_sold ? new Date(transaction.date_sold).toLocaleDateString() : '—'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      
+      {filteredAndSortedTransactions.length === 0 && (
+        <div className="text-center py-16">
+          <div className="text-evergreen/60 text-lg font-medium">No transactions found matching your criteria.</div>
+          <p className="text-sm text-evergreen/40 mt-2">Try adjusting your search or filter settings.</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TransactionTable;

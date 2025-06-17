@@ -2,6 +2,8 @@ import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { usePropertyTypeTestimonials } from '../hooks/useTestimonials';
+import { useInsights } from '../hooks/useInsights';
+import { useMemo } from 'react';
 
 const specializations = [
   {
@@ -63,21 +65,6 @@ const caseStudies = [
   }
 ];
 
-const insights = [
-  {
-    title: "Climate-Controlled vs. Standard: What Drives the Premium?",
-    category: "Revenue Optimization"
-  },
-  {
-    title: "How to Underwrite Mail Center Revenue Without Overpricing",
-    category: "Due Diligence"
-  },
-  {
-    title: "The Expansion Red Flags That Kill Storage Deals",
-    category: "Development"
-  }
-];
-
 const marketTrends = [
   {
     icon: '📈',
@@ -103,6 +90,10 @@ const marketTrends = [
 
 const SelfStoragePage = () => {
   const { testimonials, loading: testimonialsLoading, error: testimonialsError } = usePropertyTypeTestimonials('Self-Storage');
+  
+  // Memoize the filters object to prevent unnecessary re-renders
+  const insightsFilters = useMemo(() => ({ propertyType: 3 }), []);
+  const { insights, loading: insightsLoading, error: insightsError } = useInsights(insightsFilters);
 
   return (
     <div className="flex flex-col min-h-screen bg-sand">
@@ -373,30 +364,36 @@ const SelfStoragePage = () => {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Actually Drives Storage NOI
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {insights.map((insight, index) => (
-              <Card 
-                key={index}
-                className="animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <CardContent className="p-6">
-                  <div className="text-sm text-plum font-medium mb-2">
-                    {insight.category}
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">
-                    {insight.title}
-                  </h3>
-                  <Button 
-                    to={`/insights/${insight.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="outline"
-                  >
-                    Read Article
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {insightsLoading ? (
+            <div className="text-center">Loading insights...</div>
+          ) : insightsError ? (
+            <div className="text-center text-red-600">Error loading insights: {insightsError}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {insights.slice(0, 3).map((insight, index) => (
+                <Card 
+                  key={insight.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <CardContent className="p-6">
+                    <div className="text-sm text-plum font-medium mb-2">
+                      {insight.categories?.name || 'Market Insights'}
+                    </div>
+                    <h3 className="text-xl font-bold mb-4 leading-relaxed">
+                      {insight.title}
+                    </h3>
+                    <Button 
+                      to={`/insights/${insight.slug}`}
+                      variant="outline"
+                    >
+                      Read Article
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
           <div className="text-center mt-8">
             <Button 
               to="/insights?filter=storage"

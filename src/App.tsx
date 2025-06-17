@@ -16,8 +16,10 @@ import ExclusiveBuyerNetworkPage from './pages/ExclusiveBuyerNetworkPage';
 import ExclusiveSellerNetworkPage from './pages/ExclusiveSellerNetworkPage';
 import CaseStudyDetailPage from './pages/CaseStudyDetailPage';
 import ArticleDetail from './pages/ArticleDetail';
+import ChartTest from './pages/ChartTest';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
+import TrackRecordPage from './pages/TrackRecordPage';
 
 function App() {
   return (
@@ -38,8 +40,8 @@ function App() {
           <Route path="/market-reports" element={<MarketReportsPage />} />
           <Route path="/market-reports/:slug" element={<ArticleDetail type="market_reports" />} />
           <Route path="/contact" element={<ContactPage />} />
-          <Route path="/exclusive-buyers" element={<ExclusiveBuyerNetworkPage />} />
-          <Route path="/exclusive-sellers" element={<ExclusiveSellerNetworkPage />} />
+          <Route path="/exclusive-buyers" element={<ExclusiveBuyerNetworkPage />} />          <Route path="/exclusive-sellers" element={<ExclusiveSellerNetworkPage />} />          <Route path="/chart-test" element={<ChartTest />} />
+          <Route path="/track-record" element={<TrackRecordPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/success/:slug" element={<CaseStudyDetailPage />} />

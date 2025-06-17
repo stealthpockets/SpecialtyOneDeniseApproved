@@ -1,7 +1,9 @@
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
-import { usePropertyTypeTestimonials } from '../hooks/useTestimonials';
+import { TestimonialsMH } from '../components/home/TestimonialsMH';
+import { useInsights } from '../hooks/useInsights';
+import { useMemo } from 'react';
 
 const stats = [
   {
@@ -42,23 +44,10 @@ const caseStudies = [
   }
 ];
 
-const insights = [
-  {
-    title: "The Surprising Month That Gets MH Sellers 8% More",
-    category: "Market Timing"
-  },
-  {
-    title: "How to Underwrite All-Tenant-Owned Communities",
-    category: "Due Diligence"
-  },
-  {
-    title: "Rent Control Watchlist: What's Coming in 2025",
-    category: "Legislative Alert"
-  }
-];
-
 const ManufacturedHousingPage = () => {
-  const { testimonials, loading: testimonialsLoading, error: testimonialsError } = usePropertyTypeTestimonials('Manufactured Housing');
+  // Memoize the filters object to prevent unnecessary re-renders
+  const insightsFilters = useMemo(() => ({ propertyTypeId: 1 }), []);
+  const { insights, loading: insightsLoading, error: insightsError } = useInsights(insightsFilters);
 
   return (
     <div className="flex flex-col min-h-screen bg-sand">
@@ -142,56 +131,7 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            What Sellers Say After the Wire Hits
-          </h2>
-          
-          {testimonialsLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {[1, 2, 3].map((index) => (
-                <div key={index} className="bg-cloud rounded-lg p-8 animate-fade-in">
-                  <div className="text-center text-gray-500">Loading testimonials...</div>
-                </div>
-              ))}
-            </div>
-          ) : testimonialsError ? (
-            <div className="text-center text-gray-600">
-              <p>Unable to load testimonials at this time.</p>
-            </div>
-          ) : testimonials.length === 0 ? (
-            <div className="text-center text-gray-600">
-              <p>No testimonials available for this property type.</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
-                <div 
-                  key={testimonial.id || index}
-                  className="bg-cloud rounded-lg p-8 animate-fade-in"
-                  style={{ animationDelay: `${0.2 * index}s` }}
-                >
-                  <div className="text-5xl text-plum opacity-20 mb-4">"</div>
-                  <blockquote className="text-lg font-medium mb-6">
-                    {testimonial.quote}
-                  </blockquote>
-                  <div>
-                    <p className="font-bold">
-                      {testimonial.author}
-                    </p>
-                    {testimonial.property && (
-                      <p className="text-gray-600">
-                        {testimonial.property}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      <TestimonialsMH />
 
       {/* Case Studies */}
       <section className="py-16 bg-cloud">
@@ -267,33 +207,39 @@ const ManufacturedHousingPage = () => {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             Insights That Actually Help You Operate—and Exit
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {insights.map((insight, index) => (
-              <Card 
-                key={index}
-                className="animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <CardContent className="p-6">
-                  <div className="text-sm text-plum font-medium mb-2">
-                    {insight.category}
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">
-                    {insight.title}
-                  </h3>
-                  <Button 
-                    to={`/insights/${insight.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="outline"
-                  >
-                    Read Article
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {insightsLoading ? (
+            <div className="text-center">Loading insights...</div>
+          ) : insightsError ? (
+            <div className="text-center text-red-600">Error loading insights: {insightsError}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {insights.slice(0, 3).map((insight, index) => (
+                <Card 
+                  key={insight.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <CardContent className="p-6">
+                    <div className="text-sm text-plum font-medium mb-2">
+                      {insight.categories?.name || 'Market Insights'}
+                    </div>
+                    <h3 className="text-xl font-bold mb-4 leading-relaxed">
+                      {insight.title}
+                    </h3>
+                    <Button 
+                      to={`/insights/${insight.slug}`}
+                      variant="outline"
+                    >
+                      Read Article
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
           <div className="text-center mt-8">
             <Button 
-              to="/insights?filter=MH"
+              to="/insights?propertyType=1"
               variant="primary"
               icon={<ArrowRight size={20} />}
               iconPosition="right"

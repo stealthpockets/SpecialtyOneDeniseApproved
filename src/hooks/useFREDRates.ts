@@ -1,8 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { MarketRatesData, MarketRate, FREDRateResponse, RateSeriesConfig, DisplayStrategy } from '../types/marketRates';
 
-const FRED_API_BASE = 'https://api.stlouisfed.org/fred/series/observations';
-const CACHE_KEY = 'specialty_one_market_rates';
+// const FRED_API_BASE = 'https://api.stlouisfed.org/fred/series/observations'; // Commented out or remove
+const SUPABASE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fred-proxy`;
+const CACHE_KEY = 'specialty_one_market_rates_v3';
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 // Enhanced CRE-focused rate series configuration
@@ -67,214 +68,159 @@ const fallbackRates = createFallbackRates();
 
 export const useFREDRates = (enabled: boolean = true) => {
   const [rates, setRates] = useState<MarketRatesData>(() => {
-    console.log('useFREDRates: Initializing with fallback rates', { ratesCount: Object.keys(fallbackRates.rates).length });
     return fallbackRates;
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchRateFromFRED = async (seriesId: string): Promise<{ value: string; change?: { direction: 'up' | 'down' | 'same'; percentage: number; previousValue?: string; displayText: string; } }> => {
-    const apiKey = import.meta.env.VITE_FRED_API_KEY;
-    if (!apiKey) {
-      throw new Error('FRED API key not configured');
-    }
-
-    // Fetch last 10 observations to get current and previous values
-    const url = `${FRED_API_BASE}?series_id=${seriesId}&api_key=${apiKey}&file_type=json&limit=10&sort_order=desc`;
+  // Updated to fetch all series data from the proxy in one go
+  const fetchAllRatesFromProxy = async (seriesConfigs: RateSeriesConfig[]): Promise<Record<string, { value: string; change?: { direction: 'up' | 'down' | 'same'; percentage: number; previousValue?: string; displayText: string; } }>> => {
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    if (!supabaseAnonKey) {
+      throw new Error('Supabase anon key not configured');
+    }    const seriesIds = seriesConfigs.map(s => s.id).join(',');
+    const url = `${SUPABASE_FUNCTION_URL}?series_id=${seriesIds}`;
     
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
     if (!response.ok) {
-      throw new Error(`Failed to fetch ${seriesId}: ${response.statusText}`);
-    }
-
-    const data: FREDRateResponse = await response.json();
+      throw new Error(`Failed to fetch rates from proxy: ${response.statusText}`);
+    }    const proxyData = await response.json();
     
-    if (!data.observations || data.observations.length === 0) {
-      throw new Error(`No data available for ${seriesId}`);
-    }
+    const processedRates: Record<string, { value: string; change?: { direction: 'up' | 'down' | 'same'; percentage: number; previousValue?: string; displayText: string; } }> = {};
 
-    // Filter out invalid values and get the two most recent valid observations
-    const validObservations = data.observations.filter(obs => obs.value !== '.');
-    
-    if (validObservations.length === 0) {
-      return { value: 'N/A' };
-    }
+    for (const seriesConfig of seriesConfigs) {
+      const seriesId = seriesConfig.id;
+      const seriesData = proxyData[seriesId];
 
-    const currentValue = parseFloat(validObservations[0].value);
-    const formattedValue = `${currentValue.toFixed(2)}%`;
-
-    // Calculate change if we have a previous value
-    if (validObservations.length > 1) {
-      const previousValue = parseFloat(validObservations[1].value);
-      const changeAmount = currentValue - previousValue;
-      const changePercentage = Math.abs(changeAmount);
-      
-      let direction: 'up' | 'down' | 'same' = 'same';
-      if (changeAmount > 0.01) direction = 'up';
-      else if (changeAmount < -0.01) direction = 'down';
-      
-      const displayText = changePercentage > 0.01 ? 
-        `${direction === 'up' ? '+' : ''}${changeAmount.toFixed(2)}%` : 
-        '—';
-
-      return {
-        value: formattedValue,
-        change: {
-          direction,
-          percentage: changePercentage,
-          previousValue: `${previousValue.toFixed(2)}%`,
-          displayText
+      if (seriesData && seriesData.observations && seriesData.observations.length > 0) {
+        // Filter out invalid observations (those with '.' values)
+        const validObservations = seriesData.observations.filter((obs: any) => obs.value !== '.');
+          if (validObservations.length === 0) {
+          processedRates[seriesId] = { value: 'N/A' };
+          continue;
         }
-      };
-    }
 
-    return { value: formattedValue };
-  };
+        // The proxy returns observations in descending order (most recent first)
+        const latestObservation = validObservations[0]; // Most recent
+        const previousObservation = validObservations.length > 1 ? validObservations[1] : null;
 
-  const fetchAllRates = async (): Promise<MarketRatesData> => {
-    try {
-      const now = new Date().toISOString();
-      const rates: Record<string, MarketRate> = {};
+        const currentValue = parseFloat(latestObservation.value);
+        let changeInfo: { direction: 'up' | 'down' | 'same'; percentage: number; previousValue?: string; displayText: string; } | undefined;
 
-      // Fetch all rate series in parallel
-      const ratePromises = CRE_RATE_SERIES.map(async (series) => {
-        try {
-          const rateData = await fetchRateFromFRED(series.id);
-          return {
-            seriesId: series.id,
-            data: rateData,
-            config: series
-          };
-        } catch (error) {
-          console.warn(`Failed to fetch ${series.id}:`, error);
-          // Return fallback data for this specific rate INCLUDING change data
-          const fallback = fallbackRates.rates[series.id];
-          return {
-            seriesId: series.id,
-            data: { 
-              value: fallback?.value || 'N/A',
-              change: fallback?.change  // 🔧 FIX: Include change data from fallback
-            },
-            config: series
-          };
+        if (previousObservation) {
+          const previousValue = parseFloat(previousObservation.value);
+          const diff = currentValue - previousValue;
+          
+          if (!isNaN(diff)) {
+            const direction = diff > 0 ? 'up' : diff < 0 ? 'down' : 'same';
+            const percentageChange = Math.abs(diff);
+            const displayText = `${diff >= 0 ? '+' : ''}${diff.toFixed(2)}%`;
+            
+            changeInfo = {
+              direction,
+              percentage: percentageChange,
+              previousValue: previousValue.toFixed(2) + '%',
+              displayText
+            };          } else {
+            changeInfo = undefined;
+          }
         }
-      });
-
-      const results = await Promise.all(ratePromises);
-
-      // Process results into rates object
-      results.forEach(({ seriesId, data, config }) => {
-        rates[seriesId] = {
-          id: seriesId,
-          label: config.label,
-          shortLabel: config.shortLabel,
-          value: data.value,
-          change: data.change,
-          lastUpdated: now,
-          priority: config.priority,
-          category: config.category
+          processedRates[seriesId] = { 
+          value: currentValue.toFixed(2) + '%', 
+          change: changeInfo 
         };
-      });
-
-      return {
-        rates,
-        lastFetched: now
-      };
-    } catch (error) {
-      console.warn('Failed to fetch FRED rates, using fallback data:', error);
-      return fallbackRates;
-    }
-  };
-
-  const loadCachedRates = (): MarketRatesData | null => {
-    try {
-      const cached = localStorage.getItem(CACHE_KEY);
-      if (!cached) {
-        console.log('useFREDRates: No cache found in localStorage');
-        return null;
+      } else {
+        processedRates[seriesId] = { value: 'N/A' };
       }
-
-      const data = JSON.parse(cached);
-      
-      // Validate cache structure
-      if (!data || !data.rates || !data.lastFetched) {
-        console.log('useFREDRates: Invalid cache structure, clearing cache');
-        localStorage.removeItem(CACHE_KEY);
-        return null;
-      }
-
-      const cacheAge = Date.now() - new Date(data.lastFetched).getTime();
-      
-      if (cacheAge > CACHE_DURATION) {
-        console.log('useFREDRates: Cache expired, removing');
-        localStorage.removeItem(CACHE_KEY);
-        return null;
-      }
-
-      console.log('useFREDRates: Valid cache found', {
-        age: Math.round(cacheAge / 1000 / 60), // minutes
-        ratesCount: Object.keys(data.rates).length
-      });
-
-      return data;
-    } catch (error) {
-      console.warn('useFREDRates: Error loading cached rates:', error);
-      localStorage.removeItem(CACHE_KEY);
-      return null;
     }
-  };
-
-  const cacheRates = (data: MarketRatesData) => {
-    try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-    } catch (error) {
-      console.warn('Error caching rates:', error);
-    }
+    
+    return processedRates;
   };
 
   useEffect(() => {
     if (!enabled) {
-      console.log('useFREDRates: Hook disabled, not fetching rates');
+
+      setRates(fallbackRates); // Reset to fallback if disabled
       return;
     }
 
-    const loadRates = async () => {
-      console.log('useFREDRates: Starting to load rates...');
+    const fetchRates = async () => {
       setLoading(true);
       setError(null);
 
-      // Try to load from cache first
-      console.log('useFREDRates: Checking cache...');
-      const cachedRates = loadCachedRates();
-      if (cachedRates && cachedRates.rates) {
-        console.log('useFREDRates: Found cached rates', { 
-          ratesCount: Object.keys(cachedRates.rates).length 
-        });
-        setRates(cachedRates);
-        setLoading(false);
-        return;
-      }
 
-      console.log('useFREDRates: No cache found, fetching fresh data...');
-      // Fetch fresh data
       try {
-        const freshRates = await fetchAllRates();
-        console.log('useFREDRates: Fresh rates fetched', { ratesCount: Object.keys(freshRates.rates).length });
-        setRates(freshRates);
-        cacheRates(freshRates);
-      } catch (err) {
-        console.error('useFREDRates: Error fetching rates', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch market rates');
-        console.log('useFREDRates: Using fallback rates', { ratesCount: Object.keys(fallbackRates.rates).length });
-        setRates(fallbackRates);
+        // Check cache first
+        const cachedData = localStorage.getItem(CACHE_KEY);
+        if (cachedData) {
+          const parsedCache: MarketRatesData = JSON.parse(cachedData);
+          if (new Date().getTime() - new Date(parsedCache.lastFetched).getTime() < CACHE_DURATION) {
+
+            setRates(parsedCache);
+            setLoading(false);
+            return;
+          }
+
+        }
+
+        // Fetch all rates from the proxy
+        const fetchedRateDetails = await fetchAllRatesFromProxy(CRE_RATE_SERIES);
+        
+        const newMarketRates: Record<string, MarketRate> = {};
+        const now = new Date().toISOString();
+
+        CRE_RATE_SERIES.forEach(series => {
+          const detail = fetchedRateDetails[series.id];
+          if (detail) {
+            newMarketRates[series.id] = {
+              id: series.id,
+              label: series.label,
+              shortLabel: series.shortLabel,
+              value: detail.value,
+              change: detail.change,
+              lastUpdated: now, // All rates updated at the same time from proxy
+              priority: series.priority,
+              category: series.category,
+            };
+          } else {
+            // Use fallback for this specific rate if proxy didn't return it
+            console.warn(`Using fallback for ${series.id} as it was not in proxy response`);
+            const fallbackRate = fallbackRates.rates[series.id];
+            if (fallbackRate) {
+                newMarketRates[series.id] = { ...fallbackRate, lastUpdated: now };
+            }
+          }
+        });
+        
+        const newRatesData: MarketRatesData = {
+          rates: newMarketRates,
+          lastFetched: now,
+        };
+
+
+
+        setRates(newRatesData);
+        localStorage.setItem(CACHE_KEY, JSON.stringify(newRatesData));
+
+      } catch (err: any) {
+        console.error('useFREDRates: Error fetching rates:', err);
+        setError(err.message || 'Failed to fetch market rates');
+        // Fallback to existing (potentially cached or initial) rates on error
+        // Or explicitly set to fallbackRates if preferred:
+        // setRates(fallbackRates); 
+        // console.log('useFREDRates: Using fallback rates due to error');
       } finally {
         setLoading(false);
-        console.log('useFREDRates: Loading complete');
       }
     };
 
-    loadRates();
-  }, [enabled]);
+    fetchRates();
+  }, [enabled]); // Re-fetch if 'enabled' changes
 
   // Helper function to get display strategy based on screen width
   const getDisplayStrategy = useMemo(() => {
@@ -314,11 +260,44 @@ export const useFREDRates = (enabled: boolean = true) => {
     };
   }, [getDisplayStrategy]);
 
-  return { 
-    rates, 
-    loading, 
-    error, 
-    getDisplayedRates,
-    getDisplayStrategy 
-  };
+  const sortedRates = useMemo(() => {
+    const sr = Object.values(rates.rates).sort((a, b) => a.priority - b.priority);
+
+    return sr;
+  }, [rates]);
+  const getDisplayRates = useCallback((strategy: DisplayStrategy, screenWidth: number, showMore: boolean): MarketRate[] => {
+
+    let displayableRates: MarketRate[];
+
+    switch (strategy) {
+      case 'fixed':
+        displayableRates = sortedRates.slice(0, 4); // Always show top 4 (core)
+        break;
+      case 'responsive':
+        if (screenWidth >= 1400) {
+          displayableRates = sortedRates.filter(r => r.category === 'core' || r.category === 'extended');
+        } else {
+          displayableRates = sortedRates.filter(r => r.category === 'core');
+        }
+        break;
+      default: // 'core'
+        displayableRates = sortedRates.filter(r => r.category === 'core');
+    }
+    
+    if (showMore) {
+        const additionalRates = sortedRates.filter(r => r.category === 'additional');
+        // Add additional rates, ensuring no duplicates if they somehow overlapped
+        additionalRates.forEach(ar => {
+            if (!displayableRates.find(dr => dr.id === ar.id)) {
+                displayableRates.push(ar);
+            }        });
+        // Re-sort to ensure priority is maintained after adding additional rates
+        displayableRates.sort((a, b) => a.priority - b.priority);
+    }
+    
+
+    return displayableRates;
+  }, [sortedRates]);
+
+  return { rates: sortedRates, loading, error, getDisplayRates };
 };

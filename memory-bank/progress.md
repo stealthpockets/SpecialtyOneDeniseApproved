@@ -108,6 +108,20 @@
 - **Performance Audit**: Page load speed optimization
 - **Security Review**: Form validation and XSS protection
 
+### New Task: Charts and PDF Downloads for Insights and Market Reports (Planned)
+- **Objective**: Enhance content value by adding professional charts for visual impact and PDF downloads for tangible takeaways, without user friction like email gating.
+- **Status**: Planning complete, implementation pending. Detailed plan documented in `activeContext.md` for developer execution.
+- **Implementation Summary**:
+  - **Setup**: Install Chart.js, update `index.html` with CDN script, add TypeScript declarations (15 min).
+  - **Database**: Create `chart_configs` table in Supabase, add `pdf_url` column to `insights` table (10 min).
+  - **Components**: Develop `SimpleChart.tsx` for chart rendering and `PDFDownload.tsx` for download links (30 min).
+  - **Integration**: Create utility for chart placeholders in content, update `ArticleDetail.tsx` for rendering charts and PDFs, configure Cloudinary for PDF uploads (25 min).
+  - **Testing**: Validate existing content, test chart display and PDF downloads, check performance (10 min).
+- **Total Estimated Time**: 90 minutes.
+- **Risk Mitigation**: Address content rendering conflicts with fallback logic, handle Chart.js loading issues with async retries, test Cloudinary PDF uploads, ensure backward compatibility.
+- **Success Criteria**: Charts render correctly, PDFs download seamlessly, existing content unaffected, alignment with brand and architecture.
+- **Future Roadmap**: Analytics for engagement, optional email gating, interactive chart features.
+
 ## Scheduled Publishing (Supabase cron.job)
 
 - The following feature is **not yet enabled** due to lack of superuser privileges on Supabase Cloud:
@@ -142,6 +156,7 @@ The website has excellent design and structure with comprehensive functionality.
 2. **Button readability fixes** - Essential for conversion optimization  
 3. **About page timeline correction** - Important for credibility
 4. **Scroll-to-top implementation** - Improves user experience
+5. **Charts and PDF Downloads Planning** - Document implementation plan for enhancing content value (completed, ready for developer execution)
 
 ### Technical Debt
 - **Case Study Modals**: Still use hardcoded data instead of Supabase queries

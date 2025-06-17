@@ -71,11 +71,11 @@ export const Header = () => {
     { name: 'RV Parks', path: '/rv-parks' },
     { name: 'Self-Storage', path: '/self-storage' }
   ];
-  
-  const resources = [
+    const resources = [
     { name: 'Insights', path: '/insights' },
     { name: 'Market Reports', path: '/market-reports' },
-    { name: 'Success Stories', path: '/success-stories' }
+    { name: 'Success Stories', path: '/success-stories' },
+    { name: 'Track Record', path: '/track-record' }
   ];
   
   return (
@@ -88,9 +88,7 @@ export const Header = () => {
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center">
             <Logo className="h-10 w-auto" />
-          </Link>
-          
-          {/* Desktop Navigation */}
+          </Link>          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             <DropdownLink title="Property Types" items={propertyTypes} />
             <NavLink to="/advantage">The Advantage</NavLink>
@@ -145,9 +143,7 @@ export const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               The Advantage
-            </Link>
-
-            <Link
+            </Link>            <Link
               to="/1031-exchange"
               className="block py-2 border-b border-gray-100 text-sm lg:text-base"
               onClick={() => setIsMenuOpen(false)}

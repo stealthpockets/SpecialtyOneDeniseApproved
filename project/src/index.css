@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F0EAE0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+  }
+}
+
+@layer components {
+  .button-gradient {
+    @apply bg-gradient-to-r from-plum to-amethyst text-white font-semibold px-6 py-3 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300;
+  }
+  
+  .button-secondary {
+    @apply border-2 border-plum text-plum font-semibold px-6 py-3 rounded-lg hover:bg-plum hover:text-white transition-all duration-300;
+  }
+  
+  .shadow-card {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100;
+  }
+  
+  .shadow-card-hover {
+    @apply shadow-card hover:shadow-lg transition-shadow duration-300;
+  }
+  
+  .text-gradient {
+    @apply bg-gradient-to-r from-plum to-amethyst bg-clip-text text-transparent;
+  }
+  
+  .bg-brand-gradient {
+    @apply bg-gradient-to-br from-plum via-amethyst to-evergreen;
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+  }
+  
+  .slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8a0067;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #500f61;
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg shadow-lg border border-gray-200;
+}
+
+.leaflet-popup-content {
+  @apply text-sm;
+}
+
+.custom-marker {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}

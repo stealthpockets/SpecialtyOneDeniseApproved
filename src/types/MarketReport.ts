@@ -43,9 +43,9 @@ export interface BaseContent {
   deleted_at?: string;
   is_premium: boolean;
   views: number;
-  downloads: number;
-  reading_time?: number;
+  downloads: number;  reading_time?: number;
   image_url?: string;
+  pdf_url?: string;
   pages?: number; // For reports that have page counts
   
   // Joined data from relationships (nullable because joins may not return data)

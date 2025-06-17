@@ -5,7 +5,10 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Helmet } from 'react-helmet';
 import { TwitterShareButton, LinkedinShareButton } from 'react-share';
-import { ArrowLeft, Share, Calendar, Clock, User, ChevronRight, ArrowUp } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, User, ChevronRight, ArrowUp } from 'lucide-react';
+import { useCharts } from '../hooks/useCharts';
+import { SimpleChartProcessor } from '../lib/simpleChartProcessor';
+import PDFDownload from '../components/PDFDownload';
 import '../styles/markdown-content.css';
 
 interface ArticleDetailProps {
@@ -20,6 +23,7 @@ interface Article {
   summary: string;
   published_at: string;
   image_url?: string;
+  pdf_url?: string;
   reading_time?: number;
   authors: {
     name: string;
@@ -45,6 +49,17 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  
+  // Chart integration
+  const { charts, loading: chartsLoading } = useCharts();
+  const [chartProcessor, setChartProcessor] = useState<SimpleChartProcessor | null>(null);
+
+  // Initialize chart processor when charts are loaded
+  useEffect(() => {
+    if (!chartsLoading && charts.length > 0) {
+      setChartProcessor(new SimpleChartProcessor(charts));
+    }
+  }, [charts, chartsLoading]);
 
   // Handle scroll to show/hide back to top button
   useEffect(() => {
@@ -69,8 +84,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
     const fetchArticle = async () => {
       if (!slug) return;
 
-      try {
-        const { data, error } = await supabase
+      try {        const { data, error } = await supabase
           .from(type)
           .select(`
             id,
@@ -80,25 +94,33 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
             summary,
             published_at,
             image_url,
+            ${type === 'insights' ? 'pdf_url,' : ''}
             reading_time,
-            authors (
-              name,
-              avatar_url
-            )
+            author_id
           `)
           .eq('slug', slug)
           .eq('status', 'published')
-          .single();
-
-        if (error) {
+          .single();if (error) {
           setError('Article not found');
           return;
         }
 
-        // Transform authors array to single object (Supabase joins return arrays even for single relationships)
-        const transformedData = {
+        // Fetch author separately if author_id exists
+        let authors = null;
+        if (data.author_id) {
+          const { data: authorData } = await supabase
+            .from('authors')
+            .select('name, avatar_url')
+            .eq('id', data.author_id)
+            .single();
+          
+          if (authorData) {
+            authors = { name: authorData.name, avatar_url: authorData.avatar_url };
+          }
+        }        const transformedData: Article = {
           ...data,
-          authors: Array.isArray(data.authors) && data.authors.length > 0 ? data.authors[0] : data.authors
+          pdf_url: data.pdf_url || undefined, // Handle optional pdf_url
+          authors
         };
 
         setArticle(transformedData);
@@ -200,17 +222,16 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
     return (
       <div className="min-h-screen bg-sand flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
-          <Link to={`/${type}`} className="text-plum hover:underline">
+          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>          <Link to={`/${typeUrl}`} className="text-plum hover:underline">
             Back to {type === 'insights' ? 'Insights' : 'Market Reports'}
           </Link>
         </div>
       </div>
     );
   }
-
   const shareUrl = window.location.href;
   const pageTitle = type === 'insights' ? 'Insights' : 'Market Reports';
+  const typeUrl = type === 'insights' ? 'insights' : 'market-reports';
   
   // Default fallback image
   const defaultImage = '/assets/property-types/manufactured-housing-community-investment.webp';
@@ -232,13 +253,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
       <div className="min-h-screen bg-sand">
         {/* Professional Breadcrumb Navigation */}
         <nav className="bg-navy border-b border-gray-700">
-          <div className="container-custom py-4">
-            <div className="flex items-center text-sm text-gray-300">
+          <div className="container-custom px-4 sm:px-6 lg:px-8 py-3 md:py-4">            <div className="flex items-center text-xs sm:text-sm text-gray-300">
               <Link to="/" className="hover:text-sage transition-colors">
                 Home
               </Link>
               <ChevronRight size={16} className="mx-2 text-gray-500" />
-              <Link to={`/${type}`} className="hover:text-sage transition-colors">
+              <Link to={`/${typeUrl}`} className="hover:text-sage transition-colors">
                 {pageTitle}
               </Link>
               <ChevronRight size={16} className="mx-2 text-gray-500" />
@@ -249,61 +269,64 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
             
             {/* Integrated Back Navigation */}
             <Link 
-              to={`/${type}`}
-              className="inline-flex items-center gap-2 mt-3 text-sage hover:text-white transition-colors font-medium"
+              to={`/${typeUrl}`}
+              className="inline-flex items-center gap-2 mt-2 md:mt-3 text-sage hover:text-white transition-colors font-medium text-sm md:text-base"
             >
-              <ArrowLeft size={18} />
+              <ArrowLeft size={16} className="md:hidden" />
+              <ArrowLeft size={18} className="hidden md:block" />
               Back to {pageTitle}
             </Link>
           </div>
         </nav>
 
         {/* Main Content Grid */}
-        <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8 pb-16">
+        <div className="container-custom px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 py-4 md:py-8 lg:py-16">
             
             {/* Article Content - Main Column */}
-            <article className="lg:col-span-8 xl:col-span-9">
+            <article className="lg:col-span-8 xl:col-span-9 order-first">
               {/* Article Header */}
-              <header className="mb-12">
-                {/* Article Title */}
-                <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold mb-8 text-gray-900 leading-tight">
+              <header className="mb-6 md:mb-8 lg:mb-12">                {/* Article Title */}
+                <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900" style={{ lineHeight: '1.4' }}>
                   {article.title}
                 </h1>
                 
                 {/* Article Summary */}
-                <div className="text-xl text-gray-700 mb-8 leading-relaxed max-w-3xl">
+                <div className="text-base md:text-lg lg:text-xl text-gray-700 mb-6 md:mb-8 leading-relaxed max-w-3xl">
                   {article.summary}
                 </div>
                 
                 {/* Article Meta */}
-                <div className="flex flex-wrap items-center gap-6 text-gray-600 mb-8 pb-8 border-b border-gray-200">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-sm md:text-base text-gray-600 mb-6 md:mb-8 pb-4 md:pb-6 lg:pb-8 border-b border-gray-200">
                   <div className="flex items-center gap-2">
-                    <User size={18} className="text-plum" />
+                    <User size={16} className="sm:hidden text-plum" />
+                    <User size={18} className="hidden sm:block text-plum" />
                     <span className="font-medium">{article.authors?.name || 'Specialty One Team'}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Calendar size={18} className="text-plum" />
+                    <Calendar size={16} className="sm:hidden text-plum" />
+                    <Calendar size={18} className="hidden sm:block text-plum" />
                     <span>{new Date(article.published_at).toLocaleDateString('en-US', { 
                       year: 'numeric', 
-                      month: 'long', 
+                      month: window.innerWidth < 640 ? 'short' : 'long', 
                       day: 'numeric' 
                     })}</span>
                   </div>
                   {article.reading_time && (
                     <div className="flex items-center gap-2">
-                      <Clock size={18} className="text-plum" />
-                      <span>{article.reading_time} minute read</span>
+                      <Clock size={16} className="sm:hidden text-plum" />
+                      <Clock size={18} className="hidden sm:block text-plum" />
+                      <span>{article.reading_time} min read</span>
                     </div>
                   )}
                 </div>
 
                 {/* Featured Image */}
-                <div className="relative mb-12">
+                <div className="relative mb-6 md:mb-8 lg:mb-12">
                   <img
                     src={articleImage}
                     alt={article.title}
-                    className="w-full h-96 md:h-[480px] object-cover rounded-xl shadow-lg"
+                    className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover rounded-lg md:rounded-xl shadow-lg"
                     loading="lazy"
                     onError={(e) => {
                       const target = e.target as HTMLImageElement;
@@ -313,36 +336,105 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     }}
                   />
                 </div>
-              </header>
+              </header>              {/* Professional Article Content with Enhanced Styling and Chart Integration */}
+              <div className="markdown-content mb-8 md:mb-12 lg:mb-16">
+                {chartProcessor ? (
+                  (() => {
+                    const result = chartProcessor.processContent(article.content.replace(/\\n/g, '\n'));
+                    
+                    if (!result.hasCharts) {
+                      // No charts, use regular ReactMarkdown
+                      return (
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            table: ({ children, ...props }) => (
+                              <div className="table-wrapper">
+                                <table {...props}>{children}</table>
+                              </div>
+                            ),
+                          }}
+                        >
+                          {article.content.replace(/\\n/g, '\n')}
+                        </ReactMarkdown>
+                      );
+                    }
 
-              {/* Professional Article Content with Enhanced Styling */}
-              <div className="markdown-content mb-16">
-                <ReactMarkdown 
-                  remarkPlugins={[remarkGfm]}
-                >
-                  {article.content.replace(/\\n/g, '\n')}
-                </ReactMarkdown>
+                    // Process content with charts
+                    const segments = chartProcessor.splitContentWithCharts(result.content, result.chartComponents);
+                    
+                    return (
+                      <>
+                        {segments.map((segment: any) => {
+                          if (segment.type === 'chart') {
+                            return <div key={segment.key}>{segment.component}</div>;
+                          } else {
+                            return (
+                              <ReactMarkdown 
+                                key={segment.key}
+                                remarkPlugins={[remarkGfm]}
+                                components={{
+                                  table: ({ children, ...props }) => (
+                                    <div className="table-wrapper">
+                                      <table {...props}>{children}</table>
+                                    </div>
+                                  ),
+                                }}
+                              >
+                                {segment.content}
+                              </ReactMarkdown>
+                            );
+                          }
+                        })}
+                      </>
+                    );
+                  })()
+                ) : (
+                  // Fallback while charts are loading
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      table: ({ children, ...props }) => (
+                        <div className="table-wrapper">
+                          <table {...props}>{children}</table>
+                        </div>
+                      ),
+                    }}
+                  >
+                    {article.content.replace(/\\n/g, '\n')}
+                  </ReactMarkdown>
+                )}
               </div>
 
+              {/* PDF Download Section */}
+              {article.pdf_url && (
+                <PDFDownload
+                  pdfUrl={article.pdf_url}
+                  title={`Download ${article.title} - Full Report`}
+                  description="Get the complete analysis in PDF format for offline reading and sharing."
+                  className="mb-8 md:mb-12 lg:mb-16"
+                />
+              )}
+
               {/* Professional CTA Section */}
-              <div className="bg-gradient-to-br from-plum/5 to-amethyst/5 rounded-2xl p-8 md:p-10 mb-16 border border-plum/10">
+              <div className="bg-gradient-to-br from-plum/5 to-amethyst/5 rounded-xl md:rounded-2xl p-6 md:p-8 lg:p-10 mb-8 md:mb-12 lg:mb-16 border border-plum/10">
                 <div className="text-center max-w-2xl mx-auto">
-                  <h3 className="font-display text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+                  <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">
                     Ready to Explore Investment Opportunities?
                   </h3>
-                  <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+                  <p className="text-base md:text-lg text-gray-700 mb-6 md:mb-8 leading-relaxed">
                     Get expert insights and access to our exclusive network of pre-market opportunities in manufactured housing, RV parks, and self-storage.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
                     <Link 
                       to="/contact" 
-                      className="px-8 py-4 bg-gradient-to-r from-plum to-amethyst text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+                      className="px-6 sm:px-8 py-3 md:py-4 min-h-[44px] bg-gradient-to-r from-plum to-amethyst text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-center flex items-center justify-center"
                     >
                       Schedule Consultation
                     </Link>
                     <Link 
                       to="/exclusive-buyer-network" 
-                      className="px-8 py-4 border-2 border-plum text-plum font-semibold rounded-lg hover:bg-plum hover:text-white transition-all duration-300"
+                      className="px-6 sm:px-8 py-3 md:py-4 min-h-[44px] border-2 border-plum text-plum font-semibold rounded-lg hover:bg-plum hover:text-white transition-all duration-300 text-center flex items-center justify-center"
                     >
                       Join Buyer Network
                     </Link>
@@ -351,20 +443,19 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
               </div>
 
               {/* Social Sharing */}
-              <div className="border-t border-gray-200 pt-8 mb-12">
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-                  <div>
-                    <h3 className="font-display text-xl font-bold text-gray-900 mb-4">Share this article</h3>
-                    <div className="flex gap-4">
-                      <TwitterShareButton url={shareUrl} title={article.title}>
-                        <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium">
+              <div className="border-t border-gray-200 pt-6 md:pt-8 mb-8 md:mb-12">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+                  <div className="w-full md:w-auto">
+                    <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">Share this article</h3>
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4">                      <TwitterShareButton url={shareUrl} title={article.title}>
+                        <div className="px-4 sm:px-6 py-3 min-h-[44px] border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium text-sm md:text-base w-full sm:w-auto text-center cursor-pointer">
                           Share on Twitter
-                        </button>
+                        </div>
                       </TwitterShareButton>
                       <LinkedinShareButton url={shareUrl} title={article.title}>
-                        <button className="px-6 py-3 border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium">
+                        <div className="px-4 sm:px-6 py-3 min-h-[44px] border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium text-sm md:text-base w-full sm:w-auto text-center cursor-pointer">
                           Share on LinkedIn
-                        </button>
+                        </div>
                       </LinkedinShareButton>
                     </div>
                   </div>
@@ -373,23 +464,22 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
             </article>
 
             {/* Sidebar - Secondary Column */}
-            <aside className="lg:col-span-4 xl:col-span-3">
-              <div className="sticky top-32 space-y-8">
+            <aside className="lg:col-span-4 xl:col-span-3 order-last lg:order-none">
+              <div className="lg:sticky lg:top-[5.5rem] space-y-4 md:space-y-6 lg:space-y-8">
                 
                 {/* Quick Navigation */}
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                  <h3 className="font-display text-lg font-bold text-gray-900 mb-4">Quick Navigation</h3>
-                  <div className="space-y-3">
-                    <Link 
-                      to={`/${type}`}
-                      className="flex items-center gap-2 text-gray-600 hover:text-plum transition-colors"
+                <div className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-sm border border-gray-200">
+                  <h3 className="font-display text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4">Quick Navigation</h3>
+                  <div className="space-y-2 md:space-y-3">                    <Link 
+                      to={`/${typeUrl}`}
+                      className="flex items-center gap-2 text-gray-600 hover:text-plum transition-colors text-sm md:text-base min-h-[44px] md:min-h-auto py-2 md:py-0"
                     >
                       <ArrowLeft size={16} />
                       Back to {pageTitle}
                     </Link>
                     <button 
                       onClick={scrollToTop}
-                      className="flex items-center gap-2 text-gray-600 hover:text-plum transition-colors w-full text-left"
+                      className="flex items-center gap-2 text-gray-600 hover:text-plum transition-colors w-full text-left text-sm md:text-base min-h-[44px] md:min-h-auto py-2 md:py-0"
                     >
                       <ArrowUp size={16} />
                       Back to Top
@@ -398,9 +488,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                 </div>
 
                 {/* Article Info */}
-                <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                  <h3 className="font-display text-lg font-bold text-gray-900 mb-4">Article Details</h3>
-                  <div className="space-y-3 text-sm">
+                <div className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-sm border border-gray-200">
+                  <h3 className="font-display text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4">Article Details</h3>
+                  <div className="space-y-2 md:space-y-3 text-xs md:text-sm">
                     <div className="flex justify-between">
                       <span className="text-gray-600">Published:</span>
                       <span className="font-medium text-gray-900">
@@ -423,14 +513,13 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                 </div>
 
                 {/* Contact CTA */}
-                <div className="bg-gradient-to-br from-plum to-amethyst rounded-xl p-6 text-white">
-                  <h3 className="font-display text-lg font-bold mb-3">Need Expert Guidance?</h3>
-                  <p className="text-plum-100 mb-4 text-sm leading-relaxed">
+                <div className="bg-gradient-to-br from-plum to-amethyst rounded-lg md:rounded-xl p-4 md:p-6 text-white">
+                  <h3 className="font-display text-base md:text-lg font-bold mb-2 md:mb-3">Need Expert Guidance?</h3>
+                  <p className="text-plum-100 mb-3 md:mb-4 text-xs md:text-sm leading-relaxed">
                     Get personalized insights for your specific investment goals.
-                  </p>
-                  <Link 
+                  </p>                  <Link 
                     to="/contact"
-                    className="block w-full text-center py-3 bg-white text-plum font-semibold rounded-lg hover:bg-gray-50 transition-colors"
+                    className="w-full text-center py-3 min-h-[44px] bg-white text-plum font-semibold rounded-lg hover:bg-gray-50 transition-colors text-sm md:text-base flex items-center justify-center"
                   >
                     Contact Us
                   </Link>
@@ -441,20 +530,19 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
 
           {/* Related Articles */}
           {relatedArticles.length > 0 && (
-            <section className="border-t border-gray-200 pt-16 pb-16">
+            <section className="border-t border-gray-200 pt-8 md:pt-12 lg:pt-16 pb-8 md:pb-12 lg:pb-16">
               <div className="max-w-6xl mx-auto">
-                <h2 className="font-display text-3xl font-bold text-gray-900 mb-12 text-center">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-gray-900 mb-6 md:mb-8 lg:mb-12 text-center">
                   Related Articles
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {relatedArticles.map((related) => (
-                    <Link 
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                  {relatedArticles.map((related) => (                    <Link 
                       key={related.id} 
-                      to={`/${type}/${related.slug}`}
+                      to={`/${typeUrl}/${related.slug}`}
                       className="block group"
                     >
-                      <article className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 group-hover:border-plum/20">
-                        <div className="relative h-48 overflow-hidden">
+                      <article className="bg-white rounded-lg md:rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 group-hover:border-plum/20">
+                        <div className="relative h-40 sm:h-48 overflow-hidden">
                           <img
                             src={related.image_url || defaultImage}
                             alt={related.title}
@@ -468,18 +556,18 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                             }}
                           />
                         </div>
-                        <div className="p-6">
-                          <h3 className="font-display text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-plum transition-colors">
+                        <div className="p-4 md:p-6">
+                          <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-2 md:mb-3 line-clamp-2 group-hover:text-plum transition-colors">
                             {related.title}
                           </h3>
-                          <p className="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                          <p className="text-gray-600 mb-3 md:mb-4 line-clamp-3 leading-relaxed text-sm md:text-base">
                             {related.summary}
                           </p>
                           <div className="flex items-center justify-between">
-                            <p className="text-sm text-plum font-semibold">
+                            <p className="text-xs md:text-sm text-plum font-semibold">
                               {related.authors?.name || 'Specialty One Team'}
                             </p>
-                            <span className="text-plum font-medium text-sm group-hover:underline">
+                            <span className="text-plum font-medium text-xs md:text-sm group-hover:underline">
                               Read Article →
                             </span>
                           </div>
@@ -497,10 +585,11 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
         {showScrollTop && (
           <button
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 z-50 p-3 bg-plum text-white rounded-full shadow-lg hover:bg-amethyst transition-all duration-300 hover:scale-110"
+            className="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 p-3 md:p-4 bg-plum text-white rounded-full shadow-lg hover:bg-amethyst transition-all duration-300 hover:scale-110 min-w-[44px] min-h-[44px] flex items-center justify-center"
             aria-label="Back to top"
           >
-            <ArrowUp size={20} />
+            <ArrowUp size={18} className="md:hidden" />
+            <ArrowUp size={20} className="hidden md:block" />
           </button>
         )}
       </div>

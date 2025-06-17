@@ -32,19 +32,12 @@ const staggerTestimonialsByPerson = (testimonials: CarouselTestimonialData[]): C
   const maxTestimonials = Math.max(...Array.from(groupedByPerson.values()).map(group => group.length));
   
   for (let round = 0; round < maxTestimonials; round++) {
-    for (const [person, personTestimonials] of groupedByPerson) {
+    for (const [, personTestimonials] of groupedByPerson) {
       if (personTestimonials[round]) {
         staggered.push(personTestimonials[round]);
       }
     }
-  }
-  
-  console.log('Testimonials staggered by person:', {
-    original: testimonials.map(t => t.author),
-    staggered: staggered.map(t => t.author),
-    uniquePersons: groupedByPerson.size
-  });
-  
+  }  
   return staggered;
 };
 
@@ -59,17 +52,11 @@ export const useTestimonials = (placementType: string): UseTestimonialsReturn =>
   const fetchTestimonials = async () => {
     try {
       setLoading(true);
-      setError(null);
-
-      console.log("Fetching testimonials...");
-      console.log("placement_type:", placementType);
-
-      const { data, error: supabaseError } = await supabase
+      setError(null);      const { data, error: supabaseError } = await supabase
         .from('testimonials')
         .select('id, testimonial_text, person, property_name, image_url, property_type, placement_type, status, is_strongest')
         .eq('placement_type', placementType)
         .eq('status', 'published')
-        .eq('is_strongest', true)
         .is('deleted_at', null)
         .order('is_strongest', { ascending: false })
         .order('created_at', { ascending: true })
@@ -77,28 +64,17 @@ export const useTestimonials = (placementType: string): UseTestimonialsReturn =>
 
       if (supabaseError) {
         console.error("Error fetching:", supabaseError);
-        throw supabaseError;
-      } else {
-        console.log("Fetched data:", data);
-        console.log("Data length:", data?.length || 0);
-        console.log("Placement types found:", data?.map(d => d.placement_type));
-        console.log("Statuses found:", data?.map(d => d.status));
+        throw supabaseError;      } else {
         
         // Debug: Show unique placement types
-        const uniquePlacementTypes = [...new Set(data?.map(d => d.placement_type) || [])];
-        console.log("Unique placement types:", uniquePlacementTypes);
-        
-        // Debug: Count by placement type
-        const placementTypeCounts: Record<string, number> = {};
-        data?.forEach(d => {
-          placementTypeCounts[d.placement_type] = (placementTypeCounts[d.placement_type] || 0) + 1;
-        });
-        console.log("Placement type counts:", placementTypeCounts);
-        
+        // const uniquePlacementTypes = [...new Set(data?.map(d => d.placement_type) || [])];        
+        // Debug: Count by placement type  
+        // const placementTypeCounts: Record<string, number> = {};
+        // data?.forEach(d => {
+        //   placementTypeCounts[d.placement_type] = (placementTypeCounts[d.placement_type] || 0) + 1;
+        // });
         // Debug: Filter specifically for Homepage - Carousel
-        const homepageCarouselItems = data?.filter(d => d.placement_type === 'Homepage - Carousel') || [];
-        console.log("Homepage - Carousel items:", homepageCarouselItems.length);
-        console.log("Homepage - Carousel data:", homepageCarouselItems);
+        // const homepageCarouselItems = data?.filter(d => d.placement_type === 'Homepage - Carousel') || [];
       }
 
       // Transform Supabase data to component format
@@ -111,7 +87,7 @@ export const useTestimonials = (placementType: string): UseTestimonialsReturn =>
         property_type: item.property_type,
       })) || [];
 
-      console.log("Formatted testimonials:", formattedData);
+
       
       // Apply staggering to maximize name diversity
       const staggeredTestimonials = staggerTestimonialsByPerson(formattedData);

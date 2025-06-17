@@ -1,0 +1,122 @@
+<!-- FRED Rates Cache Clear Helper -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear FRED Rates Cache</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #0070f3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #0051a5;
+        }
+        .status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear FRED Rates Cache</h1>
+        <p>Use this tool to clear the cached market rates data and force a fresh fetch from the API.</p>
+        
+        <button onclick="clearCache()">Clear Cache</button>
+        
+        <div id="status"></div>
+        
+        <h3>Manual Instructions:</h3>
+        <p>If the button doesn't work, you can manually clear the cache by:</p>
+        <ol>
+            <li>Open your browser's Developer Tools (F12)</li>
+            <li>Go to the Console tab</li>
+            <li>Paste this command: <code>localStorage.removeItem('specialty_one_market_rates'); localStorage.removeItem('specialty_one_market_rates_v2');</code></li>
+            <li>Press Enter</li>
+            <li>Refresh your application page</li>
+        </ol>
+    </div>
+
+    <script>        function clearCache() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // Clear all cache versions
+                const cacheKeys = ['specialty_one_market_rates', 'specialty_one_market_rates_v2', 'specialty_one_market_rates_v3'];
+                cacheKeys.forEach(key => localStorage.removeItem(key));
+                
+                statusDiv.innerHTML = `
+                    <div class="status success">
+                        <strong>✅ Success!</strong> All cache versions cleared successfully. 
+                        <br>Refresh your main application to fetch fresh data.
+                    </div>
+                `;
+                
+                console.log('🧹 All FRED rates cache versions cleared');
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="status info">
+                        <strong>ℹ️ Info:</strong> ${error.message}
+                        <br>Please use the manual instructions below.
+                    </div>
+                `;
+                console.error('Error clearing cache:', error);
+            }
+        }
+          // Auto-check cache status
+        window.addEventListener('load', () => {
+            const cacheKeys = ['specialty_one_market_rates', 'specialty_one_market_rates_v2', 'specialty_one_market_rates_v3'];
+            const foundCaches = cacheKeys.filter(key => localStorage.getItem(key) !== null);
+            
+            if (foundCaches.length > 0) {
+                const statusDiv = document.getElementById('status');
+                statusDiv.innerHTML = `
+                    <div class="status info">
+                        <strong>📦 Cache Found:</strong> 
+                        Found ${foundCaches.length} cached version(s): ${foundCaches.join(', ')}
+                        <br>Click "Clear Cache" to remove them.
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -63,8 +63,8 @@ const RateDisplay: React.FC<RateDisplayProps> = React.memo(({ rate, onMouseEnter
 export const TickerBox: React.FC<TickerBoxProps> = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [isContainerHovered, setIsContainerHovered] = useState(false);
-  const [isRateItemHovered, setIsRateItemHovered] = useState(false);
-  const { rates, loading, error } = useFREDRates(true);
+  const [isRateItemHovered, setIsRateItemHovered] = useState(false);  const { rates, loading, error, getDisplayRates } = useFREDRates(true);
+
   const tickerRef = useRef<HTMLDivElement>(null);
   const animationStartTimeRef = useRef<number | null>(null);
   const pauseStartTimeRef = useRef<number | null>(null);
@@ -81,9 +81,11 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
   useEffect(() => {
     isRateItemHoveredRef.current = isRateItemHovered;
   }, [isRateItemHovered]);
-
   useEffect(() => {
-    const checkScreen = () => setIsDesktop(window.innerWidth >= 1024);
+    const checkScreen = () => {
+      const desktopStatus = window.innerWidth >= 1024;
+      setIsDesktop(desktopStatus);
+    }
     checkScreen();
     window.addEventListener('resize', checkScreen);
     return () => window.removeEventListener('resize', checkScreen);
@@ -96,8 +98,7 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
   const handleRateMouseLeave = useCallback(() => {
     setIsRateItemHovered(false);
   }, []);
-
-  const organizeRatesByCategory = useCallback((marketRates: Record<string, MarketRate>): RateCategory[] => {
+  const organizeRatesByCategory = useCallback((marketRatesArray: MarketRate[]): RateCategory[] => {
     const categories: RateCategory[] = [
       { name: 'treasury', displayName: 'Treasury Yields', rates: [] },
       { name: 'sofr', displayName: 'SOFR Rates', rates: [] },
@@ -105,10 +106,11 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
       { name: 'other', displayName: 'Other Rates', rates: [] },
     ];
 
-    const sortedRates = Object.values(marketRates).sort((a, b) => a.priority - b.priority);
+    const sortedRates = marketRatesArray ? marketRatesArray.sort((a, b) => a.priority - b.priority) : [];
     sortedRates.forEach(rate => {
       const rateId = rate.id.toLowerCase();
       const rateLabel = rate.label.toLowerCase();
+
       if (rateId.includes('10y') || rateId.includes('5y') || rateId.includes('3y') || 
           rateLabel.includes('treasury') || rateLabel.includes('10-year') || 
           rateLabel.includes('5-year') || rateLabel.includes('3-year')) {
@@ -122,42 +124,39 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
         categories[3].rates.push(rate);
       }
     });
-    return categories.filter(category => category.rates.length > 0);
-  }, []); // Wrapped organizeRatesByCategory with useCallback
-
+    const filteredCategories = categories.filter(category => category.rates.length > 0);
+    return filteredCategories;
+  }, []);
   const rateCategories = useMemo(() => {
-    return rates?.rates ? organizeRatesByCategory(rates.rates) : [];
-  }, [rates, organizeRatesByCategory]); // Memoized rateCategories
-
-  useEffect(() => {
+    const ratesArray = rates;
+    if (!ratesArray || ratesArray.length === 0) {
+      return [];
+    }
+    const organized = organizeRatesByCategory(ratesArray);
+    return organized;
+  }, [rates, organizeRatesByCategory]);  useEffect(() => {
     const ticker = tickerRef.current;
-    if (!ticker || rateCategories.length === 0) {
+
+    if (!ticker || rateCategories.length === 0 || !isDesktop) {
       animationStartTimeRef.current = null;
       pauseStartTimeRef.current = null;
       pausedProgressRef.current = null;
+      if (ticker) ticker.style.transform = 'translateX(0px)';
       return;
-    }
+    }    // Measure the actual width of the content
+    const actualScrollWidth = ticker.scrollWidth;
+    const singleSetWidthPixels = actualScrollWidth / 2;
 
-    // Measure the actual width of the content
-    const actualScrollWidth = ticker.scrollWidth; // Total width of [Set1][Set2]
-    const singleSetWidthPixels = actualScrollWidth / 2; // Width of Set1
-
-    // If singleSetWidthPixels is 0, content might not be fully laid out yet.
-    // This could happen if the effect runs before children establish their width.
-    // A more robust solution might involve a ResizeObserver or waiting for layout,
-    // but for now, we'll proceed if > 0, otherwise the animation might not run.
     if (singleSetWidthPixels === 0) {
-      // Optionally, log a warning or implement a retry mechanism if this happens frequently
-      console.warn("Ticker content width is 0, animation might not work as expected.");
       return;
     }
 
     let animationFrameId: number;
-    const animationCycleDuration = 45500; // ms, increased from 35000 to slow down by an additional 30%
+    const animationCycleDuration = 45500; // ms
     const resumeOffsetFactor = 0;
 
     const animate = (timestamp: number) => {
-      if (!animationStartTimeRef.current) { // Simplified null check
+      if (!animationStartTimeRef.current) { 
         animationStartTimeRef.current = timestamp;
         if (isContainerHoveredRef.current || isRateItemHoveredRef.current) {
           pauseStartTimeRef.current = timestamp;
@@ -170,7 +169,7 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
       if (currentlyPaused) {
         if (pauseStartTimeRef.current === null) {
           pauseStartTimeRef.current = timestamp;
-          const elapsedActiveTimeBeforePause = timestamp - (animationStartTimeRef.current || timestamp); // Ensure current is not null
+          const elapsedActiveTimeBeforePause = timestamp - (animationStartTimeRef.current || timestamp); 
           const nonNegativeElapsed = Math.max(0, elapsedActiveTimeBeforePause);
           const currentProgressInCycle = (nonNegativeElapsed % animationCycleDuration) / animationCycleDuration;
           pausedProgressRef.current = currentProgressInCycle + resumeOffsetFactor;
@@ -185,31 +184,40 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
           pauseStartTimeRef.current = null;
         }
 
-        const elapsedActiveTime = timestamp - (animationStartTimeRef.current || timestamp); // Ensure current is not null
+        const elapsedActiveTime = timestamp - (animationStartTimeRef.current || timestamp); 
         const nonNegativeElapsed = Math.max(0, elapsedActiveTime);
         const progressInCycle = (nonNegativeElapsed % animationCycleDuration) / animationCycleDuration;
         
         if (ticker) {
-          // Use measured pixel width for translation
           ticker.style.transform = `translateX(-${progressInCycle * singleSetWidthPixels}px)`;
         }
       }
 
       animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationStartTimeRef.current = null; 
+    };    animationStartTimeRef.current = null; 
     pauseStartTimeRef.current = null;
     pausedProgressRef.current = null;
-
     animationFrameId = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-    };
-  }, [rates, rateCategories]);
+    };  }, [rateCategories, isDesktop]);
 
-  if (!isDesktop) return null;
+  if (!isDesktop) {
+    return null;
+  }
+  if (loading) {
+    return <div className="text-center text-lg font-semibold text-sand p-4">Loading Market Rates...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-lg font-semibold text-red-400 p-4">Error Loading Rates: {error}</div>;
+  }
+
+  if (!rateCategories || rateCategories.length === 0) {
+    return <div className="text-center text-lg font-semibold text-sand p-4">No Market Data Available</div>;
+  }
+
 
   return (
     <div
@@ -232,51 +240,51 @@ export const TickerBox: React.FC<TickerBoxProps> = () => {
             <span className="text-xl">Error: {error}</span>
           </div>
         ) : rateCategories.length === 0 ? (
+          // This is the "No Data Available" state
           <div className="flex items-center justify-center h-full text-yellow-400">
             <span className="text-xl">No Data Available</span>
           </div>
         ) : (
           <div ref={tickerRef} className="ticker-scroll flex items-center h-full whitespace-nowrap pt-16 pb-4 text-white will-change-transform backface-hidden">
-            {rateCategories.map((category, categoryIndex) => (
-              <div key={`cat-${categoryIndex}`} className="inline-flex items-center mr-12">
+            {/* Render categories and their rates - Duplicated for seamless looping */}
+            {[...rateCategories, ...rateCategories].map((category, catIndex) => (
+              <div key={`cat-${catIndex}`} className="inline-flex items-center mr-12">
                 <span className="text-sand font-serif text-lg mr-6">
                   {category.displayName}:
                 </span>
                 {category.rates.map((rate, rateIndex) => (
                   <RateDisplay
-                    key={`rate-${categoryIndex}-${rateIndex}`}
+                    key={`${catIndex}-${rate.id}-${rateIndex}`} // Ensured unique key
                     rate={rate}
-                    onMouseEnterRate={handleRateMouseEnter} // Passed handler
-                    onMouseLeaveRate={handleRateMouseLeave} // Passed handler
+                    onMouseEnterRate={handleRateMouseEnter}
+                    onMouseLeaveRate={handleRateMouseLeave}
                   />
                 ))}
-                {categoryIndex < rateCategories.length - 1 && (
+                {catIndex < rateCategories.length - 1 && (
                   <div className="mx-6">
                     <div className="w-px h-10 bg-gradient-to-b from-purple-600/50 via-purple-400/70 to-purple-600/50"></div>
                   </div>
                 )}
               </div>
             ))}
-            {/* Duplicate set for seamless scrolling */}
-            {rateCategories.map((category, categoryIndex) => (
-              <div key={`cat-dup-${categoryIndex}`} className="inline-flex items-center mr-12">
-                <span className="text-sand font-serif text-lg mr-6">
-                  {category.displayName}:
+            {/* Duplicate set for seamless looping */}
+            {rateCategories.map((category, catIndex) => (
+              <React.Fragment key={`duplicate-${category.name}-${catIndex}`}>
+                <span className="category-title text-xl font-bold text-blue-300 mr-6 ml-4">
+                  {category.displayName}
                 </span>
                 {category.rates.map((rate, rateIndex) => (
                   <RateDisplay
-                    key={`rate-dup-${categoryIndex}-${rateIndex}`}
+                    key={`duplicate-${catIndex}-${rate.id}-${rateIndex}`} // Ensured unique key
                     rate={rate}
-                    onMouseEnterRate={handleRateMouseEnter} // Passed handler
-                    onMouseLeaveRate={handleRateMouseLeave} // Passed handler
+                    onMouseEnterRate={handleRateMouseEnter}
+                    onMouseLeaveRate={handleRateMouseLeave}
                   />
                 ))}
-                {categoryIndex < rateCategories.length - 1 && (
-                  <div className="mx-6">
-                    <div className="w-px h-10 bg-gradient-to-b from-purple-600/50 via-purple-400/70 to-purple-600/50"></div>
-                  </div>
-                )}
-              </div>
+                {/* This is where the original error likely was, ensuring catIndex is used if a similar structure to the first loop was intended for dividers */}
+                {/* If a divider was intended here, it should use catIndex, for example: */}
+                {/* {catIndex < rateCategories.length - 1 && ( <div className=\"divider...\"></div> )} */}
+              </React.Fragment>
             ))}
           </div>
         )}

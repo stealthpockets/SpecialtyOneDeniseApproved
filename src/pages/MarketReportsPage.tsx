@@ -245,9 +245,7 @@ const MarketReportsPage = () => {
                             <span className="text-sm lg:text-base">{report.reading_time} min read</span>
                           </>
                         )}
-                      </div>
-
-                      <h3 className="font-display text-xl font-bold mb-3">
+                      </div>                      <h3 className="font-display text-xl font-bold mb-3 leading-relaxed">
                         {report.title}
                       </h3>
 
@@ -309,8 +307,7 @@ const MarketReportsPage = () => {
                 <CardContent className="p-6">
                   <Badge color="primary" variant="outline" className="mb-3">
                     {report.type}
-                  </Badge>
-                  <h3 className="font-display text-xl font-bold mb-2">
+                  </Badge>                  <h3 className="font-display text-xl font-bold mb-2 leading-relaxed">
                     {report.title}
                   </h3>
                   <div className="flex items-center gap-2 text-gray-600 mb-4">

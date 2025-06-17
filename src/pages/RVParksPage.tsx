@@ -1,6 +1,9 @@
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { TestimonialsRV } from '../components/home/TestimonialsRV';
+import { useInsights } from '../hooks/useInsights';
+import { useMemo } from 'react';
 
 const specializations = [
   {
@@ -44,24 +47,6 @@ const stats = [
   }
 ];
 
-const testimonials = [
-  {
-    quote: "They made a tough deal look easy. Transparent, detail-oriented, and delivered the right buyer.",
-    author: "George Bunting",
-    property: "Caravan Oasis & Desert Trails"
-  },
-  {
-    quote: "Andrew took charge of everything. We closed at full price—even during COVID.",
-    author: "Pericles Wyatt",
-    property: "Desert Trails RV Park"
-  },
-  {
-    quote: "Knowledgeable, honest, and the process couldn't have gone smoother.",
-    author: "Phil Hu",
-    property: "Lost Dutchman RV Resort"
-  }
-];
-
 const caseStudies = [
   {
     title: "Desert Trails RV Park",
@@ -79,22 +64,10 @@ const caseStudies = [
   }
 ];
 
-const insights = [
-  {
-    title: "Seasonal vs. Year-Round: What Buyers Value Most",
-    category: "Valuation"
-  },
-  {
-    title: "How to Underwrite Cabin & Glamping Revenue Without Overpricing",
-    category: "Due Diligence"
-  },
-  {
-    title: "The Zoning Red Flag That Kills RV Park Escrows",
-    category: "Risk Management"
-  }
-];
-
 const RVParksPage = () => {
+  // Memoize the filters object to prevent unnecessary re-renders
+  const insightsFilters = useMemo(() => ({ propertyTypeId: 2 }), []);
+  const { insights, loading: insightsLoading, error: insightsError } = useInsights(insightsFilters);
   return (
     <div className="flex flex-col min-h-screen bg-sand">
       {/* Hero Section */}
@@ -177,35 +150,7 @@ const RVParksPage = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            What RV Park Sellers Say After the Deal Closes
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                className="bg-cloud rounded-lg p-8 animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="text-5xl text-plum opacity-20 mb-4">"</div>
-                <blockquote className="text-lg font-medium mb-6">
-                  {testimonial.quote}
-                </blockquote>
-                <div>
-                  <p className="font-bold">
-                    {testimonial.author}
-                  </p>
-                  <p className="text-gray-600">
-                    {testimonial.property}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsRV />
 
       {/* Case Studies */}
       <section className="py-16 bg-cloud">
@@ -313,30 +258,36 @@ const RVParksPage = () => {
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Actually Moves NOI in Outdoor Hospitality
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {insights.map((insight, index) => (
-              <Card 
-                key={index}
-                className="animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <CardContent className="p-6">
-                  <div className="text-sm text-plum font-medium mb-2">
-                    {insight.category}
-                  </div>
-                  <h3 className="text-xl font-bold mb-4">
-                    {insight.title}
-                  </h3>
-                  <Button 
-                    to={`/insights/${insight.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="outline"
-                  >
-                    Read Article
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {insightsLoading ? (
+            <div className="text-center">Loading insights...</div>
+          ) : insightsError ? (
+            <div className="text-center text-red-600">Error loading insights: {insightsError}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {insights.slice(0, 3).map((insight, index) => (
+                <Card 
+                  key={insight.id}
+                  className="animate-fade-in"
+                  style={{ animationDelay: `${0.2 * index}s` }}
+                >
+                  <CardContent className="p-6">
+                    <div className="text-sm text-plum font-medium mb-2">
+                      {insight.categories?.name || 'Market Insights'}
+                    </div>
+                    <h3 className="text-xl font-bold mb-4 leading-relaxed">
+                      {insight.title}
+                    </h3>
+                    <Button 
+                      to={`/insights/${insight.slug}`}
+                      variant="outline"
+                    >
+                      Read Article
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
           <div className="text-center mt-8">
             <Button 
               to="/insights?filter=rv"

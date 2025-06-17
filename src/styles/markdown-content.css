@@ -1,3 +1,4 @@
+
 /* Enhanced Markdown Content Styles for ArticleDetail */
 /* Builds upon existing Tailwind prose classes with professional polish */
 
@@ -228,7 +229,7 @@
   margin-bottom: 0;
 }
 
-/* Professional Table Styling */
+/* Enhanced Professional Table Styling with Row Striping & Sticky Headers */
 .markdown-content table {
   width: 100%;
   border-collapse: separate;
@@ -242,23 +243,50 @@
 }
 
 .markdown-content thead {
-  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  background: #e9dbc7; /* Solid sand background to prevent artifacts */
 }
 
 .markdown-content th {
-  padding: 1rem 1.5rem;
-  text-align: left;
-  font-weight: 600;
-  color: #111827;
-  font-size: 0.95rem;
+  padding: 1rem 1.25rem;
+  text-align: center;
+  font-weight: 700;
+  color: #500f61; /* Amethyst color for headers */
+  font-size: 1.1rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 2px solid #e5e7eb;
-  position: relative;
+  border-bottom: 2px solid #500f61; /* Strong amethyst border for separation */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #e9dbc7; /* Solid opaque background for sticky headers */
+}
+
+.markdown-content th:first-child {
+  text-align: left;
 }
 
 .markdown-content th:not(:last-child) {
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid #d1c7b8; /* Darker sand for borders */
+}
+
+.markdown-content tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+/* Enhanced Row Striping */
+.markdown-content tbody tr:nth-child(even) {
+  background-color: #faf8f5; /* Very light sand */
+}
+
+.markdown-content tbody tr:nth-child(odd) {
+  background-color: #ffffff; /* Pure white */
+}
+
+/* Enhanced Hover Effects */
+.markdown-content tbody tr:hover {
+  background-color: #f5e8d1 !important; /* Lighter sand on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(80, 15, 97, 0.1); /* Subtle amethyst shadow */
 }
 
 .markdown-content td {
@@ -266,22 +294,106 @@
   color: #374151;
   font-size: 1rem;
   line-height: 1.6;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f1ed; /* Subtle sand border */
+  transition: all 0.2s ease;
+  text-align: center; /* Center-align numeric columns */
+}
+
+.markdown-content td:first-child {
+  text-align: left; /* Keep first column left-aligned */
 }
 
 .markdown-content td:not(:last-child) {
-  border-right: 1px solid #f3f4f6;
-}
-
-.markdown-content tbody tr:hover {
-  background-color: #fafbfc;
+  border-right: 1px solid #f3f1ed; /* Consistent sand borders */
 }
 
 .markdown-content tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Mobile Table Responsiveness */
+/* Enhanced Cell Content Styling */
+.markdown-content td strong,
+.markdown-content th strong {
+  color: #500f61; /* Amethyst for important data */
+  font-weight: 700;
+}
+
+.markdown-content td em,
+.markdown-content th em {
+  color: #8b4513; /* Complementary brown for emphasis */
+  font-style: italic;
+}
+
+/* Enhanced Professional Table Wrapper for Mobile Scroll */
+.markdown-content .table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 2rem 0;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  /* Add subtle scroll hint gradient */
+  background: linear-gradient(135deg, #ffffff 0%, #faf8f5 100%);
+  
+  /* Precise CSS variables for header height to prevent artifacts */
+  --header-height: 4rem; /* More precise calculation: 1rem padding + 1.25rem padding + 2px border + font height */
+  --header-offset: calc(var(--header-height) + 2px); /* Extra offset to ensure complete separation */
+}
+
+/* Table inside wrapper - reset to natural behavior */
+.markdown-content .table-wrapper table {
+  margin: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  width: auto;
+  min-width: 100%;
+  display: table;
+  background: transparent; /* Let wrapper gradient show through */
+}
+
+/* Enhanced scroll indicator shadows with complete artifact prevention */
+.markdown-content .table-wrapper::before,
+.markdown-content .table-wrapper::after {
+  content: '';
+  position: absolute;
+  top: var(--header-offset); /* Use offset to ensure complete separation */
+  height: calc(100% - var(--header-offset)); /* Precise height calculation */
+  width: 15px; /* Wider indicators */
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 3; /* Lower z-index than headers to prevent overlap */
+  /* Add clipping to ensure no overlap with header area */
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.markdown-content .table-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7), transparent);
+}
+
+.markdown-content .table-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7), transparent);
+}
+
+/* Scroll hint with brand color */
+.markdown-content .table-wrapper:hover::after {
+  background: linear-gradient(to left, rgba(240, 234, 224, 0.9), rgba(240, 234, 224, 0.7), rgba(80, 15, 97, 0.1));
+}
+
+/* Enhanced sticky header support for wrapper */
+.markdown-content .table-wrapper table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  /* Add subtle border to distinguish sticky header */
+  box-shadow: 0 2px 4px rgba(80, 15, 97, 0.1);
+}
+
+/* Enhanced Mobile Table Responsiveness */
 @media (max-width: 768px) {
   .markdown-content table {
     font-size: 0.875rem;
@@ -290,6 +402,317 @@
   .markdown-content th,
   .markdown-content td {
     padding: 0.75rem 1rem;
+    min-width: 120px;
+    white-space: nowrap;
+  }
+  
+  .markdown-content th {
+    font-size: 0.8125rem; /* Slightly smaller headers on mobile */
+    padding: 0.875rem 1rem; /* More padding for touch targets */
+  }
+  
+  .markdown-content .table-wrapper {
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    /* Enhanced mobile scroll indicators */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Adjust header height for mobile with precise calculation */
+    --header-height: 3.5rem; /* Mobile: 0.875rem padding + 1rem padding + 2px border + font height */
+    --header-offset: calc(var(--header-height) + 2px); /* Extra offset for mobile */
+  }
+  
+  /* Enhanced mobile scroll hints with brand colors */
+  .markdown-content .table-wrapper::before {
+    width: 20px; /* Wider on mobile */
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(240, 234, 224, 0.8), transparent);
+  }
+  
+  .markdown-content .table-wrapper::after {
+    width: 20px; /* Wider on mobile */
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.95), rgba(240, 234, 224, 0.8), rgba(80, 15, 97, 0.15));
+  }
+  
+  /* Better mobile hover states */
+  .markdown-content tbody tr:hover {
+    background-color: #f0eae0 !important; /* Sand background on mobile */
+    transform: none; /* No transform on mobile */
+  }
+  
+  /* Sticky headers with better mobile support */
+  .markdown-content .table-wrapper table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #e9dbc7; /* Solid background to prevent artifacts on mobile */
+    box-shadow: 0 2px 8px rgba(80, 15, 97, 0.15);
+  }
+}
+
+/* Ultra small screens - more compact with enhanced touch targets */
+@media (max-width: 375px) {
+  .markdown-content th,
+  .markdown-content td {
+    padding: 0.625rem 0.875rem; /* Better touch targets */
+    min-width: 110px;
+    font-size: 0.8125rem;
+  }
+  
+  .markdown-content th {
+    font-size: 0.75rem;
+    padding: 0.75rem 0.875rem;
+  }
+  
+  .markdown-content .table-wrapper {
+    margin: 1rem 0;
+    border-radius: 0.375rem;
+    /* Even more compact header height for tiny screens */
+    --header-height: 2.75rem; /* More compact on tiny screens */
+  }
+  
+  /* Ultra-wide scroll indicators for tiny screens */
+  .markdown-content .table-wrapper::before,
+  .markdown-content .table-wrapper::after {
+    width: 25px;
+  }
+}
+
+/* Enhanced Table Caption Styling */
+.markdown-content table caption {
+  caption-side: top;
+  padding: 1rem 1.5rem;
+  font-weight: 600;
+  color: #500f61;
+  font-size: 1.125rem;
+  text-align: left;
+  background: linear-gradient(135deg, #f0eae0 0%, #e8d5c4 100%);
+  border-radius: 0.75rem 0.75rem 0 0;
+  border-bottom: 2px solid #500f61;
+}
+
+/* Table Summary/Footer Row Styling */
+.markdown-content tfoot tr {
+  background: linear-gradient(135deg, #f8f6f2 0%, #f0eae0 100%);
+  font-weight: 600;
+}
+
+.markdown-content tfoot td {
+  border-top: 2px solid #500f61;
+  color: #500f61;
+  font-weight: 600;
+}
+
+/* Enhanced Data Visualization Support */
+.markdown-content td[data-type="number"],
+.markdown-content td[data-type="currency"],
+.markdown-content td[data-type="percentage"] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.markdown-content td[data-type="currency"] {
+  color: #059669; /* Green for currency */
+}
+
+.markdown-content td[data-type="percentage"] {
+  color: #dc2626; /* Red for percentages */
+}
+
+/* Table Loading State */
+.markdown-content .table-loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.markdown-content .table-loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(80, 15, 97, 0.1), transparent);
+  animation: table-loading 1.5s infinite;
+}
+
+@keyframes table-loading {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Enhanced Mobile Typography and Spacing */
+@media (max-width: 640px) {
+  .markdown-content {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  .markdown-content h1 {
+    font-size: 1.875rem; /* 30px */
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .markdown-content h2 {
+    font-size: 1.5rem; /* 24px */
+    margin-top: 1.75rem;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .markdown-content h3 {
+    font-size: 1.25rem; /* 20px */
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .markdown-content h4 {
+    font-size: 1.125rem; /* 18px */
+    margin-top: 1.25rem;
+    margin-bottom: 0.625rem;
+  }
+  
+  .markdown-content p {
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+    text-align: left; /* Remove justify on mobile for better readability */
+    hyphens: none;
+  }
+  
+  .markdown-content ul,
+  .markdown-content ol {
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .markdown-content ul li,
+  .markdown-content ol li {
+    margin-bottom: 0.75rem;
+    padding-left: 0.25rem;
+  }
+  
+  .markdown-content blockquote {
+    margin: 1.5rem 0;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+  
+  .markdown-content blockquote::before {
+    font-size: 3rem;
+    top: -0.25rem;
+    left: 0.75rem;
+  }
+  
+  .markdown-content pre {
+    padding: 1rem;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .markdown-content pre code {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  
+  .markdown-content code {
+    font-size: 0.875rem;
+    padding: 0.125em 0.25em;
+  }
+  
+  .markdown-content img {
+    margin: 1.5rem auto;
+    border-radius: 0.5rem;
+    max-width: calc(100vw - 2rem); /* Account for container padding */
+    height: auto;
+  }
+  
+  .markdown-content hr {
+    margin: 2rem 0;
+  }
+}
+
+/* Ultra Small Mobile Screens (iPhone SE, etc.) */
+@media (max-width: 375px) {
+  .markdown-content {
+    font-size: 0.9375rem; /* 15px */
+  }
+  
+  .markdown-content h1 {
+    font-size: 1.75rem; /* 28px */
+  }
+  
+  .markdown-content h2 {
+    font-size: 1.375rem; /* 22px */
+  }
+  
+  .markdown-content h3 {
+    font-size: 1.1875rem; /* 19px */
+  }
+  
+  .markdown-content ul,
+  .markdown-content ol {
+    padding-left: 1.25rem;
+  }
+  
+  .markdown-content blockquote {
+    padding: 0.875rem 1.25rem;
+  }
+  
+  .markdown-content pre {
+    padding: 0.875rem;
+    font-size: 0.8125rem; /* 13px */
+  }
+  
+  .markdown-content table {
+    font-size: 0.8125rem;
+  }
+  
+  .markdown-content th,
+  .markdown-content td {
+    padding: 0.5rem 0.75rem;
+    min-width: 100px;
+  }
+}
+
+/* Tablet Responsive Enhancements */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .markdown-content {
+    font-size: 1.0625rem; /* 17px */
+  }
+  
+  .markdown-content h1 {
+    font-size: 2.25rem; /* 36px */
+  }
+  
+  .markdown-content h2 {
+    font-size: 1.875rem; /* 30px */
+  }
+  
+  .markdown-content h3 {
+    font-size: 1.375rem; /* 22px */
+  }
+  
+  .markdown-content p {
+    margin-bottom: 1.5rem;
+  }
+  
+  .markdown-content blockquote {
+    font-size: 1.0625rem;
+  }
+}
+
+/* Touch-Friendly Interactive Elements */
+@media (hover: none) and (pointer: coarse) {
+  .markdown-content a {
+    padding: 0.25em 0.125em;
+    margin: -0.25em -0.125em;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
   }
 }
 

@@ -110,13 +110,7 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
     fetchCaseStudies();
   }, [filters]);
 
-  // <<< DIAGNOSTIC LOG >>>
-  console.log('[useCaseStudies] Hook state before return:', { 
-    caseStudies_INTERNAL: caseStudies, 
-    loading_INTERNAL: loading, 
-    error_INTERNAL: error 
-  });
-  // <<< END DIAGNOSTIC LOG >>>
+  // Clean hook state return without logging
 
   return { caseStudies, loading, error };
 };
