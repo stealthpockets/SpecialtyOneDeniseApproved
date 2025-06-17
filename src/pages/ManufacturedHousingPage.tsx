@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { TestimonialsMH } from '../components/home/TestimonialsMH';
@@ -79,30 +80,6 @@ const ManufacturedHousingPage = () => {
         </div>
       </section>
 
-      {/* Edge as Seller Section */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
-              The Last Thing You Need Is Another Bidding War That Falls Apart.
-            </h2>
-            <p className="text-lg mb-8 text-gray-700">
-              You've seen it: brokers chase top-dollar offers, only to renegotiate mid-deal or fall out of escrow altogether.
-              We don't play that game. We pre-underwrite, qualify buyers, and build deal certainty before we go live.
-            </p>
-            <Button 
-              to="https://form.typeform.com/to/NKQAZkUv" 
-              variant="primary"
-              size="lg"
-              icon={<ArrowRight size={20} />}
-              iconPosition="right"
-            >
-              Talk Through Your Exit Strategy—Confidentially
-            </Button>
-          </div>
-        </div>
-      </section>
-
       {/* Stats Grid */}
       <section className="py-16 bg-cloud">
         <div className="container-custom">
@@ -133,43 +110,62 @@ const ManufacturedHousingPage = () => {
       {/* Testimonials */}
       <TestimonialsMH />
 
-      {/* Case Studies */}
+      {/* Edge as Seller Section */}
       <section className="py-16 bg-cloud">
         <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+              The Last Thing You Need Is Another Bidding War That Falls Apart.
+            </h2>
+            <p className="text-lg mb-8 text-gray-700">
+              You've seen it: brokers chase top-dollar offers, only to renegotiate mid-deal or fall out of escrow altogether.
+              We don't play that game. We pre-underwrite, qualify buyers, and build deal certainty before we go live.
+            </p>
+            <Button 
+              to="https://form.typeform.com/to/NKQAZkUv" 
+              variant="primary"
+              size="lg"
+              icon={<ArrowRight size={20} />}
+              iconPosition="right"
+            >
+              Talk Through Your Exit Strategy—Confidentially
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Case Studies */}
+      <section className="py-16 bg-sand">
+        <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Real Stories, Real Numbers, Real Results
+            Real Stories, Real Numbers, <span className="text-gradient">Real Results</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {caseStudies.map((study, index) => (
-              <div 
+              <Link
                 key={index}
-                className="relative rounded-lg overflow-hidden gradient-overlay animate-fade-in"
+                to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
+                className="relative rounded-lg overflow-hidden gradient-overlay block group hover:shadow-xl transition-all duration-300 animate-fade-in"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
                 <img 
                   src={study.image}
                   alt={study.title}
-                  className="w-full h-[400px] object-cover"
+                  className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-300"
                   loading="lazy"
                 />
-                <div className="absolute bottom-0 left-0 w-full p-6 z-10">
-                  <h3 className="text-white text-2xl font-bold mb-2">
+                <div className="absolute bottom-0 left-0 w-full p-6 z-10 bg-gradient-to-t from-black/80 to-transparent">
+                  <h3 className="text-white text-2xl font-bold mb-2 group-hover:text-sage transition-colors">
                     {study.title}
                   </h3>
                   <p className="text-white text-lg mb-2">
                     {study.subtitle}
                   </p>
-                  <p className="text-white/90 mb-4">
+                  <p className="text-white/90">
                     {study.location}
                   </p>
-                  <Button 
-                    to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="primary"
-                  >
-                    See Case Study
-                  </Button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -205,7 +201,7 @@ const ManufacturedHousingPage = () => {
       <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Insights That Actually Help You Operate—and Exit
+            Insights That Actually Help You Operate—<span className="text-gradient">and Exit</span>
           </h2>
           {insightsLoading ? (
             <div className="text-center">Loading insights...</div>
@@ -214,39 +210,44 @@ const ManufacturedHousingPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {insights.slice(0, 3).map((insight, index) => (
-                <Card 
+                <Link
                   key={insight.id}
-                  className="animate-fade-in"
+                  to={`/insights/${insight.slug}`}
+                  className="block group hover:shadow-xl transition-all duration-300 animate-fade-in"
                   style={{ animationDelay: `${0.2 * index}s` }}
                 >
-                  <CardContent className="p-6">
-                    <div className="text-sm text-plum font-medium mb-2">
-                      {insight.categories?.name || 'Market Insights'}
-                    </div>
-                    <h3 className="text-xl font-bold mb-4 leading-relaxed">
-                      {insight.title}
-                    </h3>
-                    <Button 
-                      to={`/insights/${insight.slug}`}
-                      variant="outline"
-                    >
-                      Read Article
-                    </Button>
-                  </CardContent>
-                </Card>
+                  <Card className="overflow-hidden h-full group-hover:scale-[1.02] transition-transform duration-300">
+                    {insight.image_url && (
+                      <div className="aspect-video overflow-hidden">
+                        <img 
+                          src={insight.image_url} 
+                          alt={insight.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <CardContent className="p-6">
+                      <div className="text-sm text-plum font-medium mb-2">
+                        {insight.categories?.name || 'Market Insights'}
+                      </div>
+                      <h3 className="text-xl font-bold mb-3 leading-relaxed group-hover:text-plum transition-colors">
+                        {insight.title}
+                      </h3>
+                      {insight.summary && (
+                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                          {insight.summary}
+                        </p>
+                      )}
+                      <div className="text-plum font-medium text-sm group-hover:underline">
+                        Read Article →
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
-          <div className="text-center mt-8">
-            <Button 
-              to="/insights?propertyType=1"
-              variant="primary"
-              icon={<ArrowRight size={20} />}
-              iconPosition="right"
-            >
-              Browse All MH Insights
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -290,41 +291,7 @@ const ManufacturedHousingPage = () => {
         </div>
       </section>
 
-      {/* Related Services */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Button 
-              to="/1031-exchange"
-              variant="outline"
-              className="text-center py-6"
-            >
-              🔁 1031 Exchange Strategy
-            </Button>
-            <Button 
-              to="/exclusive-buyers"
-              variant="outline"
-              className="text-center py-6"
-            >
-              🔒 Exclusive Buyer Network
-            </Button>
-            <Button 
-              to="/advantage"
-              variant="outline"
-              className="text-center py-6"
-            >
-              📖 Our Sales Framework
-            </Button>
-            <Button 
-              to="/insights"
-              variant="outline"
-              className="text-center py-6"
-            >
-              🧠 Insights Hub
-            </Button>
-          </div>
-        </div>
-      </section>
+
     </div>
   );
 };

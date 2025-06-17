@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { getTestimonialImagePath } from '../../utils/imageHelpers';
-import { CloudinaryImage } from '../ui/CloudinaryImage';
 import type { CarouselTestimonialData } from '../../types/testimonial';
 
 export const TestimonialsRV = () => {
@@ -223,54 +220,37 @@ export const TestimonialsRV = () => {
   }
 
   return (
-    <section className="py-16 bg-sand overflow-hidden">
+    <section className="py-16 bg-cloud overflow-hidden">
       <div className="container-custom">        {/* Section Header */}
-        <div className="text-center mb-16 md:mb-20">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+        <div className="text-center mb-4 md:mb-16">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-2 md:mb-4">
             What RV Park Sellers Say After the <span className="text-gradient">Deal Closes</span>
           </h2>
-        </div>{/* Testimonial Carousel */}
+        </div>        {/* Testimonial Carousel */}
         <div 
-          className="relative h-[600px] md:h-96 flex items-center justify-center mb-20"
+          className="relative h-[280px] md:h-[300px] flex items-center justify-center mb-12 md:mb-20 mt-40 md:mt-24"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-        >
-          {testimonials.map((testimonial, index) => {
-            const imageToDisplay = getTestimonialImagePath(testimonial.image_url, testimonial.property_type);
-            
-            return (
-              <div
+        >{testimonials.map((testimonial, index) => {
+            return (<div
                 key={testimonial.id || index}
-                className="absolute w-full max-w-4xl"
+                className="absolute w-full max-w-3xl"
                 style={getCardStyle(index)}
-              >
-                <div className="bg-cloud rounded-lg shadow-card overflow-hidden mx-4 border border-opacity-20" style={{ borderColor: '#F0EAE0' }}>
-                  <div className="md:flex md:h-[32rem]">
-                    {/* Image Section */}
-                    <div className="md:w-1/2 relative h-48 md:h-full">
-                      <CloudinaryImage
-                        localPath={imageToDisplay}
-                        alt={testimonial.author} 
-                        className="w-full h-full object-cover"
-                        width={400}
-                        height={300}
-                      />
-                    </div>                    {/* Content Section */}
-                    <div className="md:w-1/2 p-4 md:p-8 flex flex-col justify-center">
-                      <blockquote className="text-lg md:text-xl font-medium mb-4 md:mb-6 text-gray-700 leading-relaxed">
-                        {testimonial.quote}
-                      </blockquote>
-                      <div>
-                        <p className="font-bold text-lg text-gray-900">
-                          {testimonial.author}
+              >                <div className="bg-white rounded-lg shadow-card overflow-hidden mx-4 border border-opacity-20" style={{ borderColor: '#F0EAE0' }}>
+                  <div className="p-6 md:p-12 text-center">
+                    <blockquote className="text-lg md:text-2xl font-medium mb-4 md:mb-8 text-gray-700 leading-relaxed">
+                      "{testimonial.quote}"
+                    </blockquote>
+                    <div>
+                      <p className="font-bold text-base md:text-lg text-gray-900 mb-1">
+                        {testimonial.author}
+                      </p>
+                      {testimonial.property && (
+                        <p className="font-medium text-sm md:text-base" style={{ color: '#8a0067' }}>
+                          {testimonial.property}
                         </p>
-                        {testimonial.property && (
-                          <p className="font-medium" style={{ color: '#8a0067' }}>
-                            {testimonial.property}
-                          </p>
-                        )}
-                      </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -335,20 +315,7 @@ export const TestimonialsRV = () => {
               />
               <span>{isAutoPlaying ? 'Auto-playing' : 'Paused'}</span>
             </div>
-          </div>
-        )}
-
-        {/* Success Stories Link */}
-        <div className="text-center">
-          <Link 
-            to="/success-stories" 
-            className="inline-flex items-center font-medium transition-colors hover:opacity-80"
-            style={{ color: '#8a0067' }}
-          >
-            See All Success Stories
-            <ChevronRight size={16} className="ml-1" />
-          </Link>
-        </div>
+          </div>        )}
       </div>
     </section>
   );

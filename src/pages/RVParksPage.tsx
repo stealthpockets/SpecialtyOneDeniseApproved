@@ -1,32 +1,10 @@
-import { ArrowRight, CheckCircle } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { TestimonialsRV } from '../components/home/TestimonialsRV';
 import { useInsights } from '../hooks/useInsights';
 import { useMemo } from 'react';
-
-const specializations = [
-  {
-    text: "We underwrite seasonal, transient, and long-term income streams separately",
-    icon: <CheckCircle size={20} className="text-sage" />
-  },
-  {
-    text: "Park model, glamping, or cabin revenue? We know how to value it",
-    icon: <CheckCircle size={20} className="text-sage" />
-  },
-  {
-    text: "Septic, solar, zoning, and ADEQ issues? We've closed through them all",
-    icon: <CheckCircle size={20} className="text-sage" />
-  },
-  {
-    text: "Our buyer pool includes REITs, syndicators, and long-term operators",
-    icon: <CheckCircle size={20} className="text-sage" />
-  },
-  {
-    text: "We help you exit with timing, structure, and certainty",
-    icon: <CheckCircle size={20} className="text-sage" />
-  }
-];
 
 const stats = [
   {
@@ -98,35 +76,11 @@ const RVParksPage = () => {
         </div>
       </section>
 
-      {/* Specialization Section */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-8 text-center">
-              Most Brokers Price RV Parks Like Apartments.<br />
-              We Don't.
-            </h2>
-            <div className="space-y-4">
-              {specializations.map((item, index) => (
-                <div 
-                  key={index}
-                  className="flex items-start gap-4 animate-fade-in"
-                  style={{ animationDelay: `${0.1 * index}s` }}
-                >
-                  {item.icon}
-                  <p className="text-lg">{item.text}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Stats Grid */}
       <section className="py-16 bg-cloud">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            $300M+ in MH & RV Closings. Clean Deals. Qualified Buyers.
+            <span className="text-gradient">Clean Closings.</span> Qualified Buyers.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
@@ -149,45 +103,103 @@ const RVParksPage = () => {
         </div>
       </section>
 
+      {/* Specialization Section */}
+      <section className="pt-24 pb-16 bg-sand">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="font-display text-3xl md:text-4xl font-bold mb-8 text-center">
+              Most Brokers Price RV Parks Like Apartments.<br />
+              <span className="text-gradient mt-2 block">We Don't.</span>
+            </h2>
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                <div className="flex items-start gap-4">
+                  <CheckCircle size={20} className="text-sage mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-plum mb-2">Specialized Revenue Analysis</h3>
+                    <p className="text-lg text-gray-700">We underwrite seasonal, transient, and long-term income streams separately</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+                <div className="flex items-start gap-4">
+                  <CheckCircle size={20} className="text-sage mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-plum mb-2">Alternative Revenue Expertise</h3>
+                    <p className="text-lg text-gray-700">Park model, glamping, or cabin revenue? We know how to value it</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+                <div className="flex items-start gap-4">
+                  <CheckCircle size={20} className="text-sage mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-plum mb-2">Complex Issue Resolution</h3>
+                    <p className="text-lg text-gray-700">Septic, solar, zoning, and ADEQ issues? We've closed through them all</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+                <div className="flex items-start gap-4">
+                  <CheckCircle size={20} className="text-sage mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-plum mb-2">Institutional Buyer Network</h3>
+                    <p className="text-lg text-gray-700">Our buyer pool includes REITs, syndicators, and long-term operators</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: "0.5s" }}>
+                <div className="flex items-start gap-4">
+                  <CheckCircle size={20} className="text-sage mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-bold text-plum mb-2">Strategic Exit Planning</h3>
+                    <p className="text-lg text-gray-700">We help you exit with timing, structure, and certainty</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
       <TestimonialsRV />
 
       {/* Case Studies */}
-      <section className="py-16 bg-cloud">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             The Kind of Parks We've Sold—and How
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {caseStudies.map((study, index) => (
-              <div 
+              <Link
                 key={index}
-                className="relative rounded-lg overflow-hidden gradient-overlay animate-fade-in"
+                to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
+                className="relative rounded-lg overflow-hidden gradient-overlay block group hover:shadow-xl transition-all duration-300 animate-fade-in"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
                 <img 
                   src={study.image}
                   alt={study.title}
-                  className="w-full h-[400px] object-cover"
+                  className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute bottom-0 left-0 w-full p-6 z-10">
-                  <h3 className="text-white text-2xl font-bold mb-2">
+                <div className="absolute bottom-0 left-0 w-full p-6 z-10 bg-gradient-to-t from-black/80 to-transparent">
+                  <h3 className="text-white text-2xl font-bold mb-2 group-hover:text-sage transition-colors">
                     {study.title}
                   </h3>
                   <p className="text-white text-lg mb-2">
                     {study.subtitle}
                   </p>
-                  <p className="text-white/90 mb-4">
+                  <p className="text-white/90">
                     {study.location}
                   </p>
-                  <Button 
-                    to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
-                    variant="primary"
-                  >
-                    See Case Study
-                  </Button>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -205,29 +217,19 @@ const RVParksPage = () => {
               We qualify capital, structure the terms, and solve problems before you hit escrow.<br />
               Whether you need confidentiality or full exposure—we drive results.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button 
-                to="/contact"
-                variant="primary"
-                size="lg"
-              >
-                Talk Through Your Exit Strategy
-              </Button>
-              <Button 
-                to="/valuation"
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white/10"
-              >
-                Request a Free Valuation
-              </Button>
-            </div>
+            <Button 
+              to="/contact"
+              variant="primary"
+              size="lg"
+            >
+              Talk Through Your Exit Strategy
+            </Button>
           </div>
         </div>
       </section>
 
       {/* For Buyers */}
-      <section className="py-16 bg-sand">
+      <section className="py-16 bg-cloud">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
@@ -253,7 +255,7 @@ const RVParksPage = () => {
       </section>
 
       {/* Insights */}
-      <section className="py-16 bg-cloud">
+      <section className="py-16 bg-sand">
         <div className="container-custom">
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
             What Actually Moves NOI in Outdoor Hospitality
@@ -265,44 +267,49 @@ const RVParksPage = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {insights.slice(0, 3).map((insight, index) => (
-                <Card 
+                <Link
                   key={insight.id}
-                  className="animate-fade-in"
+                  to={`/insights/${insight.slug}`}
+                  className="block group hover:shadow-xl transition-all duration-300 animate-fade-in"
                   style={{ animationDelay: `${0.2 * index}s` }}
                 >
-                  <CardContent className="p-6">
-                    <div className="text-sm text-plum font-medium mb-2">
-                      {insight.categories?.name || 'Market Insights'}
-                    </div>
-                    <h3 className="text-xl font-bold mb-4 leading-relaxed">
-                      {insight.title}
-                    </h3>
-                    <Button 
-                      to={`/insights/${insight.slug}`}
-                      variant="outline"
-                    >
-                      Read Article
-                    </Button>
-                  </CardContent>
-                </Card>
+                  <Card className="overflow-hidden h-full group-hover:scale-[1.02] transition-transform duration-300">
+                    {insight.image_url && (
+                      <div className="aspect-video overflow-hidden">
+                        <img 
+                          src={insight.image_url} 
+                          alt={insight.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+                    <CardContent className="p-6">
+                      <div className="text-sm text-plum font-medium mb-2">
+                        {insight.categories?.name || 'Market Insights'}
+                      </div>
+                      <h3 className="text-xl font-bold mb-3 leading-relaxed group-hover:text-plum transition-colors">
+                        {insight.title}
+                      </h3>
+                      {insight.summary && (
+                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                          {insight.summary}
+                        </p>
+                      )}
+                      <div className="text-plum font-medium text-sm group-hover:underline">
+                        Read Article →
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
-          <div className="text-center mt-8">
-            <Button 
-              to="/insights?filter=rv"
-              variant="primary"
-              icon={<ArrowRight size={20} />}
-              iconPosition="right"
-            >
-              Browse All RV Insights
-            </Button>
-          </div>
         </div>
       </section>
 
       {/* Talk to Specialist */}
-      <section className="py-16 bg-sand">
+      <section className="py-16 bg-cloud">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto">
             <div className="bg-cloud rounded-lg p-8 text-center">
@@ -340,41 +347,6 @@ const RVParksPage = () => {
         </div>
       </section>
 
-      {/* Related Navigation */}
-      <section className="py-16 bg-cloud">
-        <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Button 
-              to="/manufactured-housing"
-              variant="outline"
-              className="text-center py-6"
-            >
-              🏘 Manufactured Housing
-            </Button>
-            <Button 
-              to="/self-storage"
-              variant="outline"
-              className="text-center py-6"
-            >
-              📦 Self-Storage
-            </Button>
-            <Button 
-              to="/1031-exchange"
-              variant="outline"
-              className="text-center py-6"
-            >
-              🔁 1031 Exchange Strategy
-            </Button>
-            <Button 
-              to="/success-stories"
-              variant="outline"
-              className="text-center py-6"
-            >
-              📖 Client Success Stories
-            </Button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 };

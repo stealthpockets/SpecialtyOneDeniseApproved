@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import { getTestimonialImagePath } from '../../utils/imageHelpers';
@@ -318,20 +317,8 @@ export const TestimonialsMH = () => {
                 }}
                 aria-label={`Go to testimonial ${index + 1}`}
               />
-            ))}
-          </div>
+            ))}          </div>
         )}
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <Link 
-            to="/success-stories"
-            className="inline-flex items-center bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors duration-300"
-          >
-            See All Success Stories
-            <ChevronRight size={16} className="ml-1" />
-          </Link>
-        </div>
       </div>
     </section>
   );
