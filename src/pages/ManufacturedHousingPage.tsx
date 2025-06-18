@@ -25,7 +25,6 @@ const stats = [
   }
 ];
 
-
 const caseStudies = [
   {
     title: "The Palms",
@@ -52,52 +51,58 @@ const ManufacturedHousingPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-sand">
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-hero text-white">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center text-sand">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+      {/* Enhanced Hero Section */}
+      <section className="section-padding bg-luxury-purple text-white relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-white/5"></div>
+        </div>
+        
+        <div className="container-custom relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-white">
+            <h1 className="heading-xl text-white mb-8 animate-fade-in">
               Other Brokers List.
-              <span className="block">We Deliver.</span>
+              <span className="block mt-2">We Deliver.</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <p className="text-body-lg mb-12 opacity-85 animate-fade-in max-w-3xl mx-auto" style={{ animationDelay: "0.2s" }}>
               Most overpromise, misprice, and retrade.<br />
               We've never failed to close a manufactured housing listing.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+            <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in mb-6" style={{ animationDelay: "0.3s" }}>
               <Button 
                 to="/contact" 
                 variant="primary"
                 size="lg"
+                className="bg-white text-plum hover:bg-white/90"
               >
                 Get Listings or Request Valuation
               </Button>
             </div>
-            <p className="text-sm lg:text-base mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <p className="text-caption text-white/70 animate-fade-in" style={{ animationDelay: "0.4s" }}>
               One form. Whether you're buying, selling, or planning a 1031.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Stats Grid */}
-      <section className="py-16 bg-cloud">
+      {/* Enhanced Stats Grid */}
+      <section className="section-padding bg-sand luxury-gradient-overlay">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-lg mb-16 text-center max-w-4xl mx-auto">
             100% Success Rate on Exclusive Listings.
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <Card 
                 key={index}
-                className="text-center py-8 animate-fade-in"
+                className="text-center content-padding py-10 animate-fade-in card-luxury-white"
                 style={{ animationDelay: `${0.1 * index}s` }}
               >
                 <CardContent>
-                  <div className="font-display text-4xl font-bold text-plum mb-2">
+                  <div className="heading-md text-plum mb-3">
                     {stat.value}
                   </div>
-                  <div className="text-gray-700">
+                  <div className="text-body text-gray-700">
                     {stat.label}
                   </div>
                 </CardContent>
@@ -110,14 +115,14 @@ const ManufacturedHousingPage = () => {
       {/* Testimonials */}
       <TestimonialsMH />
 
-      {/* Edge as Seller Section */}
-      <section className="py-16 bg-cloud">
+      {/* Enhanced Edge as Seller Section */}
+      <section className="section-padding bg-sand luxury-gradient-overlay">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="heading-lg mb-8">
               The Last Thing You Need Is Another Bidding War That Falls Apart.
             </h2>
-            <p className="text-lg mb-8 text-gray-700">
+            <p className="text-body-lg mb-12 text-gray-700 leading-relaxed">
               You've seen it: brokers chase top-dollar offers, only to renegotiate mid-deal or fall out of escrow altogether.
               We don't play that game. We pre-underwrite, qualify buyers, and build deal certainty before we go live.
             </p>
@@ -134,34 +139,37 @@ const ManufacturedHousingPage = () => {
         </div>
       </section>
 
-      {/* Case Studies */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+      {/* Enhanced Case Studies */}
+      <section className="section-padding bg-sand relative overflow-hidden">
+        {/* Enhanced subtle purple gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-plum/8 to-amethyst/12 opacity-70"></div>
+        
+        <div className="container-custom relative z-10">
+          <h2 className="heading-lg mb-16 text-center max-w-4xl mx-auto">
             Real Stories, Real Numbers, <span className="text-gradient">Real Results</span>
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {caseStudies.map((study, index) => (
               <Link
                 key={index}
                 to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
-                className="relative rounded-lg overflow-hidden gradient-overlay block group hover:shadow-xl transition-all duration-300 animate-fade-in"
+                className="relative rounded-xl overflow-hidden block group hover:shadow-card-hover transition-all duration-500 animate-fade-in card-luxury-white"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
                 <img 
                   src={study.image}
                   alt={study.title}
-                  className="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
                 />
-                <div className="absolute bottom-0 left-0 w-full p-6 z-10 bg-gradient-to-t from-black/80 to-transparent">
-                  <h3 className="text-white text-2xl font-bold mb-2 group-hover:text-sage transition-colors">
+                <div className="absolute bottom-0 left-0 w-full content-padding pb-8 z-10 bg-gradient-to-t from-obsidian/95 via-deep-purple/40 to-transparent">
+                  <h3 className="text-white heading-sm mb-3 group-hover:text-sage transition-colors duration-300">
                     {study.title}
                   </h3>
-                  <p className="text-white text-lg mb-2">
+                  <p className="text-white text-body mb-2">
                     {study.subtitle}
                   </p>
-                  <p className="text-white/90">
+                  <p className="text-white/90 text-caption">
                     {study.location}
                   </p>
                 </div>
@@ -171,14 +179,19 @@ const ManufacturedHousingPage = () => {
         </div>
       </section>
 
-      {/* For Buyers */}
-      <section className="py-16 bg-gradient-hero text-white">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+      {/* Enhanced For Buyers Section */}
+      <section className="section-padding bg-luxury-purple text-white relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+        </div>
+        
+        <div className="container-custom relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="heading-lg text-white mb-8">
               Serious Buyers See the Deal. The Internet Doesn't.
             </h2>
-            <p className="text-lg mb-8 opacity-90">
+            <p className="text-body-lg mb-12 opacity-85 leading-relaxed">
               We don't email-blast sensitive details to 5,000 "investors."<br />
               If you're in our network, you'll see high-quality opportunities early—before they're over-shopped or priced down.<br />
               If you're not, you won't.
@@ -187,36 +200,37 @@ const ManufacturedHousingPage = () => {
               to="/exclusive-buyers"
               variant="primary"
               size="lg"
+              className="bg-white text-plum hover:bg-white/90 mb-6"
             >
               Apply for Buyer Access
             </Button>
-            <p className="text-sm mt-4 opacity-75">
+            <p className="text-caption text-white/70">
               We prioritize family offices, long-term buyers, and serious 1031 investors.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Insights */}
-      <section className="py-16 bg-sand">
+      {/* Enhanced Insights Section */}
+      <section className="section-padding bg-sand luxury-gradient-overlay">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-lg mb-16 text-center max-w-4xl mx-auto">
             Insights That Actually Help You Operate—<span className="text-gradient">and Exit</span>
           </h2>
           {insightsLoading ? (
-            <div className="text-center">Loading insights...</div>
+            <div className="text-center text-body">Loading insights...</div>
           ) : insightsError ? (
-            <div className="text-center text-red-600">Error loading insights: {insightsError}</div>
+            <div className="text-center text-red-600 text-body">Error loading insights: {insightsError}</div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {insights.slice(0, 3).map((insight, index) => (
                 <Link
                   key={insight.id}
                   to={`/insights/${insight.slug}`}
-                  className="block group hover:shadow-xl transition-all duration-300 animate-fade-in"
+                  className="block group hover:shadow-card-hover transition-all duration-300 animate-fade-in"
                   style={{ animationDelay: `${0.2 * index}s` }}
                 >
-                  <Card className="overflow-hidden h-full group-hover:scale-[1.02] transition-transform duration-300">
+                  <Card className="overflow-hidden h-full group-hover:scale-[1.02] transition-transform duration-300 card-luxury-white">
                     {insight.image_url && (
                       <div className="aspect-video overflow-hidden">
                         <img 
@@ -227,19 +241,19 @@ const ManufacturedHousingPage = () => {
                         />
                       </div>
                     )}
-                    <CardContent className="p-6">
-                      <div className="text-sm text-plum font-medium mb-2">
+                    <CardContent className="content-padding">
+                      <div className="text-caption text-plum font-medium mb-3">
                         {insight.categories?.name || 'Market Insights'}
                       </div>
-                      <h3 className="text-xl font-bold mb-3 leading-relaxed group-hover:text-plum transition-colors">
+                      <h3 className="heading-sm mb-4 leading-relaxed group-hover:text-plum transition-colors">
                         {insight.title}
                       </h3>
                       {insight.summary && (
-                        <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                        <p className="text-body text-gray-600 line-clamp-2 mb-4">
                           {insight.summary}
                         </p>
                       )}
-                      <div className="text-plum font-medium text-sm group-hover:underline">
+                      <div className="text-plum font-medium text-caption group-hover:underline">
                         Read Article →
                       </div>
                     </CardContent>
@@ -251,32 +265,32 @@ const ManufacturedHousingPage = () => {
         </div>
       </section>
 
-      {/* Talk to Specialist */}
-      <section className="py-16 bg-cloud">
+      {/* Enhanced Talk to Specialist Section */}
+      <section className="section-padding bg-sand luxury-gradient-overlay">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-white rounded-lg p-8 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="card-luxury-white rounded-xl content-padding py-12 text-center">
               <img 
                 src="/assets/Leadership/andrew-headshot-image.webp" 
                 alt="Andrew Warner" 
-                className="w-32 h-32 rounded-full mx-auto object-cover mb-6"
+                className="w-32 h-32 rounded-full mx-auto object-cover mb-8 shadow-lg"
                 loading="lazy"
               />
-              <h3 className="font-display text-2xl font-bold mb-2">
+              <h3 className="heading-md mb-3">
                 Andrew Warner, CCIM
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-body text-gray-600 mb-6">
                 President | Manufactured Housing & RV
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                <a href="tel:602-730-9967" className="text-plum hover:text-amethyst">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-8">
+                <a href="tel:602-730-9967" className="text-plum hover:text-amethyst transition-colors text-body">
                   📞 602-730-9967
                 </a>
-                <a href="mailto:andrew@specialtyone.com" className="text-plum hover:text-amethyst">
+                <a href="mailto:andrew@specialtyone.com" className="text-plum hover:text-amethyst transition-colors text-body">
                   📧 andrew@specialtyone.com
                 </a>
               </div>
-              <blockquote className="text-lg italic mb-8">
+              <blockquote className="text-body-lg italic mb-10 text-gray-700 max-w-2xl mx-auto">
                 "I've never listed an MH property I didn't close. That's not marketing. That's just how we operate."
               </blockquote>
               <Button 
@@ -290,8 +304,6 @@ const ManufacturedHousingPage = () => {
           </div>
         </div>
       </section>
-
-
     </div>
   );
 };

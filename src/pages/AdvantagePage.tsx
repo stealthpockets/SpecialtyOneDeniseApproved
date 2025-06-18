@@ -137,28 +137,30 @@ const executionPoints = [
 
 const AdvantagePage = () => {
 	return (
-		<div className="flex flex-col min-h-screen bg-sand">
+		<div className="flex flex-col min-h-screen bg-luxury-dark">
 			{/* Hero Section */}
-			<section className="pt-32 pb-20 bg-gradient-hero text-white">
-				<div className="container-custom">
-					<div className="max-w-3xl mx-auto text-center text-sand">
-						<h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+			<section className="relative pt-40 pb-32 overflow-hidden">
+				<div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
+				<div className="container-custom relative z-10">
+					<div className="max-w-4xl mx-auto text-center">
+						<h1 className="heading-luxury text-white text-5xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight leading-[0.9]">
 							Most Brokers List.
-							<span className="block">We Engineer Outcomes.</span>
+							<span className="block text-luxury-light">We Engineer Outcomes.</span>
 						</h1>
-						<p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+						<p className="text-xl md:text-2xl mb-12 text-white/90 leading-relaxed max-w-3xl mx-auto">
 							Most brokers follow a script. We built the Specialty One Close Framework™—a proven system that's delivered over $1B in transactions across MH, RV, and Storage.
 						</p>
-						<div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+						<div className="flex flex-col sm:flex-row justify-center gap-6">
 							<Button
 								to="/contact"
 								variant="primary"
 								size="lg"
+								className="text-lg px-8 py-4"
 							>
 								Request a Custom Exit Strategy
 							</Button>
 						</div>
-						<p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+						<p className="text-sm mt-6 text-white/75">
 							One form. Confidential walkthrough. No obligation.
 						</p>
 					</div>
@@ -166,21 +168,23 @@ const AdvantagePage = () => {
 			</section>
 
 			{/* Why This Page Exists */}
-			<section className="py-16 bg-sand">
+			<section className="py-24 bg-white/5 backdrop-blur-sm">
 				<div className="container-custom">
-					<div className="max-w-3xl mx-auto text-center">
-						<h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+					<div className="max-w-4xl mx-auto text-center">
+						<h2 className="heading-luxury text-white text-4xl md:text-5xl font-bold mb-8 leading-tight">
 							Because Spray-and-Pray Marketing is Not a Strategy.
 						</h2>
-						<p className="text-lg mb-4">
-							Every seller wants top dollar. But not if it means wasted time, failed escrows, or unvetted buyers.
-						</p>
-						<p className="text-lg mb-4">
-							Our process starts before we list—and doesn't end until the wire clears.
-						</p>
-						<p className="text-lg font-medium text-plum">
-							We've used it to sell every exclusive MH and RV listing we've ever taken.
-						</p>
+						<div className="space-y-6 text-xl text-white/90 leading-relaxed">
+							<p>
+								Every seller wants top dollar. But not if it means wasted time, failed escrows, or unvetted buyers.
+							</p>
+							<p>
+								Our process starts before we list—and doesn't end until the wire clears.
+							</p>
+							<p className="text-luxury-accent font-medium">
+								We've used it to sell every exclusive MH and RV listing we've ever taken.
+							</p>
+						</div>
 					</div>
 				</div>
 			</section>
