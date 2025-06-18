@@ -28,10 +28,13 @@ const metrics = [
 
 export const TrustMetrics = () => {
 	return (
-		<section className="py-16 bg-sand">
-			<div className="container-custom">
+		<section className="py-20 bg-sand relative overflow-hidden">
+			{/* Luxury gradient overlay */}
+			<div className="absolute inset-0 bg-frosted-purple opacity-40"></div>
+			
+			<div className="container-custom relative z-10">
 				<div className="text-center mb-12">
-					<h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-6 heading-luxury">
 						<span className="text-gradient">$1B+ Closed.</span> Clean Closings. No
 						Guesswork.
 					</h2>
@@ -44,7 +47,7 @@ export const TrustMetrics = () => {
 					{metrics.map((metric, index) => {
 						const cardContent = (
 							<Card
-								className={`text-center py-8 animate-fade-in bg-cloud ${
+								className={`text-center py-8 animate-fade-in bg-white/90 backdrop-blur-sm border border-white/20 ${
 									metric.isClickable
 										? 'cursor-pointer hover:shadow-card-hover transition-all duration-300 hover:scale-105'
 										: ''

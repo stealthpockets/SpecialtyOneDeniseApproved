@@ -12,6 +12,10 @@ export default {
         navy: '#181F29',
         cloud: '#f8f9fa',
         sand: '#F5E8D1',
+        // Luxury purple variations
+        'deep-purple': '#2A0D3B',
+        'rich-purple': '#3E1C5F',
+        'dark-purple': '#1F102D',
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -31,6 +35,9 @@ export default {
         'radial-purple': 'radial-gradient(circle at center, var(--color-plum), var(--color-amethyst))',
         'radial-modern-hero-inverted': 'radial-gradient(circle at center, var(--color-plum), var(--color-amethyst), #111827)', // New gradient with dark on outside
         'radial-green': 'radial-gradient(circle at center, var(--color-evergreen), var(--color-sage))',
+        // Luxury gradients
+        'luxury-purple': 'linear-gradient(135deg, #3E1C5F 0%, #2A0D3B 100%)',
+        'frosted-purple': 'linear-gradient(135deg, rgba(62, 28, 95, 0.1) 0%, rgba(42, 13, 59, 0.05) 100%)',
       },
       boxShadow: {
         'card': '0 4px 20px rgba(0, 0, 0, 0.08)',

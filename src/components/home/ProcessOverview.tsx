@@ -26,10 +26,10 @@ const processSteps = [
 
 export const ProcessOverview = () => {
   return (
-    <section className="py-16 bg-sand">
+    <section className="py-20 bg-sand">
       <div className="container-custom">
         <div className="text-center mb-16">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 heading-luxury">
             Our <span className="text-gradient">Certainty Protocol™</span> Closes What Others Can't
           </h2>
           <p className="text-lg text-gray-700 max-w-3xl mx-auto">

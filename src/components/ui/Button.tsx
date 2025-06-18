@@ -35,9 +35,9 @@ export const Button: React.FC<ButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: 'button-gradient transform hover:-translate-y-0.5', // Simplified: hover:brightness-110 and hover:shadow-lg are in index.css via .button-gradient:hover
+    primary: 'button-gradient text-white transform hover:-translate-y-0.5', // Fixed: white text on gradient
     secondary: 'button-secondary hover:brightness-110 hover:shadow-lg transform hover:-translate-y-0.5',
-    outline: 'bg-transparent border border-plum text-plum hover:bg-plum/5 hover:shadow-md transform hover:-translate-y-0.5',
+    outline: 'bg-transparent border-2 border-plum text-plum hover:bg-plum hover:text-white hover:shadow-md transform hover:-translate-y-0.5 transition-all duration-300',
     text: 'bg-transparent text-plum hover:bg-plum/5 hover:shadow-sm transform hover:-translate-y-0.5',
   };
 

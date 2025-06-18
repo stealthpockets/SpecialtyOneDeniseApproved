@@ -24,10 +24,13 @@ const propertyTypes = [
 
 export const PropertyTypes = () => {
 	return (
-		<section className="py-16 bg-sand">
-			<div className="container-custom">
+		<section className="py-20 bg-sand relative overflow-hidden">
+			{/* Subtle purple gradient overlay */}
+			<div className="absolute inset-0 bg-gradient-to-br from-transparent via-plum/5 to-amethyst/10 opacity-60"></div>
+			
+			<div className="container-custom relative z-10">
 				<div className="text-center mb-12">
-					<h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-6 heading-luxury">
 						More Than a Niche. It&apos;s Our{' '}
 						<span className="text-gradient">Advantage</span>.
 					</h2>
@@ -42,7 +45,7 @@ export const PropertyTypes = () => {
 						<Link
 							to={type.path}
 							key={index}
-							className="group block animate-fade-in rounded-lg shadow-card overflow-hidden transition-all duration-300 hover:shadow-card-hover bg-white"
+							className="group block animate-fade-in rounded-lg shadow-card overflow-hidden transition-all duration-300 hover:shadow-card-hover bg-white/90 backdrop-blur-sm border border-white/20"
 							style={{ animationDelay: `${0.2 * index}s` }}
 						>
 							<div className="flex flex-col h-full">
@@ -53,8 +56,8 @@ export const PropertyTypes = () => {
 										alt={type.title}
 										className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
 									/>
-									{/* Darker, more subtle overlay for better text contrast */}
-									<div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+									{/* Sophisticated gradient overlay */}
+									<div className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-plum/30 to-transparent"></div>
 
 									{/* Content Overlay */}
 									<div className="absolute inset-0 p-6 flex flex-col justify-end text-white">

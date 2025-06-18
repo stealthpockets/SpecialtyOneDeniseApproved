@@ -3,10 +3,10 @@ import { Button } from '../ui/Button';
 
 export const CaseStudyHighlight = () => {
   return (
-    <section className="py-16 bg-gradient-subtle">
+    <section className="py-20 bg-gradient-subtle">
       <div className="container-custom">
         <div className="text-center mb-12">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="font-display text-3xl md:text-4xl font-bold mb-6 heading-luxury">
             Real Deals. No Guesswork. Just <span className="text-gradient">Results</span>.
           </h2>
         </div>

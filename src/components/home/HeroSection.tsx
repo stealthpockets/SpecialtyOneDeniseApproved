@@ -3,14 +3,14 @@ import { Button } from '../ui/Button';
 
 export const HeroSection = () => {
   return (
-    <section className="relative pt-24 pb-20 md:pt-32 md:pb-28 lg:pt-40 lg:pb-32 overflow-hidden">
+    <section className="relative pt-32 pb-24 md:pt-40 md:pb-32 lg:pt-48 lg:pb-40 overflow-hidden">
       {/* Background Gradient with Radial Effect */}
       <div className="absolute inset-0 bg-radial-modern-hero-inverted opacity-90 z-0"></div>
       
       {/* Content */}
       <div className="container-custom relative z-10">
         <div className="max-w-3xl mx-auto text-center text-sand">
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 animate-fade-in">
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-8 animate-fade-in heading-luxury">
             We Sell What Generalist Brokers 
             <span className="relative">
               <span className="relative z-10"> Don't Understand.</span>
@@ -26,7 +26,7 @@ export const HeroSection = () => {
             $1B+ in Total Transactions | 100% Success on Exclusive MH & RV Listings
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+          <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12 animate-fade-in" style={{ animationDelay: "0.4s" }}>
             <Button 
               to="https://form.typeform.com/to/B0GIZ1ht" 
               variant="primary" 
