@@ -23,9 +23,38 @@
     @apply font-sans text-obsidian;
     background-color: #F0EAE0;
   }
-    h1, h2, h3, h4, h5, h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-display font-bold;
     letter-spacing: -0.025em; /* Tight kerning for luxury feel */
+  }
+  
+  /* Luxury typography hierarchy - strict sizing and spacing */
+  .heading-xl {
+    font-size: 4rem; /* 64px */
+    line-height: 1.1;
+    letter-spacing: -0.05em;
+    font-weight: 700;
+  }
+  
+  .heading-lg {
+    font-size: 3rem; /* 48px */
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    font-weight: 700;
+  }
+  
+  .heading-md {
+    font-size: 2rem; /* 32px */
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+  
+  .heading-sm {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
   
   /* Luxury typography variants */
@@ -33,12 +62,52 @@
     letter-spacing: -0.05em;
     font-weight: 700;
   }
+  
+  /* Body text hierarchy */
+  .text-body-lg {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  
+  .text-body {
+    font-size: 1rem; /* 16px */
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  
+  .text-caption {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.5;
+    font-weight: 500;
+  }
 }
 
 @layer components {
-  /* Container Classes */
+  /* Container Classes with luxury spacing */
   .container-custom {
     @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Luxury spacing system */
+  .section-padding {
+    @apply py-24 lg:py-32; /* Generous vertical spacing */
+  }
+  
+  .section-padding-sm {
+    @apply py-16 lg:py-20;
+  }
+  
+  .content-padding {
+    @apply px-6 lg:px-12; /* Content inner padding */
+  }
+  
+  .element-spacing {
+    @apply mb-8 lg:mb-12; /* Consistent element spacing */
+  }
+  
+  .element-spacing-sm {
+    @apply mb-6 lg:mb-8;
   }
   
   /* Linear Gradient Backgrounds */
@@ -122,18 +191,42 @@
   .card:hover {
     @apply shadow-card-hover;
   }
-  
-  /* Luxury card variants */
+    /* Luxury card variants with refined glassmorphism */
   .card-glassmorphism {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
   
   .card-frosted-purple {
-    background: linear-gradient(135deg, rgba(138, 0, 103, 0.1) 0%, rgba(80, 15, 97, 0.05) 100%);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(138, 0, 103, 0.2);
+    background: linear-gradient(135deg, rgba(62, 28, 95, 0.12) 0%, rgba(42, 13, 59, 0.08) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(138, 0, 103, 0.15);
+    box-shadow: 0 8px 32px rgba(62, 28, 95, 0.15);
+  }
+  
+  .card-luxury-white {
+    background: rgba(248, 249, 250, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(138, 0, 103, 0.1);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Gradient overlays for sections */
+  .luxury-gradient-overlay {
+    position: relative;
+  }
+  
+  .luxury-gradient-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(62, 28, 95, 0.03) 0%, rgba(42, 13, 59, 0.01) 100%);
+    pointer-events: none;
   }
   
   /* Animation Classes */

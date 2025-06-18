@@ -104,24 +104,22 @@ export const LayeredHeroSection = () => {
               >
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-r from-obsidian/95 via-obsidian/75 to-obsidian/20"></div>
-              </div>
-
-              {/* Content */}
+              </div>              {/* Content */}
               <div className="relative h-full flex items-center">
                 <div className="container-custom z-10">
-                  <div className="max-w-4xl text-sand">
-                    <div className="mb-4">
-                      <h1 className="font-serif text-2xl lg:text-3xl text-cloud font-bold mb-2">
+                  <div className="max-w-5xl text-sand">
+                    <div className="mb-8">
+                      <h1 className="font-serif text-caption text-cloud font-medium mb-4 tracking-wider uppercase opacity-90">
                         {slide.headline}
                       </h1>
-                      <div className="w-32 h-0.5 bg-gradient-to-r from-sage to-evergreen opacity-80"></div>
+                      <div className="w-24 h-px bg-gradient-to-r from-sage to-evergreen opacity-60"></div>
                     </div>
                     
-                    <h2 className="font-display text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-6 text-sand">
+                    <h2 className="heading-xl text-sand mb-8 max-w-4xl">
                       {slide.subline}
                     </h2>
                     
-                    <p className="text-lg lg:text-xl mb-8 opacity-90 leading-relaxed max-w-3xl text-sand">
+                    <p className="text-body-lg mb-12 opacity-85 leading-relaxed max-w-3xl text-sand">
                       {slide.copy}
                     </p>
                     

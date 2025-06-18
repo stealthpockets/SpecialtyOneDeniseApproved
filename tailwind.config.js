@@ -27,6 +27,9 @@ export default {
         '5xl': '3rem',
         '6xl': '4rem',
       },
+      spacing: {
+        '18': '4.5rem',
+      },
       backgroundImage: {
         'gradient-hero': 'linear-gradient(to bottom right, var(--tw-gradient-stops))',
         'gradient-cool': 'linear-gradient(to right, var(--tw-gradient-stops))',

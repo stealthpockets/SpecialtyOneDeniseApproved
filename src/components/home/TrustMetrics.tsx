@@ -28,26 +28,26 @@ const metrics = [
 
 export const TrustMetrics = () => {
 	return (
-		<section className="py-20 bg-sand relative overflow-hidden">
-			{/* Luxury gradient overlay */}
-			<div className="absolute inset-0 bg-frosted-purple opacity-40"></div>
+		<section className="section-padding bg-sand relative overflow-hidden">
+			{/* Enhanced luxury gradient overlay */}
+			<div className="absolute inset-0 bg-frosted-purple opacity-50"></div>
 			
 			<div className="container-custom relative z-10">
-				<div className="text-center mb-12">
-					<h2 className="font-display text-3xl md:text-4xl font-bold mb-6 heading-luxury">
+				<div className="text-center mb-16">
+					<h2 className="heading-lg mb-6 max-w-4xl mx-auto">
 						<span className="text-gradient">$1B+ Closed.</span> Clean Closings. No
 						Guesswork.
 					</h2>
-					<p className="text-lg text-gray-700 max-w-3xl mx-auto">
+					<p className="text-body-lg text-gray-700 max-w-3xl mx-auto">
 						We deliver results across niche CRE asset classes—without the fluff.
 					</p>
 				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 					{metrics.map((metric, index) => {
 						const cardContent = (
 							<Card
-								className={`text-center py-8 animate-fade-in bg-white/90 backdrop-blur-sm border border-white/20 ${
+								className={`text-center content-padding py-10 animate-fade-in card-luxury-white ${
 									metric.isClickable
 										? 'cursor-pointer hover:shadow-card-hover transition-all duration-300 hover:scale-105'
 										: ''
@@ -55,17 +55,17 @@ export const TrustMetrics = () => {
 								style={{ animationDelay: `${0.1 * index}s` }}
 							>
 								<CardContent>
-									<div className="font-display text-4xl font-bold text-plum mb-2">
+									<div className="heading-md text-plum mb-3">
 										{metric.value}
 									</div>
-									<div className="text-lg font-medium mb-1">
+									<div className="text-body font-medium mb-2">
 										{metric.label}
 									</div>
-									<div className="text-sm lg:text-base text-gray-500">
+									<div className="text-caption text-gray-500">
 										{metric.subtext}
 									</div>
 									{metric.isClickable && (
-										<div className="mt-2 text-xs lg:text-sm text-plum font-medium">
+										<div className="mt-3 text-caption text-plum font-medium">
 											Click to view case study →
 										</div>
 									)}
