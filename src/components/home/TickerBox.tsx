@@ -35,23 +35,21 @@ const RateDisplay: React.FC<RateDisplayProps> = React.memo(({ rate, onMouseEnter
       default: return <Minus className="w-5 h-5" />;
     }
   };
-
   return (
     <span
-      className="ticker-rate inline-flex items-center space-x-3 mr-8 transition-colors duration-150 p-2 rounded-md transform-gpu hover:bg-white/10 will-change-background"
-      onMouseEnter={onMouseEnterRate} // Added onMouseEnter
-      onMouseLeave={onMouseLeaveRate} // Added onMouseLeave
+      className="ticker-rate inline-flex items-center space-x-4 mr-10 transition-all duration-300 p-3 rounded-lg transform-gpu hover:bg-white/15 will-change-background cursor-pointer"
+      onMouseEnter={onMouseEnterRate}
+      onMouseLeave={onMouseLeaveRate}
     >
-      <span className="text-sand font-serif text-lg">
+      <span className="text-sand font-serif text-caption font-medium tracking-wide">
         {rate.shortLabel || rate.label}:
       </span>
-      <span className="text-white font-extrabold text-xl">
+      <span className="text-white font-bold heading-sm">
         {rate.value}
-      </span>
-      {rate.change && (
+      </span>      {rate.change && (
         <span className={`inline-flex items-center space-x-2 ${getTrendColor(rate.change.direction)}`}>
           {getTrendIcon(rate.change.direction)}
-          <span className="text-base font-medium">
+          <span className="text-caption font-medium">
             {rate.change.displayText}
           </span>
         </span>
@@ -63,7 +61,8 @@ const RateDisplay: React.FC<RateDisplayProps> = React.memo(({ rate, onMouseEnter
 export const TickerBox: React.FC<TickerBoxProps> = () => {
   const [isDesktop, setIsDesktop] = useState(false);
   const [isContainerHovered, setIsContainerHovered] = useState(false);
-  const [isRateItemHovered, setIsRateItemHovered] = useState(false);  const { rates, loading, error, getDisplayRates } = useFREDRates(true);
+  const [isRateItemHovered, setIsRateItemHovered] = useState(false);
+  const { rates, loading, error } = useFREDRates(true);
 
   const tickerRef = useRef<HTMLDivElement>(null);
   const animationStartTimeRef = useRef<number | null>(null);

@@ -6,7 +6,7 @@ import { Logo } from '../ui/Logo';
 const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link
     to={to}
-    className="text-obsidian hover:text-plum transition-colors duration-200 font-medium text-base lg:text-lg"
+    className="text-obsidian hover:text-plum transition-colors duration-200 font-medium text-caption tracking-wide"
   >
     {children}
   </Link>
@@ -24,24 +24,24 @@ const DropdownLink = ({
   return (
     <div className="relative group">
       <button
-        className="flex items-center text-obsidian hover:text-plum transition-colors duration-200 font-medium text-base lg:text-lg"
+        className="flex items-center text-obsidian hover:text-plum transition-colors duration-200 font-medium text-caption tracking-wide"
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
-        <ChevronDown className="ml-1 w-4 h-4" />
+        <ChevronDown className="ml-1 w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
       </button>
       
       <div
-        className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 z-[100] ${
-          isOpen ? 'opacity-100 visible' : 'opacity-0 invisible group-hover:opacity-100 group-hover:visible'
+        className={`absolute left-0 mt-3 w-56 rounded-lg shadow-xl card-luxury-white border border-white/20 transition-all duration-300 z-[100] ${
+          isOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'
         }`}
       >
-        <div className="py-1">
+        <div className="py-2">
           {items.map((item) => (
             <Link
               key={item.path}
               to={item.path}
-              className="block px-4 py-2 text-sm lg:text-base text-obsidian hover:bg-plum hover:text-white"
+              className="block px-4 py-3 text-caption text-obsidian hover:bg-plum/10 hover:text-plum transition-colors duration-200"
               onClick={() => setIsOpen(false)}
             >
               {item.name}
@@ -77,26 +77,29 @@ export const Header = () => {
     { name: 'Success Stories', path: '/success-stories' },
     { name: 'Track Record', path: '/track-record' }
   ];
-  
-  return (
+    return (
     <header
-      className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-300 ${
-        scrolled ? 'bg-sand shadow-md py-3' : 'bg-sand py-5'
+      className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-500 ${
+        scrolled 
+          ? 'bg-sand/95 backdrop-blur-md shadow-lg border-b border-white/20 py-3' 
+          : 'bg-sand py-6'
       }`}
     >
       <div className="container-custom">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center">
-            <Logo className="h-10 w-auto" />
-          </Link>          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+            <Logo className="h-10 w-auto transition-transform duration-300 hover:scale-105" />
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center space-x-10">
             <DropdownLink title="Property Types" items={propertyTypes} />
             <NavLink to="/advantage">The Advantage</NavLink>
             <NavLink to="/1031-exchange">1031 Exchange</NavLink>
             <DropdownLink title="Resources" items={resources} />
             <NavLink to="/about">About</NavLink>
             
-            <Link to="/contact" className="button-gradient ml-4">
+            <Link to="/contact" className="button-gradient ml-6 px-6 py-3">
               Contact Us
             </Link>
           </nav>
@@ -110,25 +113,24 @@ export const Header = () => {
           </button>
         </div>
       </div>
-      
-      {/* Mobile Navigation */}
+        {/* Mobile Navigation */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200 animate-fade-in">
-          <div className="container-custom py-4 space-y-4">
-            <div className="py-2 border-b border-gray-100">
+        <div className="lg:hidden card-luxury-white border-t border-white/20 animate-fade-in">
+          <div className="container-custom py-6 space-y-6">
+            <div className="py-3 border-b border-gray-100">
               <button
                 className="flex items-center justify-between w-full text-left py-2"
                 onClick={() => {}}
               >
-                <span className="font-medium">Property Types</span>
+                <span className="font-medium text-caption">Property Types</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              <div className="pl-4 py-2 space-y-2">
+              <div className="pl-4 py-3 space-y-3">
                 {propertyTypes.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="block py-1 text-sm lg:text-base text-obsidian hover:text-plum"
+                    className="block py-1 text-caption text-obsidian hover:text-plum transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -139,32 +141,34 @@ export const Header = () => {
             
             <Link
               to="/advantage"
-              className="block py-2 border-b border-gray-100 text-sm lg:text-base"
+              className="block py-3 border-b border-gray-100 text-caption font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               The Advantage
-            </Link>            <Link
+            </Link>
+            
+            <Link
               to="/1031-exchange"
-              className="block py-2 border-b border-gray-100 text-sm lg:text-base"
+              className="block py-3 border-b border-gray-100 text-caption font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               1031 Exchange
             </Link>
             
-            <div className="py-2 border-b border-gray-100">
+            <div className="py-3 border-b border-gray-100">
               <button
                 className="flex items-center justify-between w-full text-left py-2"
                 onClick={() => {}}
               >
-                <span className="font-medium">Resources</span>
+                <span className="font-medium text-caption">Resources</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
-              <div className="pl-4 py-2 space-y-2">
+              <div className="pl-4 py-3 space-y-3">
                 {resources.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="block py-1 text-sm lg:text-base text-obsidian hover:text-plum"
+                    className="block py-1 text-caption text-obsidian hover:text-plum transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -175,7 +179,7 @@ export const Header = () => {
             
             <Link
               to="/about"
-              className="block py-2 border-b border-gray-100 text-sm lg:text-base"
+              className="block py-3 border-b border-gray-100 text-caption font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               About
@@ -183,7 +187,7 @@ export const Header = () => {
             
             <Link
               to="/contact"
-              className="button-gradient block text-center mt-4"
+              className="button-gradient block text-center mt-6 px-6 py-3"
               onClick={() => setIsMenuOpen(false)}
             >
               Contact Us
