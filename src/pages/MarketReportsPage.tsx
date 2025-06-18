@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Download, Calendar, TrendingUp, BarChart3, FileText, Filter, Search } from 'lucide-react';
+import { ArrowRight, Download, Calendar, TrendingUp, BarChart3, FileText, Search } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
@@ -64,10 +64,9 @@ const MarketReportsPage = () => {
     
     return matchesSearch;
   });
-
   return (
-    <div className="flex flex-col min-h-screen bg-sand">
-      {/* Hero Section */}
+    <div className="flex flex-col min-h-screen bg-luxury-dark">
+      {/* Hero Section - keeping original gradient */}
       <section className="pt-32 pb-20 bg-gradient-hero text-white">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center text-sand">
@@ -97,34 +96,33 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Market Metrics Dashboard */}
-      <section className="py-16 bg-sand">
+      <section className="py-24 bg-white">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-luxury-dark text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             Current Market Snapshot
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {marketMetrics.map((metric, index) => (
               <Card 
                 key={index}
-                className="animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
+                className="bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300"
               >
-                <CardContent className="p-6">
-                  <h3 className="font-display text-xl font-bold mb-4 flex items-center gap-2">
-                    <BarChart3 size={24} className="text-plum" />
+                <CardContent className="p-8">
+                  <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 text-luxury-dark">
+                    <BarChart3 size={28} className="text-luxury-primary" />
                     {metric.title}
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {metric.data.map((item, idx) => (
-                      <div key={idx} className="flex items-center justify-between">
-                        <span className="font-medium">{item.asset}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-lg">
+                      <div key={idx} className="flex items-center justify-between py-3 border-b border-luxury-light/20 last:border-b-0">
+                        <span className="font-medium text-lg text-luxury-dark">{item.asset}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="font-bold text-xl text-luxury-primary">
                             {'rate' in item ? item.rate : item.volume}
                           </span>
                           {('trend' in item && item.trend) && (
                             <TrendingUp 
-                              size={16} 
+                              size={20} 
                               className={`
                                 ${item.trend === 'up' ? 'text-green-500 rotate-0' : ''}
                                 ${item.trend === 'down' ? 'text-red-500 rotate-180' : ''}
@@ -133,7 +131,7 @@ const MarketReportsPage = () => {
                             />
                           )}
                           {('change' in item && item.change) && (
-                            <span className={`text-sm ${item.change.startsWith('-') ? 'text-red-500' : 'text-green-500'}`}>
+                            <span className={`font-medium ${item.change.startsWith('-') ? 'text-red-500' : 'text-green-500'}`}>
                               {item.change}
                             </span>
                           )}
@@ -149,19 +147,17 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Market Rate Ticker */}
-      <TickerBox />
-
-      {/* Filter and Search */}
-      <section className="py-8 bg-cloud sticky top-20 z-30 border-b border-gray-200">
+      <TickerBox />      {/* Filter and Search */}
+      <section className="py-8 bg-luxury-dark/95 backdrop-blur-sm sticky top-20 z-30 border-b border-white/10">
         <div className="container-custom">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
             {/* Search */}
             <div className="relative flex-grow max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60" size={20} />
               <input
                 type="text"
                 placeholder="Search reports..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+                className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -178,39 +174,37 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Market Reports Grid */}
-      <section className="py-16 bg-sand">
+      <section className="py-24 bg-luxury-dark">
         <div className="container-custom">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="font-display text-3xl md:text-4xl font-bold">
+          <div className="flex items-center justify-between mb-12">
+            <h2 className="heading-luxury text-white text-4xl md:text-5xl font-bold leading-tight">
               Market Reports
             </h2>
-            <div className="text-gray-600">
+            <div className="text-white/60 text-lg">
               {filteredReports.length} report{filteredReports.length !== 1 ? 's' : ''} found
             </div>
           </div>
 
           {loading && (
-            <div className="text-center py-12">
-              <p className="text-lg">Loading market reports...</p>
+            <div className="text-center py-16">
+              <p className="text-xl text-white/60">Loading market reports...</p>
             </div>
           )}
           
           {error && (
-            <div className="text-center py-12">
-              <p className="text-lg text-red-600">Error loading reports: {error}</p>
+            <div className="text-center py-16">
+              <p className="text-xl text-red-400">Error loading reports: {error}</p>
             </div>
-          )}
-          
+          )}          
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredReports.map((report: any, index: number) => (
                 <Link 
                   key={report.id || index}
                   to={`/market-reports/${report.slug}`}
-                  className="block animate-fade-in"
-                  style={{ animationDelay: `${0.1 * index}s` }}
+                  className="block"
                 >
-                  <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+                  <Card className="overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300 h-full">
                     <div className="relative h-48">
                       <img 
                         src={report.image_url || '/assets/property-types/self-storage-facility-investment.webp'}
@@ -234,23 +228,25 @@ const MarketReportsPage = () => {
                       )}
                     </div>
 
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-2 text-gray-600 mb-3">
+                    <CardContent className="p-8">
+                      <div className="flex items-center gap-2 text-white/60 mb-4">
                         <Calendar size={16} />
-                        <span className="text-sm lg:text-base">{new Date(report.published_at).toLocaleDateString()}</span>
+                        <span className="text-sm">{new Date(report.published_at).toLocaleDateString()}</span>
                         {report.reading_time && (
                           <>
                             <span>•</span>
                             <FileText size={16} />
-                            <span className="text-sm lg:text-base">{report.reading_time} min read</span>
+                            <span className="text-sm">{report.reading_time} min read</span>
                           </>
                         )}
-                      </div>                      <h3 className="font-display text-xl font-bold mb-3 leading-relaxed">
+                      </div>
+                      
+                      <h3 className="text-xl font-bold mb-4 leading-tight text-white">
                         {report.title}
                       </h3>
 
-                      <div className="flex items-center gap-2 mb-3">
-                        <Badge color="secondary" variant="outline">
+                      <div className="flex items-center gap-2 mb-4">
+                        <Badge color="secondary" variant="outline" className="border-white/40 text-white">
                           Market Report
                         </Badge>
                         <PropertyTypeBadge 
@@ -258,15 +254,15 @@ const MarketReportsPage = () => {
                         />
                       </div>
 
-                      <div className="text-gray-600 mb-4 prose prose-sm max-w-none line-clamp-3">
+                      <div className="text-white/80 mb-6 prose prose-sm max-w-none line-clamp-3">
                         <ReactMarkdown>{report.summary?.replace(/\\n/g, '\n') || ''}</ReactMarkdown>
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <div className="text-sm lg:text-base text-gray-500">
+                        <div className="text-sm text-white/60">
                           By {report.authors?.name || 'Unknown Author'}
                         </div>
-                        <div className="px-4 py-2 border border-plum text-plum rounded-lg text-sm font-medium">
+                        <div className="px-4 py-2 border border-luxury-accent text-luxury-accent rounded-lg text-sm font-medium hover:bg-luxury-accent hover:text-white transition-colors">
                           View Report
                         </div>
                       </div>
@@ -278,43 +274,41 @@ const MarketReportsPage = () => {
           )}
 
           {!loading && !error && filteredReports.length === 0 && (
-            <div className="text-center py-12">
-              <FileText size={48} className="text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-medium text-gray-600 mb-2">
+            <div className="text-center py-16">
+              <FileText size={60} className="text-white/40 mx-auto mb-6" />
+              <h3 className="text-2xl font-bold text-white mb-4">
                 No reports found
               </h3>
-              <p className="text-gray-500">
+              <p className="text-white/60 text-lg">
                 Try adjusting your filters or search terms.
               </p>
             </div>
           )}
         </div>
-      </section>
-
-      {/* Upcoming Reports */}
-      <section className="py-16 bg-cloud">
+      </section>      {/* Upcoming Reports */}
+      <section className="py-24 bg-white">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-luxury-dark text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             Upcoming Reports
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {upcomingReports.map((report, index) => (
               <Card 
                 key={index}
-                className="animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
+                className="bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300"
               >
-                <CardContent className="p-6">
-                  <Badge color="primary" variant="outline" className="mb-3">
+                <CardContent className="p-8">
+                  <Badge color="primary" variant="outline" className="mb-4">
                     {report.type}
-                  </Badge>                  <h3 className="font-display text-xl font-bold mb-2 leading-relaxed">
+                  </Badge>
+                  <h3 className="text-xl font-bold mb-3 leading-tight text-luxury-dark">
                     {report.title}
                   </h3>
-                  <div className="flex items-center gap-2 text-gray-600 mb-4">
+                  <div className="flex items-center gap-2 text-luxury-dark/70 mb-6">
                     <Calendar size={16} />
                     <span>Expected: {report.expectedDate}</span>
                   </div>
-                  <p className="text-gray-600">
+                  <p className="text-luxury-dark/80 leading-relaxed">
                     {report.description}
                   </p>
                 </CardContent>
@@ -325,22 +319,23 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="py-16 bg-gradient-to-br from-obsidian to-amethyst text-white">
+      <section className="py-24 bg-gradient-luxury-dark">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="heading-luxury text-white text-4xl md:text-5xl font-bold mb-8 leading-tight">
               Stay Ahead of Market Trends
             </h2>
-            <p className="text-lg mb-8 opacity-90">
+            <p className="text-xl mb-12 text-white/90 leading-relaxed max-w-3xl mx-auto">
               Subscribe to receive our latest market reports, quarterly updates, and exclusive insights delivered directly to your inbox.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-6">
               <Button 
                 to="/newsletter"
                 variant="primary"
                 size="lg"
                 icon={<ArrowRight size={20} />}
                 iconPosition="right"
+                className="text-lg px-8 py-4"
               >
                 Subscribe for Free Reports
               </Button>
@@ -349,7 +344,7 @@ const MarketReportsPage = () => {
                 to="/contact"
                 variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white/10"
+                className="border-white text-white hover:bg-white/10 text-lg px-8 py-4"
               >
                 Request Custom Research
               </Button>
@@ -359,34 +354,34 @@ const MarketReportsPage = () => {
       </section>
 
       {/* Related Links */}
-      <section className="py-16 bg-sand">
+      <section className="py-24 bg-luxury-dark">
         <div className="container-custom">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             <Button 
               to="/insights"
               variant="outline"
-              className="text-center py-6"
+              className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
             >
               📊 Market Insights
             </Button>
             <Button 
               to="/manufactured-housing"
               variant="outline"
-              className="text-center py-6"
+              className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
             >
               🏘 Manufactured Housing
             </Button>
             <Button 
               to="/rv-parks"
               variant="outline"
-              className="text-center py-6"
+              className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
             >
               🚐 RV Parks
             </Button>
             <Button 
               to="/self-storage"
               variant="outline"
-              className="text-center py-6"
+              className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
             >
               📦 Self-Storage
             </Button>
