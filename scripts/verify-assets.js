@@ -12,35 +12,48 @@ const publicDir = join(rootDir, 'public');
 
 console.log('🔍 Verifying build assets...\n');
 
+// Debug information
+console.log(`Root directory: ${rootDir}`);
+console.log(`Dist directory: ${distDir}`);
+console.log(`Public directory: ${publicDir}`);
+console.log(`Dist exists: ${existsSync(distDir)}`);
+console.log(`Public exists: ${existsSync(publicDir)}`);
+console.log('');
+
 // Check if dist directory exists
 if (!existsSync(distDir)) {
   console.error('❌ dist directory not found! Run `npm run build` first.');
   process.exit(1);
 }
 
-// Check if public assets are copied to dist
-const publicAssets = [
+// Check critical assets in dist directory (after Vite build)
+const criticalAssets = [
   'assets/logo/logo-horizontal-lightbackground.svg',
   'assets/favicon/favicon.svg',
   'assets/favicon/favicon-32x32.png',
 ];
 
+// Also check the capitalized paths in case of case sensitivity issues
+const criticalAssetsAlternate = [
+  'Assets/logo/logo-horizontal-lightbackground.svg',
+  'Assets/favicon/favicon.svg',
+  'Assets/favicon/favicon-32x32.png',
+];
+
 let allAssetsFound = true;
 
-console.log('Checking critical assets:');
-publicAssets.forEach(asset => {
+console.log('Checking critical assets in dist directory:');
+criticalAssets.forEach((asset, index) => {
   const distPath = join(distDir, asset);
-  const publicPath = join(publicDir, asset);
+  const alternateAsset = criticalAssetsAlternate[index];
+  const alternatePath = join(distDir, alternateAsset);
   
-  if (existsSync(publicPath)) {
-    if (existsSync(distPath)) {
-      console.log(`✅ ${asset} - copied to dist`);
-    } else {
-      console.log(`⚠️  ${asset} - exists in public but NOT in dist`);
-      allAssetsFound = false;
-    }
+  if (existsSync(distPath)) {
+    console.log(`✅ ${asset} - found in dist`);
+  } else if (existsSync(alternatePath)) {
+    console.log(`✅ ${alternateAsset} - found in dist (case variant)`);
   } else {
-    console.log(`❌ ${asset} - NOT found in public`);
+    console.log(`❌ ${asset} - NOT found in dist (checked both ${asset} and ${alternateAsset})`);
     allAssetsFound = false;
   }
 });

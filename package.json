@@ -5,7 +5,7 @@
   "type": "module",  "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:verify": "vite build && node scripts/verify-assets.js",
+    "build:verify": "node scripts/build-and-verify.js",
     "verify-assets": "node scripts/verify-assets.js",
     "build:analyze": "vite build --mode analyze",
     "lint": "eslint .",
