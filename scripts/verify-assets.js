@@ -27,6 +27,7 @@ if (!existsSync(distDir)) {
 }
 
 // Check critical assets in dist directory (after Vite build)
+// Note: Git tracks these as Public/assets but Vite copies them to assets in dist
 const criticalAssets = [
   'assets/logo/logo-horizontal-lightbackground.svg',
   'assets/favicon/favicon.svg',
