@@ -1,0 +1,53 @@
+rank,classification,property,address,location,size_nrsf,units,sale_price,date_sold,latitude,longitude
+1,MH,Shadow Ridge Community,"Glendale, AZ",,123,,3980000,,33.539170,-112.186000
+1,RV,Sunland RV Park,"Yuma, AZ",,496,,10750000,,32.692650,-114.628000
+1,MH,White Sands Estates,"Apache Junction, AZ",,350000,,,,33.422270,-111.544000
+1,SS,Extra Space Storage,"Phoenix, AZ",,85485,886,24000000,,33.448440,-112.074000
+1,SS,Life Storage,"Oro Valley, AZ",,76518,773,,2025-02-04,32.429710,-110.962000
+1,SS,Arizona Self Storage,"Queen Creek, AZ",,165920,1109,24400000,,33.248390,-111.634000
+1,SS,Sacramento Portfolio,"Sacramento, CA",,,100,1100000,,38.581570,-121.494000
+1,RV,Del Pueblo RV Park,"Yuma, AZ",,478,,1370000,,32.692650,-114.628000
+1,MH,Litchfield Village,"Litchfield Park, AZ",,99,,,,33.784600,-111.925000
+1,SS,Cubemart,"Queen Creek, AZ","Yuma, AZ",9250,782,10750000,,33.248390,-111.634000
+1,SS,Huntley Self-Storage,"Huntley, IL",,48600,460,8135000,,42.173140,-88.428100
+1,MH,Apache Junction Mobile,"Apache Junction, AZ",,192,,9244000,,33.422270,-111.548000
+1,SS,Vault Storage & RV,"Tucson, AZ",,66240,330,5425000,,32.222880,-110.975000
+1,RV,Zion River Resort,"Virgin, UT",,112,,1770000,,37.201900,-113.188000
+1,SS,1st Defense Self Storage,"Corpus Christi, TX",,73273,673,10200000,,27.800580,-97.396400
+1,RV,Las Quintas Oasis RV,"Yuma, AZ",,460,,3785000,,32.692650,-114.628000
+1,MH,Sierra Springs Village,"Van Nuys, CA",,146,,1640000,,34.186670,-118.448000
+1,SS,Vault Storage & RV,"Chandler, AZ",,150250,702,25500000,,33.306200,-111.841000
+1,SS,Storage Plus,"Council Grove, KS",,6368,213,1600000,,38.661120,-96.493100
+1,RV,Blue Sky RV Park,"Yuma, AZ",,252,,350000,,32.692650,-114.628000
+1,RV,Fortuna Del Oro,"Yuma, AZ",,1296,,2275000,,32.692650,-114.628000
+1,RV,Leaf Verde RV Resort,"Buckeye, AZ",,385,,775000,,33.370320,-112.584000
+1,MH,Pueblo Mobile Manor,"Apache Junction, AZ",,181,,15600000,,33.422270,-111.548000
+1,MH,Westglen Mobile Home,"Flagstaff, AZ",,201,,1055000,,34.880400,-111.763000
+1,SS,Envy Self-Storage & RV,"Gilbert, AZ",,510,,750000,,33.352760,-111.789000
+1,RV,Caravan Oasis,"Yuma, AZ",,1313,560,582500,,32.692650,-114.628000
+1,SS,Super Space Self Storage,"Peoria, AZ",,,,825000,,33.580600,-112.237000
+1,RV,Destiny Phoenix West,"Goodyear, AZ",,284,,6150000,,33.434400,-112.358000
+1,MH,Longhaven West MHP,"Phoenix, AZ",,314,,9650000,,33.448440,-112.074000
+1,MH,Mesa Village Mobile Home,"Mesa, AZ",,201,,7000000,,33.415180,-111.831000
+1,RV,Lost Dutchman RV Park,"Apache Junction, AZ",,730,,3400000,,33.422270,-111.548000
+1,MH,The Palms Mobile Home,"Apache Junction, AZ",,89,,540000,,33.422270,-111.548000
+1,SS,Life Storage,"Tucson, AZ",,71257,698,,,32.222880,-110.975000
+1,SS,Ukiak Self Storage,"Ukiak, CA",,70423,627,9400000,,39.150200,-123.208000
+1,RV,Rock Shadows RV Resort,"Apache Junction, AZ",,683,,14500000,,33.422270,-111.548000
+1,MH,The Meadows,"Ketchum, ID",,,,1217500,,43.680540,-114.363000
+1,MH,Casa MH Park & Embe,"Casa Grande, AZ",,,,2400000,,32.879500,-111.757000
+1,RV,Arizona Sands,"Yuma, AZ",,204,,2400000,,32.692650,-114.628000
+1,RV,Silver Sands,"Mesa, AZ",,178,,,,33.415180,-111.831000
+1,RV,Picacho Peak RV Resort,"Casa Grande, AZ",,312,,1735000,,32.879500,-111.757000
+2,MH,Desert Trails RV Park,"Tucson, AZ",,242,,4500000,,32.222880,-110.975000
+2,MH,Sunny Crest,"Mesa, AZ",,100,,110000,,33.415180,-111.831000
+2,MH,Phoenix Mobile Home,"Phoenix, AZ",,90,,200000,,33.448440,-112.074000
+2,RV,Destiny Riviera RV Resort,"Blythe, CA",,261,,2060000,,33.613480,-114.594000
+2,MH,Tiki Tai Mobile Home Park,"Glendale, AZ",,82,,277000,,33.539170,-112.186000
+2,RV,Westward Village,"Yuma, AZ",,,,329000,,32.692650,-114.628000
+2,RV,Valley of the Sun,"Marana, AZ",,,,380000,,32.390910,-111.103000
+2,RV,Blue Sky RV Park,"Preston, WA",,127745,62,2350000,,47.528690,-121.994000
+2,RV,VIP RV Resort,"Apache Junction, AZ",,128,,1950000,,33.422270,-111.548000
+3,MH,Pueblo Heights Mobile,"Globe, AZ",,112,,1850000,,33.787780,-110.562000
+3,MH,Village Square Mobile,"Oracle, AZ",,77,,91000,,32.906980,-110.753000
+3,MH,Paradise Gardens,"Casa Grande, AZ",,49,,2209000,,32.879500,-111.757000

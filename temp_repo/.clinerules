@@ -1,0 +1,39 @@
+# Specialty One Website - Development Patterns
+
+## Core Architecture
+- Bolt.new/StackBlitz origin: Use standard Vite + React + TypeScript patterns
+- Component structure: Layout/ (wrappers), home/ (sections), ui/ (reusables), pages/ (routes)
+- Design system: Custom Tailwind with plum/amethyst/evergreen brand colors + sand background
+
+## Content & Data Patterns  
+- ✅ Supabase integration: Case studies and testimonials connected
+- Asset paths expect /dist/assets/ structure for images
+- Case studies use slug-based routing (/success/:slug)
+- TypeScript interfaces comprehensive and production-ready
+
+## Styling Conventions - CRITICAL BUTTON PATTERN
+- Lucide React for all icons
+- Staggered animations with animationDelay: `${0.2 * index}s`
+- Gradient backgrounds: plum→amethyst, evergreen→sage
+- ⚠️ NEVER override primary button text color: variant="primary" = white text on gradient
+- Button variants: primary (gradient + white text), secondary (outline), never mix
+
+## Business Context
+- Alternative commercial real estate (manufactured housing, RV parks, self-storage)
+- Key messaging: "$1B+ transactions", "100% success", "specialist vs generalist" positioning
+- Lead generation focus: contact forms, exclusive networks, market reports
+
+## Development Notes
+- Ready for production at ~95% completion
+- ✅ Backend connected, case studies working, buttons legible
+- ✅ Complete Insights & Market Reports content system with ArticleDetail pages
+- Missing: About timeline fix, scroll-to-top, mock data labels, favicons
+
+## Critical Issues RESOLVED ✅
+- ✅ FIXED: CaseStudyDetailPage dynamic loading
+- ✅ FIXED: Success story modals use Supabase data  
+- ✅ FIXED: Button legibility crisis (purple text on purple gradients)
+- ✅ FIXED: Complete Insights & Market Reports system (ArticleDetail, routing, SEO, social sharing)
+- About timeline inaccurate (shows 1999-2024, company started this year)
+- Pages don't scroll to top on navigation
+- Buyer network mock data needs "not real" labels
