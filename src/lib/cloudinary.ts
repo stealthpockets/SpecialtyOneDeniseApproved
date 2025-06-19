@@ -101,7 +101,7 @@ export const CLOUDINARY_MAPPINGS = {  // Logo assets  // Logo mappings
     'self-storage-facility-investment.webp': 'specialty-one/property-types/self-storage-facility-investment',
     'storage_facility_modern_arizona.webp': 'specialty-one/property-types/storage_facility_modern_arizona',
     'rv_resort_investment_arizona.webp': 'specialty-one/property-types/rv_resort_investment_arizona',
-    'parkmodel_rv_park_apache_junction_arizona.webp': 'specialty-one/property-types/parkmodel_rv_park_apache_junction_arizona',
+    'parkmodel_rv_park_apache_junction_arizona.webp': 'specialty-one/property-types/parkmodel-rv-park-apache-junction-arizona',
     'confidential-200+site-MHC-Sun_Valley.webp': 'specialty-one/property-types/confidential-200-site-MHC-Sun_Valley',
     'self-storage-investment-arizona.webp': 'specialty-one/specialty-one/property-types/self-storage-investment-arizona',
     'rv_park_mhp_resort_apache_junction.webp': 'specialty-one/property-types/rv_park_mhp_resort_apache_junction',
@@ -133,8 +133,7 @@ export const CLOUDINARY_MAPPINGS = {  // Logo assets  // Logo mappings
     'success-stories/desert-trails.webp': 'specialty-one/success-stories/desert-trails',
     'success-stories/mogollon-rv.webp': 'specialty-one/success-stories/mogollon-rv',
     'success-stories/the-palms.webp': 'specialty-one/success-stories/the-palms',  },
-  
-  // Favicon assets
+    // Favicon assets
   favicon: {
     'android-chrome-192x192.png': 'favicon/android-chrome-192x192',
     'android-chrome-512x512.png': 'favicon/android-chrome-512x512',
@@ -143,6 +142,16 @@ export const CLOUDINARY_MAPPINGS = {  // Logo assets  // Logo mappings
     'favicon-32x32.png': 'favicon/favicon-32x32',
     'favicon.ico': 'favicon/favicon',
     'favicon.svg': 'favicon/favicon',
+  },
+  
+  // Insights articles
+  insights: {
+    '1031-exchange-tax-strategies-2025.webp': 'specialty-one/insights/1031-exchange-tax-strategies-2025',
+    'mh-lot-rents-2025-update.webp': 'specialty-one/insights/mh-lot-rents-2025-update',
+    'bullhead-city-rv-mh-market-report-2025.webp': 'specialty-one/insights/bullhead-city-rv-mh-market-report-2025',
+    'wickenburg-mobile-home-park-market-report-2025.webp': 'specialty-one/insights/wickenburg-mobile-home-park-market-report-2025',
+    'institutional-capital-manufactured-housing-2025.webp': 'specialty-one/insights/institutional-capital-manufactured-housing-2025',
+    '2025-manufactured-housing-regulatory-outlook.webp': 'specialty-one/insights/2025-manufactured-housing-regulatory-outlook',
   }
 };
 
