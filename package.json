@@ -2,7 +2,8 @@
   "name": "specialty-one-website",
   "private": true,
   "version": "0.1.0",
-  "type": "module",  "scripts": {
+  "type": "module",
+  "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:verify": "vite build && node scripts/verify-assets.js",

@@ -40,18 +40,18 @@ export const getTestimonialImagePath = (
     case PROPERTY_TYPES.RV_PARK:
       return getCloudinaryUrl('rv-park-investment');
     case PROPERTY_TYPES.BUYER_VIEW:
-      return getCloudinaryUrl('parkmodel-rv-park-apache-junction-arizona');
+      return getCloudinaryUrl('v1750360262/specialty-one/property-types/parkmodel-rv-park-apache-junction-arizona');
     case PROPERTY_TYPES.MULTI_ASSET:
-      return getCloudinaryUrl('parkmodel-rv-park-apache-junction-arizona');
+      return getCloudinaryUrl('v1750360262/specialty-one/property-types/parkmodel-rv-park-apache-junction-arizona');
     default:
-      return getCloudinaryUrl('parkmodel-rv-park-apache-junction-arizona');
+      return getCloudinaryUrl('v1750360262/specialty-one/property-types/parkmodel-rv-park-apache-junction-arizona');
   }
 };
 
 /**
- * Ultimate fallback image path for error handling - now uses Cloudinary
+ * Ultimate fallback image path for error handling - now uses Cloudinary with full path
  */
-export const DEFAULT_TESTIMONIAL_IMAGE = getCloudinaryUrl('parkmodel-rv-park-apache-junction-arizona');
+export const DEFAULT_TESTIMONIAL_IMAGE = getCloudinaryUrl('v1750360262/specialty-one/property-types/parkmodel-rv-park-apache-junction-arizona');
 
 /**
  * Handle image load errors by setting a fallback image

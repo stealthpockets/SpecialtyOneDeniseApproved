@@ -55,30 +55,9 @@ const marketTrends = [
 const SelfStoragePage = () => {
   const { testimonials, loading: testimonialsLoading, error: testimonialsError } = usePropertyTypeTestimonials('Self-Storage');
   
-  // Fetch all insights, then sort them to prioritize Self-Storage and RV Parks
-  const { insights, loading: insightsLoading, error: insightsError } = useInsights();
-
-  // Sort insights: property type 3 (Self-Storage) first, then 4 (RV Parks), then others.
-  const sortedInsights = useMemo(() => {
-    if (!insights) return [];
-    return [...insights].sort((a, b) => {
-      const getPriority = (id: number | undefined) => {
-        if (id === 3) return 1; // Highest priority for Self-Storage
-        if (id === 4) return 2; // Second priority for RV Parks
-        return 3; // Lower priority for everything else
-      };
-
-      const priorityA = getPriority(a.property_types?.id);
-      const priorityB = getPriority(b.property_types?.id);
-
-      if (priorityA !== priorityB) {
-        return priorityA - priorityB;
-      }
-
-      // If priorities are the same, sort by publication date (newest first)
-      return new Date(b.published_at || 0).getTime() - new Date(a.published_at || 0).getTime();
-    });
-  }, [insights]);
+  // Fetch insights filtered for Self-Storage
+  const insightsFilters = useMemo(() => ({ propertyTypeId: 3 }), []);
+  const { insights, loading: insightsLoading, error: insightsError } = useInsights(insightsFilters);
 
   return (
     <>
@@ -401,7 +380,7 @@ const SelfStoragePage = () => {
             <div className="text-center text-red-600">Error loading insights: {insightsError}</div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {sortedInsights.slice(0, 3).map((insight, index) => (
+              {insights.slice(0, 3).map((insight, index) => (
                 <Link
                   key={insight.id}
                   to={`/insights/${insight.slug}`}
@@ -414,8 +393,13 @@ const SelfStoragePage = () => {
                         <img 
                           src={insight.image_url} 
                           alt={insight.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover transition-transform duration-300"
                           loading="lazy"
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.onerror = null;
+                            target.src = 'https://res.cloudinary.com/du4bjp4am/image/upload/v1750360262/specialty-one/property-types/parkmodel-rv-park-apache-junction-arizona.webp';
+                          }}
                         />
                       </div>
                     )}
@@ -441,7 +425,7 @@ const SelfStoragePage = () => {
             </div>
           )}
           
-          {sortedInsights.length > 3 && (
+          {insights.length > 3 && (
             <div className="text-center mt-8">
               <Button to="/insights" variant="outline">
                 View More Self-Storage Insights

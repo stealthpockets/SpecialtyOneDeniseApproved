@@ -40,4 +40,4 @@ export interface MarketRatesData {
   lastFetched: string;
 }
 
-export type DisplayStrategy = 'core' | 'extended' | 'all';
+export type DisplayStrategy = 'core' | 'extended' | 'all' | 'fixed' | 'responsive';

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { MarketRatesData, MarketRate, FREDRateResponse, RateSeriesConfig, DisplayStrategy } from '../types/marketRates';
+import { MarketRatesData, MarketRate, RateSeriesConfig, DisplayStrategy } from '../types/marketRates';
 import { performanceMonitor } from '../utils/performanceMonitor';
 
 // const FRED_API_BASE = 'https://api.stlouisfed.org/fred/series/observations'; // Commented out or remove
@@ -158,7 +158,6 @@ export const useFREDRates = (enabled: boolean = true) => {
 
       try {        // Check cache first with stale-while-revalidate strategy
         const cachedData = localStorage.getItem(CACHE_KEY);
-        let shouldRefreshInBackground = false;
         
         if (cachedData) {
           const parsedCache: MarketRatesData = JSON.parse(cachedData);
@@ -175,7 +174,6 @@ export const useFREDRates = (enabled: boolean = true) => {
           if (cacheAge < CACHE_DURATION + STALE_WHILE_REVALIDATE) {
             setRates(parsedCache);
             setLoading(false);
-            shouldRefreshInBackground = true;
           }
         }        // Fetch all rates from the proxy with performance tracking
         const fetchedRateDetails = await performanceMonitor.trackApiCall('fred-rates-full', async () => {
@@ -232,44 +230,6 @@ export const useFREDRates = (enabled: boolean = true) => {
 
     fetchRates();
   }, [enabled]); // Re-fetch if 'enabled' changes
-
-  // Helper function to get display strategy based on screen width
-  const getDisplayStrategy = useMemo(() => {
-    return (screenWidth: number, showAll: boolean): DisplayStrategy => {
-      if (showAll) return 'all';
-      if (screenWidth >= 1400) return 'extended';
-      return 'core';
-    };
-  }, []);
-
-  // Helper function to filter rates by display strategy
-  const getDisplayedRates = useMemo(() => {
-    return (allRates: Record<string, MarketRate>, screenWidth: number, showAll: boolean): MarketRate[] => {
-      const strategy = getDisplayStrategy(screenWidth, showAll);
-      
-      let filteredRates: MarketRate[];
-      
-      switch (strategy) {
-        case 'all':
-          filteredRates = Object.values(allRates);
-          break;
-        case 'extended':
-          filteredRates = Object.values(allRates).filter(rate => 
-            rate.category === 'core' || rate.category === 'extended'
-          );
-          break;
-        case 'core':
-        default:
-          filteredRates = Object.values(allRates).filter(rate => 
-            rate.category === 'core'
-          );
-          break;
-      }
-      
-      // Sort by priority
-      return filteredRates.sort((a, b) => a.priority - b.priority);
-    };
-  }, [getDisplayStrategy]);
 
   const sortedRates = useMemo(() => {
     const sr = Object.values(rates.rates).sort((a, b) => a.priority - b.priority);

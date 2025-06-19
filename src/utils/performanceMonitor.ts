@@ -51,14 +51,14 @@ class PerformanceMonitor {
   /**
    * Track custom performance metrics
    */
-  trackCustomMetric(name: string, value: number, unit = 'ms') {
+  trackCustomMetric(name: string, value: number) {
     const metric = {
       name,
       value,
       id: this.generateId(),
       rating: this.getRating(name, value) as 'good' | 'needs-improvement' | 'poor'
     };
-    
+
     this.trackVital(metric);
   }
   
@@ -90,8 +90,8 @@ class PerformanceMonitor {
         this.trackCustomMetric(`${pageName}_dns_lookup`, navigation.domainLookupEnd - navigation.domainLookupStart);
         this.trackCustomMetric(`${pageName}_connect_time`, navigation.connectEnd - navigation.connectStart);
         this.trackCustomMetric(`${pageName}_ttfb`, navigation.responseStart - navigation.requestStart);
-        this.trackCustomMetric(`${pageName}_dom_load`, navigation.domContentLoadedEventEnd - navigation.navigationStart);
-        this.trackCustomMetric(`${pageName}_full_load`, navigation.loadEventEnd - navigation.navigationStart);
+        this.trackCustomMetric(`${pageName}_dom_load`, navigation.domContentLoadedEventEnd - navigation.startTime);
+        this.trackCustomMetric(`${pageName}_full_load`, navigation.loadEventEnd - navigation.startTime);
       }
     }
   }
