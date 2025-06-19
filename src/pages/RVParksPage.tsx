@@ -305,10 +305,11 @@ const RVParksPage = () => {
                   <Card className="overflow-hidden h-full group-hover:scale-[1.02] transition-transform duration-300">
                     {insight.image_url && (
                       <div className="aspect-video overflow-hidden">
-                        <CloudinaryImage
-                          localPath={insight.image_url}
+                        <img 
+                          src={insight.image_url} 
                           alt={insight.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
                         />
                       </div>
                     )}
