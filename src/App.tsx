@@ -23,7 +23,6 @@ const ExclusiveBuyerNetworkPage = lazy(() => import('./pages/ExclusiveBuyerNetwo
 const ExclusiveSellerNetworkPage = lazy(() => import('./pages/ExclusiveSellerNetworkPage'));
 const CaseStudyDetailPage = lazy(() => import('./pages/CaseStudyDetailPage'));
 const ArticleDetail = lazy(() => import('./pages/ArticleDetail'));
-const ChartTest = lazy(() => import('./pages/ChartTest'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TrackRecordPage = lazy(() => import('./pages/TrackRecordPage'));
@@ -50,9 +49,8 @@ function App() {
               <Route path="/market-reports" element={<MarketReportsPage />} />
               <Route path="/market-reports/:slug" element={<ArticleDetail type="market_reports" />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/exclusive-buyers" element={<ExclusiveBuyerNetworkPage />} />
-              <Route path="/exclusive-sellers" element={<ExclusiveSellerNetworkPage />} />
-              <Route path="/chart-test" element={<ChartTest />} />              <Route path="/track-record" element={<TrackRecordPage />} />
+              <Route path="/exclusive-buyers" element={<ExclusiveBuyerNetworkPage />} />              <Route path="/exclusive-sellers" element={<ExclusiveSellerNetworkPage />} />
+              <Route path="/track-record" element={<TrackRecordPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/sitemap" element={<SitemapPage />} />

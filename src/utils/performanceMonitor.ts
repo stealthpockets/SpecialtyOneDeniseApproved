@@ -14,6 +14,7 @@ interface WebVital {
 class PerformanceMonitor {
   private static instance: PerformanceMonitor;
   private vitals: WebVital[] = [];
+  private loggedImages = new Set<string>(); // Track which images we've logged to reduce noise
   
   private constructor() {}
   
@@ -30,9 +31,15 @@ class PerformanceMonitor {
   trackVital(vital: WebVital) {
     this.vitals.push(vital);
     
-    // Log to console in development
+    // Only log performance issues and important metrics in development
     if (import.meta.env.DEV) {
-      console.log(`[Performance] ${vital.name}: ${vital.value}ms (${vital.rating})`);
+      // Only log if it's a poor performance or first time for this image
+      if (vital.rating === 'poor' || !vital.name.includes('image_load') || !this.loggedImages.has(vital.name)) {
+        console.log(`[Performance] ${vital.name}: ${vital.value}ms (${vital.rating})`);
+        if (vital.name.includes('image_load')) {
+          this.loggedImages.add(vital.name);
+        }
+      }
     }
     
     // In production, you could send to analytics

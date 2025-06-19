@@ -35,12 +35,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // Manual chunking for better caching
-        manualChunks: {
-          // Core React libraries
+        manualChunks: {          // Core React libraries
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           
           // Heavy visualization libraries
-          'vendor-charts': ['chart.js', 'react-chartjs-2'],
           'vendor-maps': ['leaflet', 'react-leaflet'],
           'vendor-content': ['react-markdown', 'remark-gfm'],
           

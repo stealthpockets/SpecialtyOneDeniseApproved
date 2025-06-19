@@ -225,8 +225,8 @@ const TrackRecordTransactionTable: React.FC<TransactionTableProps> = ({
                 <div className="flex items-center space-x-1">
                   <span>Size (NRSF)</span>
                   <SortIcon field="size_nrsf" />
-                </div>
-              </th>              <th 
+                </div>              </th>
+              <th 
                 className="px-6 py-4 text-left text-xs font-display font-bold text-obsidian uppercase tracking-wider cursor-pointer hover:bg-plum/10 transition-colors"
                 onClick={() => handleSort('units')}
               >
@@ -254,11 +254,12 @@ const TrackRecordTransactionTable: React.FC<TransactionTableProps> = ({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${CLASSIFICATION_MAP[transaction.classification].bgColor} ${CLASSIFICATION_MAP[transaction.classification].color}`}>
-                    {CLASSIFICATION_MAP[transaction.classification].label}
-                  </span>
-                </td>                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
+                    {CLASSIFICATION_MAP[transaction.classification].label}                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
                   {formatSize(transaction.size_nrsf, transaction.classification)}
-                </td>                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-evergreen font-medium">
                   {formatUnits(transaction)}
                 </td>
               </tr>

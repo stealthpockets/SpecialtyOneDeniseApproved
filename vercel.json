@@ -1,0 +1,8 @@
+{
+  "buildCommand": "npm run build",
+  "framework": "vite",
+  "installCommand": "npm ci --prefer-offline --no-audit --progress=false",
+  "env": {
+    "NPM_CONFIG_CACHE": "/tmp/.npm"
+  }
+}

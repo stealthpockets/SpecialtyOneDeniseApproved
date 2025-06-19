@@ -47,10 +47,12 @@ export const createOptimizedImage = (
     image.resize(auto().gravity(autoGravity()));
   }
   
-  // Always apply these optimizations for web delivery
-  image
-    .delivery(format('auto')) // Auto-select best format (WebP, AVIF, etc.)
-    .delivery(quality('auto')); // Auto-optimize quality
+  // Apply optimizations for web delivery (skip for SVG files)
+  if (!publicId.includes('logo') && !publicId.endsWith('.svg')) {
+    image
+      .delivery(format('auto')) // Auto-select best format (WebP, AVIF, etc.)
+      .delivery(quality('auto')); // Auto-optimize quality
+  }
     
   return image;
 };
@@ -75,6 +77,13 @@ export const generateResponsiveUrls = (
  * This allows gradual migration from local assets to Cloudinary
  */
 export const CLOUDINARY_MAPPINGS = {
+  // Logo assets
+  logo: {
+    'logo-horizontal-lightbackground.svg': 'specialty-one/logo/logo-horizontal-lightbackground',
+    'logo-horizontal-blackbackground.svg': 'specialty-one/logo/logo-horizontal-blackbackground',
+    'logo-horizontal-lightbackground.png': 'specialty-one/logo/logo-horizontal-lightbackground',
+    'logo-horizontal-blackbackground.png': 'specialty-one/logo/logo-horizontal-blackbackground',
+  },
   // Leadership photos
   leadership: {
     'andrew-headshot-image.webp': 'Leadership/andrew-headshot-image',

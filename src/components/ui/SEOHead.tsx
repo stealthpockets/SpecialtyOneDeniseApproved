@@ -121,14 +121,15 @@ export const SEOHead = ({
       <meta property="og:url" content={currentUrl} />
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content={siteTitle} />
-      
-      {/* Twitter Card Tags */}
+        {/* Twitter Card Tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={cleanTitle} />
       <meta name="twitter:description" content={cleanDescription} />
       <meta name="twitter:image" content={imageUrl} />
       <meta name="twitter:site" content="@MHRVDrew" />
-      <meta name="twitter:creator" content="@MHRVDrew" />        {/* Article-specific meta tags */}
+      <meta name="twitter:creator" content="@MHRVDrew" />
+      
+      {/* Article-specific meta tags */}
       {type === 'article' && cleanArticleMeta && (
         <>
           {cleanArticleMeta.publishedTime && (

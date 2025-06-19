@@ -5,8 +5,6 @@ import remarkGfm from 'remark-gfm';
 import { SEOHead } from '../components/ui/SEOHead';
 import { SocialShare } from '../components/ui/SocialShare';
 import { ArrowLeft, Calendar, Clock, User, ChevronRight, ArrowUp } from 'lucide-react';
-import { useCharts } from '../hooks/useCharts';
-import { SimpleChartProcessor } from '../lib/simpleChartProcessor';
 import PDFDownload from '../components/PDFDownload';
 import { Insight, MarketReport } from '../types/MarketReport';
 import { useInsights } from '../hooks/useInsights';
@@ -36,12 +34,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<RelatedArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [error, setError] = useState<string | null>(null);  const [showScrollTop, setShowScrollTop] = useState(false);
   
-  // Chart integration
-  const { charts, loading: chartsLoading } = useCharts();
-  const [chartProcessor, setChartProcessor] = useState<SimpleChartProcessor | null>(null);
   // Use appropriate hooks for data fetching
   const { insights, loading: insightsLoading } = useInsights();
   const { marketReports, loading: marketReportsLoading } = useMarketReports();
@@ -70,15 +64,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
   const getAuthorName = (authors: any): string => {
     if (!authors) return "Specialty One Investment Brokerage";
     if (typeof authors === 'object' && authors.name) return safeToString(authors.name, "Specialty One Investment Brokerage");
-    if (Array.isArray(authors) && authors.length > 0 && authors[0]?.name) return safeToString(authors[0].name, "Specialty One Investment Brokerage");
-    return "Specialty One Investment Brokerage";  };
-
-  // Initialize chart processor when charts are loaded
-  useEffect(() => {
-    if (!chartsLoading && charts.length > 0) {
-      setChartProcessor(new SimpleChartProcessor(charts));
-    }
-  }, [charts, chartsLoading]);
+    if (Array.isArray(authors) && authors.length > 0 && authors[0]?.name) return safeToString(authors[0].name, "Specialty One Investment Brokerage");    return "Specialty One Investment Brokerage";  };
 
   // Handle scroll to show/hide back to top button
   useEffect(() => {
@@ -335,74 +321,21 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     }}
                   />
                 </div>
-              </header>              {/* Professional Article Content with Enhanced Styling and Chart Integration */}
-              <div className="markdown-content mb-8 md:mb-12 lg:mb-16">                {chartProcessor ? (
-                  (() => {
-                    const safeContent = safeToString(article.content, '');
-                    const result = chartProcessor.processContent(safeContent.replace(/\\n/g, '\n'));
-                    
-                    if (!result.hasCharts) {
-                      // No charts, use regular ReactMarkdown
-                      return (
-                        <ReactMarkdown 
-                          remarkPlugins={[remarkGfm]}
-                          components={{
-                            table: ({ children, ...props }) => (
-                              <div className="table-wrapper">
-                                <table {...props}>{children}</table>
-                              </div>
-                            ),
-                          }}
-                        >
-                          {safeContent.replace(/\\n/g, '\n') || 'Content unavailable'}
-                        </ReactMarkdown>
-                      );
-                    }
-
-                    // Process content with charts
-                    const segments = chartProcessor.splitContentWithCharts(result.content, result.chartComponents);
-                    
-                    return (
-                      <>
-                        {segments.map((segment: any) => {
-                          if (segment.type === 'chart') {
-                            return <div key={segment.key}>{segment.component}</div>;
-                          } else {
-                            return (
-                              <ReactMarkdown 
-                                key={segment.key}
-                                remarkPlugins={[remarkGfm]}
-                                components={{
-                                  table: ({ children, ...props }) => (
-                                    <div className="table-wrapper">
-                                      <table {...props}>{children}</table>
-                                    </div>
-                                  ),
-                                }}
-                              >
-                                {segment.content}
-                              </ReactMarkdown>
-                            );
-                          }
-                        })}
-                      </>
-                    );
-                  })()                ) : (
-                  // Fallback while charts are loading
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      table: ({ children, ...props }) => (
-                        <div className="table-wrapper">
-                          <table {...props}>{children}</table>
-                        </div>
-                      ),
-                    }}
-                  >
-                    {safeToString(article.content, 'Content unavailable').replace(/\\n/g, '\n')}
-                  </ReactMarkdown>
-                )}
-              </div>              {/* PDF Download Section */}
+              </header>              {/* Professional Article Content */}
+              <div className="markdown-content mb-8 md:mb-12 lg:mb-16">
+                <ReactMarkdown 
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    table: ({ children, ...props }) => (
+                      <div className="table-wrapper">
+                        <table {...props}>{children}</table>
+                      </div>
+                    ),
+                  }}
+                >
+                  {safeToString(article.content, 'Content unavailable').replace(/\\n/g, '\n')}
+                </ReactMarkdown>
+              </div>{/* PDF Download Section */}
               {safeToString(article.pdf_url) && (
                 <PDFDownload
                   pdfUrl={safeToString(article.pdf_url)}

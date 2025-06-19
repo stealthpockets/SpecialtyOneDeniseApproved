@@ -83,10 +83,9 @@ export const Header = () => {
           : 'bg-sand py-6'
       }`}
     >
-      <div className="container-custom">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center">
-            <Logo className="h-10 w-auto transition-transform duration-300 hover:scale-105" />
+      <div className="container-custom">        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center h-10">
+            <Logo className="h-full w-auto transition-transform duration-300 hover:scale-105" />
           </Link>
 
           {/* Desktop Navigation */}

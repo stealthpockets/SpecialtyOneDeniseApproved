@@ -35,17 +35,21 @@ export const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
   const [imageLoadTime] = useState(() => performance.now());
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasTrackedLoad, setHasTrackedLoad] = useState(false);
   
   // Determine the public ID to use
   const resolvedPublicId = publicId || (localPath ? getCloudinaryPublicId(localPath) : null);
   
-  // Track image load performance
+  // Track image load performance (only once)
   const trackImageLoad = useCallback(() => {
-    const loadTime = performance.now() - imageLoadTime;
-    const imageName = publicId || localPath || 'unknown';
-    performanceMonitor.trackImageLoad(imageName, loadTime);
-    setIsLoading(false);
-  }, [imageLoadTime, publicId, localPath]);
+    if (!hasTrackedLoad) {
+      const loadTime = performance.now() - imageLoadTime;
+      const imageName = publicId || localPath || 'unknown';
+      performanceMonitor.trackImageLoad(imageName, loadTime);
+      setIsLoading(false);
+      setHasTrackedLoad(true);
+    }
+  }, [imageLoadTime, publicId, localPath, hasTrackedLoad]);
   
   // Add error handling for image load timeout
   React.useEffect(() => {
@@ -74,8 +78,7 @@ export const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
         fallbackPath = '/' + fallbackPath;
       }
     }
-    
-    return (
+      return (
       <img
         src={fallbackPath || fallbackSrc || DEFAULT_TESTIMONIAL_IMAGE}
         alt={alt}
@@ -83,11 +86,15 @@ export const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
         height={height}
         className={className}
         loading={loading}
-        onLoad={trackImageLoad}
+        onLoad={() => {
+          if (!hasTrackedLoad) {
+            trackImageLoad();
+          }
+        }}
         onError={handleImageError}
         onClick={onClick}
       />
-    );  }
+    );}
 
   // Create optimized Cloudinary image
   const cloudinaryImage = createOptimizedImage(resolvedPublicId, {
