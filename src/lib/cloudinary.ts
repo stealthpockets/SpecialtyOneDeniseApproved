@@ -76,20 +76,24 @@ export const generateResponsiveUrls = (
  * Cloudinary public ID mappings for existing assets
  * This allows gradual migration from local assets to Cloudinary
  */
-export const CLOUDINARY_MAPPINGS = {
-  // Logo assets
+export const CLOUDINARY_MAPPINGS = {  // Logo assets  // Logo mappings
   logo: {
-    'logo-horizontal-lightbackground.svg': 'specialty-one/logo/logo-horizontal-lightbackground',
-    'logo-horizontal-blackbackground.svg': 'specialty-one/logo/logo-horizontal-blackbackground',
+    'logo-horizontal-lightbackground.svg': 'specialty-one/specialty-one/logo/logo-horizontal-lightbackground',
+    'logo-horizontal-blackbackground.svg': 'specialty-one/specialty-one/logo/logo-horizontal-blackbackground',
     'logo-horizontal-lightbackground.png': 'specialty-one/logo/logo-horizontal-lightbackground',
     'logo-horizontal-blackbackground.png': 'specialty-one/logo/logo-horizontal-blackbackground',
+    'Logo-icon-blackbackground.svg': 'specialty-one/logo/Logo-icon-blackbackground',
+    'logo-icon-lightbackground.svg': 'specialty-one/logo/logo-icon-lightbackground',
+    'logo-vertical-blackbackground.svg': 'specialty-one/logo/logo-vertical-blackbackground',
+    'logo-vertical-lightbackgroung.svg': 'specialty-one/logo/logo-vertical-lightbackground',
   },
+  
   // Leadership photos
   leadership: {
-    'andrew-headshot-image.webp': 'Leadership/andrew-headshot-image',
-    'denise-nunez-self-storage.webp': 'Leadership/denise-nunez-self-storage',
-  },
-    // Property types
+    'andrew-headshot-image.webp': 'specialty-one/specialty-one/leadership/andrew-headshot-image',
+    'denise-nunez-self-storage.webp': 'specialty-one/specialty-one/leadership/denise-nunez-self-storage',  },
+  
+  // Property types
   propertyTypes: {
     'manufactured-housing-community-investment.webp': 'specialty-one/property-types/manufactured-housing-community-investment',
     'rv-park-investment.webp': 'specialty-one/property-types/rv-park-investment',
@@ -99,15 +103,17 @@ export const CLOUDINARY_MAPPINGS = {
     'rv_resort_investment_arizona.webp': 'specialty-one/property-types/rv_resort_investment_arizona',
     'parkmodel_rv_park_apache_junction_arizona.webp': 'specialty-one/property-types/parkmodel_rv_park_apache_junction_arizona',
     'confidential-200+site-MHC-Sun_Valley.webp': 'specialty-one/property-types/confidential-200-site-MHC-Sun_Valley',
-    'self-storage-investment-arizona.webp': 'specialty-one/property-types/self-storage-investment-arizona',
+    'self-storage-investment-arizona.webp': 'specialty-one/specialty-one/property-types/self-storage-investment-arizona',
     'rv_park_mhp_resort_apache_junction.webp': 'specialty-one/property-types/rv_park_mhp_resort_apache_junction',
     'mh_park_apache_junction_arizona.webp': 'specialty-one/property-types/mh_park_apache_junction_arizona',
-    'mhp_arizona_pueblo_mobile_manor.webp': 'specialty-one/property-types/mhp_arizona_pueblo_mobile_manor',    'rv_park_resort_arizona.webp': 'specialty-one/property-types/rv_park_resort_arizona',
-    // Background hero images - map to dedicated Cloudinary assets
-    'mobile-home-park-specialty-one.webp': 'mobile-home-park-specialty-one_y4mwag',
-    'outdoor-hospitality-rv-park.webp': 'outdoor-hospitality-rv-park_hbqwcy',
+    'mhp_arizona_pueblo_mobile_manor.webp': 'specialty-one/property-types/mhp_arizona_pueblo_mobile_manor',
+    'rv_park_resort_arizona.webp': 'specialty-one/property-types/rv_park_resort_arizona',
+    // Background hero images - map to new Cloudinary uploads
+    'mobile-home-park-specialty-one.webp': 'specialty-one/specialty-one/property-types/mobile-home-park-specialty-one',
+    'outdoor-hospitality-rv-park.webp': 'specialty-one/specialty-one/property-types/outdoor-hospitality-rv-park',
   },
-    // Success stories
+  
+  // Success stories
   successStories: {
     'american-ss-mail.webp': 'specialty-one/success-stories/american-ss-mail',
     'caravan-oasis.webp': 'specialty-one/success-stories/caravan-oasis',
@@ -126,18 +132,7 @@ export const CLOUDINARY_MAPPINGS = {
     'success-stories/desert-retreat.webp': 'specialty-one/success-stories/desert-retreat',
     'success-stories/desert-trails.webp': 'specialty-one/success-stories/desert-trails',
     'success-stories/mogollon-rv.webp': 'specialty-one/success-stories/mogollon-rv',
-    'success-stories/the-palms.webp': 'specialty-one/success-stories/the-palms',
-  },
-  
-  // Logo assets
-  logo: {
-    'logo-horizontal-blackbackground.svg': 'specialty-one/logo/logo-horizontal-blackbackground',
-    'logo-horizontal-lightbackground.svg': 'specialty-one/logo/logo-horizontal-lightbackground',
-    'Logo-icon-blackbackground.svg': 'specialty-one/logo/Logo-icon-blackbackground',
-    'logo-icon-lightbackground.svg': 'specialty-one/logo/logo-icon-lightbackground',
-    'logo-vertical-blackbackground.svg': 'specialty-one/logo/logo-vertical-blackbackground',
-    'logo-vertical-lightbackgroung.svg': 'specialty-one/logo/logo-vertical-lightbackground',
-  },
+    'success-stories/the-palms.webp': 'specialty-one/success-stories/the-palms',  },
   
   // Favicon assets
   favicon: {

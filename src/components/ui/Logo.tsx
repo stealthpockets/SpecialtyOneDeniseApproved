@@ -1,21 +1,31 @@
-import React from 'react';
-import { CloudinaryImage } from './CloudinaryImage';
+import React, { useState } from 'react';
 
 interface LogoProps {
   className?: string;
 }
 
 export const Logo: React.FC<LogoProps> = ({ className = '' }) => {
+  const [imageError, setImageError] = useState(false);
+
+  if (imageError) {
+    // Fallback text logo
+    return (
+      <div className={`h-10 flex items-center font-display font-bold text-2xl text-plum ${className}`}>
+        Specialty One
+      </div>
+    );
+  }
+
   return (
-    <CloudinaryImage
-      localPath="/assets/logo/logo-horizontal-lightbackground.svg" 
+    <img 
+      src="/assets/logo/logo-horizontal-lightbackground.svg" 
       alt="Specialty One" 
-      className={`w-auto ${className}`}
+      className={`h-10 w-auto ${className}`}
       loading="eager"
-      width={240}
-      height={48}
-      crop="pad"
-      fallbackSrc="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQwIiBoZWlnaHQ9IjQ4IiB2aWV3Qm94PSIwIDAgMjQwIDQ4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8dGV4dCB4PSIxMCIgeT0iMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzMzMzMzMyI+U3BlY2lhbHR5IE9uZTwvdGV4dD4KPHN2Zz4="
+      onError={() => {
+        console.error('Logo failed to load from /assets/logo/logo-horizontal-lightbackground.svg');
+        setImageError(true);
+      }}
     />
   );
 };

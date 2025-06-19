@@ -75,17 +75,15 @@ export const Header = () => {
     { name: 'Success Stories', path: '/success-stories' },
     { name: 'Track Record', path: '/track-record' }
   ];
-    return (
-    <header
+    return (    <header
       className={`fixed top-0 left-0 right-0 z-[110] transition-all duration-500 ${
         scrolled 
           ? 'bg-sand/95 backdrop-blur-md shadow-lg border-b border-white/20 py-3' 
-          : 'bg-sand py-6'
+          : 'bg-sand py-5'
       }`}
-    >
-      <div className="container-custom">        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center h-10">
-            <Logo className="h-full w-auto transition-transform duration-300 hover:scale-105" />
+    >      <div className="container-custom">        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center py-2">
+            <Logo className="transition-all duration-300 hover:scale-105" />
           </Link>
 
           {/* Desktop Navigation */}
