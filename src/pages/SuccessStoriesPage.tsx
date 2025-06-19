@@ -207,9 +207,8 @@ const SuccessStoriesPage = () => {
                         <p className="text-gray-700 text-sm font-medium mb-1">Solution:</p>
                         <p className="text-gray-600 text-sm">{story.solution}</p>
                       </div>
-                      
-                      <div className="space-y-2">
-                        {story.results.slice(0, 2).map((result: string, idx: number) => (
+                        <div className="space-y-2">
+                        {(Array.isArray(story.results) ? story.results : [story.results]).slice(0, 2).map((result: string, idx: number) => (
                           <div key={idx} className="flex items-start gap-2">
                             <span className="text-sage font-bold text-sm">✓</span>
                             <span className="text-gray-600 text-sm">{result}</span>

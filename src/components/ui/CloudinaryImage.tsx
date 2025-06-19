@@ -26,7 +26,7 @@ export const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
   width,
   height,
   className,
-  loading = "lazy",
+  loading = "eager",
   crop,
   gravity,
   fallbackSrc,

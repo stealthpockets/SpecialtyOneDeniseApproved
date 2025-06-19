@@ -13,11 +13,11 @@ const ManufacturedHousingPage = lazy(() => import('./pages/ManufacturedHousingPa
 const RVParksPage = lazy(() => import('./pages/RVParksPage'));
 const SelfStoragePage = lazy(() => import('./pages/SelfStoragePage'));
 const ExchangePage = lazy(() => import('./pages/ExchangePage'));
-const InsightsPage = lazy(() => import('./pages/InsightsPage'));
 const SuccessStoriesPage = lazy(() => import('./pages/SuccessStoriesPage'));
 const AdvantagePage = lazy(() => import('./pages/AdvantagePage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const MarketReportsPage = lazy(() => import('./pages/MarketReportsPage'));
+const InsightsPage = lazy(() => import('./pages/InsightsPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const ExclusiveBuyerNetworkPage = lazy(() => import('./pages/ExclusiveBuyerNetworkPage'));
 const ExclusiveSellerNetworkPage = lazy(() => import('./pages/ExclusiveSellerNetworkPage'));
@@ -27,6 +27,7 @@ const ChartTest = lazy(() => import('./pages/ChartTest'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TrackRecordPage = lazy(() => import('./pages/TrackRecordPage'));
+const SitemapPage = lazy(() => import('./pages/SitemapPage'));
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               <Route path="/self-storage" element={<SelfStoragePage />} />
               <Route path="/1031-exchange" element={<ExchangePage />} />
               <Route path="/success-stories" element={<SuccessStoriesPage />} />
+              <Route path="/success-stories/:slug" element={<CaseStudyDetailPage />} />
               <Route path="/insights" element={<InsightsPage />} />
               <Route path="/insights/:slug" element={<ArticleDetail type="insights" />} />
               <Route path="/advantage" element={<AdvantagePage />} />
@@ -50,11 +52,10 @@ function App() {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/exclusive-buyers" element={<ExclusiveBuyerNetworkPage />} />
               <Route path="/exclusive-sellers" element={<ExclusiveSellerNetworkPage />} />
-              <Route path="/chart-test" element={<ChartTest />} />
-              <Route path="/track-record" element={<TrackRecordPage />} />
+              <Route path="/chart-test" element={<ChartTest />} />              <Route path="/track-record" element={<TrackRecordPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/success-stories/:slug" element={<CaseStudyDetailPage />} />
+              <Route path="/sitemap" element={<SitemapPage />} />
             </Routes>
           </Suspense>
         </MainLayout>

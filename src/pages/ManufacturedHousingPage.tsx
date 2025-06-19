@@ -62,10 +62,9 @@ const ManufacturedHousingPage = () => {
         keywords="manufactured housing communities, mobile home parks, MHC investment, MHC brokerage, manufactured housing sales, mobile home park valuation, MHC advisory"
         image="/assets/property-types/manufactured-housing-community-investment.webp"
         url="https://specialtyone.com/manufactured-housing"
-      />
-      <div className="flex flex-col min-h-screen bg-sand">
+      />      <div className="flex flex-col min-h-screen bg-sand">
       {/* Enhanced Hero Section */}
-      <section className="pt-32 pb-32 md:pt-40 md:pb-40 lg:pt-48 lg:pb-48 text-white relative overflow-hidden">
+      <section className="relative min-h-screen text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
         <CloudinaryBackgroundImage
           localPath="/assets/property-types/mobile-home-park-specialty-one.webp"
@@ -76,9 +75,8 @@ const ManufacturedHousingPage = () => {
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-white/5"></div>
-        </div>
-        
-        <div className="container-custom relative z-10">
+        </div>        
+        <div className="container-custom relative z-10 flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="heading-xl text-white mb-8 animate-fade-in">
               Other Brokers <span className="text-white opacity-70">List.</span>
@@ -88,9 +86,8 @@ const ManufacturedHousingPage = () => {
               Most overpromise, misprice, and retrade.<br />
               We've never failed to close a manufactured housing listing.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in mb-6" style={{ animationDelay: "0.3s" }}>
-              <Button 
-                to="https://form.typeform.com/to/Isxy11zm" 
+            <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in mb-6" style={{ animationDelay: "0.3s" }}>              <Button 
+                href="https://form.typeform.com/to/Isxy11zm" 
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="primary"
@@ -149,9 +146,8 @@ const ManufacturedHousingPage = () => {
             <p className="text-body-lg mb-12 text-gray-700 leading-relaxed">
               You've seen it: brokers chase top-dollar offers, only to renegotiate mid-deal or fall out of escrow altogether.
               We don't play that game. We pre-underwrite, qualify buyers, and build deal certainty before we go live.
-            </p>
-            <Button 
-              to="https://form.typeform.com/to/NKQAZkUv" 
+            </p>            <Button 
+              href="https://form.typeform.com/to/NKQAZkUv" 
               target="_blank"
               rel="noopener noreferrer"
               variant="primary"
@@ -221,9 +217,8 @@ const ManufacturedHousingPage = () => {
               We don't email-blast sensitive details to 5,000 "investors."<br />
               If you're in our network, you'll see high-quality opportunities early—before they're over-shopped or priced down.<br />
               If you're not, you won't.
-            </p>
-            <Button 
-              to="https://form.typeform.com/to/b9sObSil"
+            </p>            <Button 
+              href="https://form.typeform.com/to/b9sObSil"
               target="_blank"
               rel="noopener noreferrer"
               variant="primary"

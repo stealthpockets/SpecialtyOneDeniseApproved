@@ -1,6 +1,4 @@
 import { Button } from '../ui/Button';
-import { Link } from 'react-router-dom'; // Import Link
-import { ChevronRight } from 'lucide-react';
 
 export const FinalCTA = () => {
   return (
@@ -19,47 +17,16 @@ export const FinalCTA = () => {
             Join our network of serious buyers and sellers who prioritize execution over marketing fluff.
           </p>
           
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16">
-            <Button
-              to="https://form.typeform.com/to/B0GIZ1ht"
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16">            <Button
+              href="https://form.typeform.com/to/B0GIZ1ht"
+              target="_blank"
+              rel="noopener noreferrer"
               variant="primary"
               className="w-full sm:w-auto"
               size="lg"
             >
               Join Network
             </Button>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 text-caption">
-            <Link to="https://form.typeform.com/to/I3hYeHFX" className="text-white/80 hover:text-white transition-colors inline-flex items-center group">
-              Need a property valuation?
-              <span className="ml-2 underline group-hover:no-underline">Request One</span>
-            </Link>
-            
-            <span className="hidden sm:inline text-white/40">•</span>
-            
-            <Link to="https://form.typeform.com/to/oX1bWHD5" className="text-white/80 hover:text-white transition-colors inline-flex items-center group">
-              Planning a 1031?
-              <span className="ml-2 underline group-hover:no-underline">Start Strategy</span>
-            </Link>
-          </div>
-          
-          <div className="border-t border-gray-700 md:border-t-0 md:border-l md:pl-12 pt-8 md:pt-0">
-            <h3 className="text-2xl font-bold mb-4">Or, Explore Other Options:</h3>
-            <ul className="space-y-4">
-              <li>
-                <a href="https://form.typeform.com/to/I3hYeHFX" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors inline-flex items-center group">
-                  <ChevronRight className="w-5 h-5 mr-2 text-primary transition-transform group-hover:translate-x-1" />
-                  <span>Get a Free Property Valuation</span>
-                </a>
-              </li>
-              <li>
-                <a href="https://form.typeform.com/to/oX1bWHD5" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors inline-flex items-center group">
-                  <ChevronRight className="w-5 h-5 mr-2 text-primary transition-transform group-hover:translate-x-1" />
-                  <span>Explore 1031 Exchange Solutions</span>
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
       </div>

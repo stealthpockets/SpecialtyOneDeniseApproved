@@ -81,10 +81,9 @@ const RVParksPage = () => {
         keywords="RV parks, outdoor hospitality, RV resort investment, campground sales, recreational vehicle parks, RV park brokerage, outdoor hospitality investment"
         image="/assets/property-types/rv_park_resort_arizona.webp"
         url="https://specialtyone.com/rv-parks"
-      />
-      <div className="flex flex-col min-h-screen bg-sand">
+      />      <div className="flex flex-col min-h-screen bg-sand">
       {/* Enhanced Hero Section */}
-      <section className="section-padding text-white relative overflow-hidden">
+      <section className="relative min-h-screen text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
         <CloudinaryBackgroundImage
           localPath="/assets/property-types/outdoor-hospitality-rv-park.webp"
@@ -95,9 +94,8 @@ const RVParksPage = () => {
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-white/5"></div>
-        </div>
-        
-        <div className="container-custom relative z-10">
+        </div>        
+        <div className="container-custom relative z-10 flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="heading-xl text-white mb-8 animate-fade-in">
               Outdoor Hospitality Isn't "Just a Park."
@@ -362,9 +360,10 @@ const RVParksPage = () => {
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-12 border border-white/20 shadow-luxury max-w-2xl mx-auto">
               <p className="text-lg font-medium mb-6">
                 We prioritize experienced operators, long-term capital, and serious 1031 buyers.
-              </p>
-              <Button 
-                to="https://form.typeform.com/to/Nq75Og0B"
+              </p>              <Button 
+                href="https://form.typeform.com/to/Nq75Og0B"
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="primary"
                 size="lg"
                 className="bg-white text-plum hover:bg-cloud font-semibold"

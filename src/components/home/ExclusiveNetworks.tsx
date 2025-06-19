@@ -47,9 +47,10 @@ export const ExclusiveNetworks = () => {
               </li>
             </ul>
             
-            <div className="text-center">
-              <Button 
-                to="https://form.typeform.com/to/B0GIZ1ht" 
+            <div className="text-center">              <Button 
+                href="https://form.typeform.com/to/B0GIZ1ht" 
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="primary"
               >
                 Apply for Access
@@ -89,9 +90,10 @@ export const ExclusiveNetworks = () => {
               </li>
             </ul>
             
-            <div className="text-center">
-              <Button 
-                to="https://form.typeform.com/to/I3hYeHFX" 
+            <div className="text-center">              <Button 
+                href="https://form.typeform.com/to/I3hYeHFX" 
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="primary"
               >
                 Request Confidential Sale

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { SEOHead } from '../components/ui/SEOHead';
-import { Button } from '../components/ui/Button';
 import { SocialShare } from '../components/ui/SocialShare';
 import TrackRecordStatsOverview from '../components/TrackRecord/TrackRecordStatsOverview';
 import TrackRecordInteractiveMap from '../components/TrackRecord/TrackRecordInteractiveMap';

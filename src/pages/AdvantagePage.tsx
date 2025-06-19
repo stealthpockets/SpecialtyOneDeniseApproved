@@ -159,9 +159,10 @@ const AdvantagePage = () => {
 						<p className="text-xl md:text-2xl mb-12 text-white/90 leading-relaxed max-w-3xl mx-auto">
 							Most brokers follow a script. We built the Specialty One Close Framework™—a proven system that's delivered over $1B in transactions across MH, RV, and Storage.
 						</p>
-						<div className="flex flex-col sm:flex-row justify-center gap-6">
-							<Button
-								to="https://form.typeform.com/to/NKQAZkUv"
+						<div className="flex flex-col sm:flex-row justify-center gap-6">							<Button
+								href="https://form.typeform.com/to/NKQAZkUv"
+								target="_blank"
+								rel="noopener noreferrer"
 								variant="primary"
 								size="lg"
 								className="text-lg px-8 py-4"

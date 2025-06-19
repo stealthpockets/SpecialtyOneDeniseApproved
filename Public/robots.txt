@@ -1,0 +1,14 @@
+# robots.txt for SpecialtyOne.com
+# Purpose: Maximize SEO indexing for all public pages while blocking sensitive or irrelevant URLs
+
+User-agent: *
+Disallow: /chart-test
+Allow: /
+
+# Sitemap Location
+Sitemap: https://specialtyone.com/sitemap.xml
+
+# Notes:
+# This site represents a public commercial real estate brokerage specializing in
+# Manufactured Housing, RV Parks, Outdoor Hospitality, Self-Storage, and 1031 Exchange Services.
+# All key pages should be indexed to improve discoverability.

@@ -127,7 +127,7 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
   return { caseStudies, loading, error };
 };
 
-export const useCaseStudy = (id: string) => {
+export const useCaseStudy = (slug: string) => {
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -141,11 +141,11 @@ export const useCaseStudy = (id: string) => {
         const { data, error: supabaseError } = await supabase
           .from('case_studies')
           .select('*')
-          .eq('id', id)
+          .eq('slug', slug)
           .single();
 
         if (supabaseError) {
-          console.error(`Error fetching case study with id ${id}:`, supabaseError);
+          console.error(`Error fetching case study with slug ${slug}:`, supabaseError);
           throw new Error('Failed to fetch case study due to a database error.');
         }
 
@@ -160,17 +160,17 @@ export const useCaseStudy = (id: string) => {
           setCaseStudy(camelCaseData);
         }
       } catch (err) {
-        console.error(`Error fetching case study with id ${id}:`, err);
+        console.error(`Error fetching case study with slug ${slug}:`, err);
         setError('An unexpected error occurred while fetching the case study.');
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
+    if (slug) {
       fetchCaseStudy();
     }
-  }, [id]);
+  }, [slug]);
 
   return { caseStudy, loading, error };
 };

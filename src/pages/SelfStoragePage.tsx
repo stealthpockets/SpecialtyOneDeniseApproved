@@ -461,9 +461,10 @@ const SelfStoragePage = () => {
             <p className="text-xl mb-12 text-gray-700 leading-relaxed max-w-3xl mx-auto">
               We don't blast every storage deal to a mass email list.<br />
               If you're in our network, you get early access to real storage opportunities—before they're picked apart or shopped to death.
-            </p>
-            <Button 
-              to="https://form.typeform.com/to/AcxbfcXd"
+            </p>            <Button 
+              href="https://form.typeform.com/to/AcxbfcXd"
+              target="_blank"
+              rel="noopener noreferrer"
               variant="primary"
               size="lg"
               className="text-lg px-8 py-4"

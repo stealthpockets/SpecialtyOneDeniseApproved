@@ -1,6 +1,3 @@
-import { ArrowRight } from 'lucide-react';
-import { Button } from '../ui/Button';
-
 export const HeroSection = () => {
   return (
     <section className="relative section-padding overflow-hidden bg-luxury-purple">

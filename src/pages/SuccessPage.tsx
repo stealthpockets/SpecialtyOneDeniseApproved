@@ -5,19 +5,21 @@ import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Modal } from '../components/ui/Modal';
 import { CloudinaryImage } from '../components/ui/CloudinaryImage';
-import { useCaseStudies } from '../hooks/useCaseStudies';
-import { CaseStudy } from '../../types/CaseStudy';
+import { CaseStudy } from '../types/caseStudy';
+import { supabase } from '../lib/supabase';
 
 const SuccessPage = () => {
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCaseStudies = async () => {
       setLoading(true);
-      const { data, error } = await supabase.from('case_studies').select('*');
-      if (error) {
-        // console.error('Error fetching case studies:', error);
+      const { data, error: dbError } = await supabase.from('case_studies').select('*');
+      if (dbError) {
+        console.error('Error fetching case studies:', dbError);
+        setError(dbError.message);
       } else {
         setCaseStudies(data as CaseStudy[]);
       }

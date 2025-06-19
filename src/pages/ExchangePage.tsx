@@ -108,9 +108,8 @@ const ExchangePage = () => {
 							weight. We help MH, RV Park, and Self-Storage owners reinvest
 							intelligently—minimizing taxes and maximizing control.
 						</p>
-						<div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-							<Button
-								to="https://form.typeform.com/to/oX1bWHD5"
+						<div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>							<Button
+								href="https://form.typeform.com/to/oX1bWHD5"
 								variant="primary"
 								size="lg"
 								target="_blank"

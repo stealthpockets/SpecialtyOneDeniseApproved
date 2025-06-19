@@ -85,6 +85,9 @@ export const Footer = () => {
             &copy; {new Date().getFullYear()} Specialty One. All rights reserved.
           </p>
           <div className="flex space-x-4 mt-4 md:mt-0">
+            <Link to="/sitemap" className="text-gray-400 text-sm hover:text-white transition-colors">
+              Site Map
+            </Link>
             <Link to="/privacy" className="text-gray-400 text-sm hover:text-white transition-colors">
               Privacy Policy
             </Link>

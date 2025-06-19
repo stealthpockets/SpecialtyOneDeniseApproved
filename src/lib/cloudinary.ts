@@ -93,11 +93,10 @@ export const CLOUDINARY_MAPPINGS = {
     'self-storage-investment-arizona.webp': 'specialty-one/property-types/self-storage-investment-arizona',
     'rv_park_mhp_resort_apache_junction.webp': 'specialty-one/property-types/rv_park_mhp_resort_apache_junction',
     'mh_park_apache_junction_arizona.webp': 'specialty-one/property-types/mh_park_apache_junction_arizona',
-    'mhp_arizona_pueblo_mobile_manor.webp': 'specialty-one/property-types/mhp_arizona_pueblo_mobile_manor',
-    'rv_park_resort_arizona.webp': 'specialty-one/property-types/rv_park_resort_arizona',
-    // Background hero images - map to existing assets
-    'mobile-home-park-specialty-one.webp': 'specialty-one/property-types/manufactured-housing-community-investment',
-    'outdoor-hospitality-rv-park.webp': 'specialty-one/property-types/rv_park_resort_arizona',
+    'mhp_arizona_pueblo_mobile_manor.webp': 'specialty-one/property-types/mhp_arizona_pueblo_mobile_manor',    'rv_park_resort_arizona.webp': 'specialty-one/property-types/rv_park_resort_arizona',
+    // Background hero images - map to dedicated Cloudinary assets
+    'mobile-home-park-specialty-one.webp': 'mobile-home-park-specialty-one_y4mwag',
+    'outdoor-hospitality-rv-park.webp': 'outdoor-hospitality-rv-park_hbqwcy',
   },
     // Success stories
   successStories: {
@@ -149,50 +148,25 @@ export const CLOUDINARY_MAPPINGS = {
  * @returns Cloudinary public ID or null if not found
  */
 export const getCloudinaryPublicId = (localPath: string): string | null => {
-  // Normalize path - handle both forward and back slashes
-  let normalizedPath = localPath.replace(/\\/g, '/');
-  
-  // Remove common prefixes
-  if (normalizedPath.startsWith('/dist/assets/')) {
-    normalizedPath = normalizedPath.substring('/dist/assets/'.length);
-  } else if (normalizedPath.startsWith('/assets/')) {
-    normalizedPath = normalizedPath.substring('/assets/'.length);
-  } else if (normalizedPath.startsWith('assets/')) {
-    normalizedPath = normalizedPath.substring('assets/'.length);
-  }
+  if (!localPath) return null;
 
-  // Check all categories for exact matches
-  for (const [_categoryName, category] of Object.entries(CLOUDINARY_MAPPINGS)) {
+  // Extract the filename from the path
+  const filename = localPath.split(/[\\/]/).pop();
+
+  if (!filename) return null;
+
+  // Check all categories for a direct match with the filename
+  for (const category of Object.values(CLOUDINARY_MAPPINGS)) {
     for (const [key, value] of Object.entries(category)) {
-      if (key === normalizedPath) {
-        return value;
-      }
-    }
-  }
-    // Special handling for success-stories paths
-  if (normalizedPath.includes('success-stories/')) {
-    const filename = normalizedPath.split('/').pop();
-    if (filename) {
-      const successStoriesMapping = CLOUDINARY_MAPPINGS.successStories as { [key: string]: string };
-      if (successStoriesMapping[filename]) {
-        return successStoriesMapping[filename];
+      // The key in our mapping might be a full path, so we extract its filename too
+      const keyFilename = key.split(/[\\/]/).pop();
+      if (keyFilename === filename) {
+        return value as string;
       }
     }
   }
   
-  // If no exact match found and input is just a filename, try to find it in any category
-  if (!normalizedPath.includes('/')) {
-    for (const [_categoryName, category] of Object.entries(CLOUDINARY_MAPPINGS)) {
-      for (const [key, value] of Object.entries(category)) {
-        // Extract filename from the key path
-        const keyFilename = key.split('/').pop();
-        if (keyFilename === normalizedPath) {
-          return value;
-        }
-      }
-    }
-  }
-  
+  console.warn(`Cloudinary public ID not found for local path: ${localPath}`);
   return null;
 };
 
