@@ -4,6 +4,9 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Configure public directory to match Git case-sensitivity
+  publicDir: 'Public',
+  
   plugins: [
     react(),
     // Bundle analyzer - only in analyze mode

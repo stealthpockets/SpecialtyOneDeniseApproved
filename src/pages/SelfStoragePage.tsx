@@ -91,7 +91,7 @@ const SelfStoragePage = () => {
       />
       <div className="flex flex-col min-h-screen bg-luxury-dark">
       {/* Hero Section */}
-      <section className="relative pt-40 pb-32 overflow-hidden">
+      <section className="relative min-h-screen overflow-hidden">
         <div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
         <CloudinaryBackgroundImage
           localPath="/assets/property-types/self-storage-investment-arizona.webp"
@@ -99,7 +99,7 @@ const SelfStoragePage = () => {
         >
           <div></div>
         </CloudinaryBackgroundImage>
-        <div className="container-custom relative z-10">
+        <div className="container-custom relative z-10 flex items-center justify-center min-h-screen">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="heading-luxury text-white text-5xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight leading-[0.9]">
               Self-Storage Investment Brokerage
