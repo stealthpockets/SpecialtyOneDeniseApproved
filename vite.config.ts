@@ -4,8 +4,8 @@ import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  // Configure public directory to match Git case-sensitivity
-  publicDir: 'Public',
+  // Configure public directory to match standard naming
+  publicDir: 'public',
   
   plugins: [
     react(),
@@ -52,7 +52,9 @@ export default defineConfig({
         
         // Better chunk naming for caching
         chunkFileNames: (chunkInfo) => {
-          const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/').pop().replace('.tsx', '').replace('.ts', '') : 'chunk';
+          const facadeModuleId = chunkInfo.facadeModuleId 
+            ? chunkInfo.facadeModuleId.split('/').pop()?.replace('.tsx', '').replace('.ts', '') || 'chunk'
+            : 'chunk';
           return `js/[name]-[hash].js`;
         },
         entryFileNames: 'js/[name]-[hash].js',
