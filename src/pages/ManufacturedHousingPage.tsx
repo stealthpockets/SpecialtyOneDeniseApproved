@@ -2,9 +2,14 @@ import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
-import { TestimonialsMH } from '../components/home/TestimonialsMH';
+import { TestimonialsRV } from '../components/home/TestimonialsRV';
+import { ProfileImage, CloudinaryImage } from '../components/ui/CloudinaryImage';
+import { CloudinaryBackgroundImage } from '../components/ui/CloudinaryBackgroundImage';
+import { TickerBox } from '../components/home/TickerBox';
 import { useInsights } from '../hooks/useInsights';
 import { useMemo } from 'react';
+import { SEOHead } from '../components/ui/SEOHead';
+import { SocialShare } from '../components/ui/SocialShare';
 
 const stats = [
   {
@@ -32,7 +37,7 @@ const caseStudies = [
     location: "Apache Junction, AZ",
     details: "88 Sites | Sub-3% Cap Rate",
     description: "Over 80 offers generated, closed at a sub-3% cap rate, and the buyer realized operational efficiencies, achieving a record-setting valuation.",
-    image: "/dist/assets/success-stories/the-palms.webp"
+    image: "the-palms.webp"
   },
   {
     title: "Desert Retreat – Resurrected Listing, 30% NOI Growth",
@@ -40,7 +45,7 @@ const caseStudies = [
     location: "Tucson, AZ",
     details: "43 Sites | 30% NOI Lift",
     description: "Achieved a 30% NOI lift in 12 months, secured multiple full-price offers, and closed above guidance after a previous failed listing.",
-    image: "/assets/success-stories/desert-retreat.webp"
+    image: "desert-retreat.webp"
   }
 ];
 
@@ -50,9 +55,24 @@ const ManufacturedHousingPage = () => {
   const { insights, loading: insightsLoading, error: insightsError } = useInsights(insightsFilters);
 
   return (
-    <div className="flex flex-col min-h-screen bg-sand">
+    <>
+      <SEOHead
+        title="Manufactured Housing Community Investment Brokerage | MHC Sales"
+        description="Specialized investment brokerage for manufactured housing communities (MHC). $304M+ in transactions. Expert valuation, market analysis, and advisory services for mobile home parks."
+        keywords="manufactured housing communities, mobile home parks, MHC investment, MHC brokerage, manufactured housing sales, mobile home park valuation, MHC advisory"
+        image="/assets/property-types/manufactured-housing-community-investment.webp"
+        url="https://specialtyone.com/manufactured-housing"
+      />
+      <div className="flex flex-col min-h-screen bg-sand">
       {/* Enhanced Hero Section */}
-      <section className="section-padding bg-luxury-purple text-white relative overflow-hidden">
+      <section className="pt-32 pb-32 md:pt-40 md:pb-40 lg:pt-48 lg:pb-48 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
+        <CloudinaryBackgroundImage
+          localPath="/assets/property-types/mobile-home-park-specialty-one.webp"
+          className="absolute inset-0 bg-cover bg-center"
+        >
+          <div></div>
+        </CloudinaryBackgroundImage>
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-white/5"></div>
@@ -61,8 +81,8 @@ const ManufacturedHousingPage = () => {
         <div className="container-custom relative z-10">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="heading-xl text-white mb-8 animate-fade-in">
-              Other Brokers List.
-              <span className="block mt-2">We Deliver.</span>
+              Other Brokers <span className="text-white opacity-70">List.</span>
+              <span className="block mt-2 text-gradient">We Deliver.</span>
             </h1>
             <p className="text-body-lg mb-12 opacity-85 animate-fade-in max-w-3xl mx-auto" style={{ animationDelay: "0.2s" }}>
               Most overpromise, misprice, and retrade.<br />
@@ -70,7 +90,9 @@ const ManufacturedHousingPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-6 animate-fade-in mb-6" style={{ animationDelay: "0.3s" }}>
               <Button 
-                to="/contact" 
+                to="https://form.typeform.com/to/Isxy11zm" 
+                target="_blank"
+                rel="noopener noreferrer"
                 variant="primary"
                 size="lg"
                 className="bg-white text-plum hover:bg-white/90"
@@ -85,24 +107,26 @@ const ManufacturedHousingPage = () => {
         </div>
       </section>
 
+      {/* Market Rate Ticker */}
+      <TickerBox />
+
       {/* Enhanced Stats Grid */}
       <section className="section-padding bg-sand luxury-gradient-overlay">
         <div className="container-custom">
           <h2 className="heading-lg mb-16 text-center max-w-4xl mx-auto">
-            100% Success Rate on Exclusive Listings.
+            <span className="text-gradient">100% Success Rate</span> on Exclusive Listings.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <Card 
                 key={index}
-                className="text-center content-padding py-10 animate-fade-in card-luxury-white"
-                style={{ animationDelay: `${0.1 * index}s` }}
+                className="text-center py-12 px-6 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300"
               >
-                <CardContent>
-                  <div className="heading-md text-plum mb-3">
+                <CardContent className="text-center flex flex-col items-center justify-center">
+                  <div className="heading-luxury text-3xl md:text-4xl lg:text-5xl font-bold text-luxury-primary mb-4 text-center w-full whitespace-nowrap">
                     {stat.value}
                   </div>
-                  <div className="text-body text-gray-700">
+                  <div className="text-luxury-dark/80 text-lg font-medium text-center w-full">
                     {stat.label}
                   </div>
                 </CardContent>
@@ -113,14 +137,14 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Testimonials */}
-      <TestimonialsMH />
+      <TestimonialsRV />
 
       {/* Enhanced Edge as Seller Section */}
       <section className="section-padding bg-sand luxury-gradient-overlay">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="heading-lg mb-8">
-              The Last Thing You Need Is Another Bidding War That Falls Apart.
+              The Last Thing You Need Is Another <span className="text-gradient">Bidding War</span> That Falls Apart.
             </h2>
             <p className="text-body-lg mb-12 text-gray-700 leading-relaxed">
               You've seen it: brokers chase top-dollar offers, only to renegotiate mid-deal or fall out of escrow altogether.
@@ -128,6 +152,8 @@ const ManufacturedHousingPage = () => {
             </p>
             <Button 
               to="https://form.typeform.com/to/NKQAZkUv" 
+              target="_blank"
+              rel="noopener noreferrer"
               variant="primary"
               size="lg"
               icon={<ArrowRight size={20} />}
@@ -152,12 +178,12 @@ const ManufacturedHousingPage = () => {
             {caseStudies.map((study, index) => (
               <Link
                 key={index}
-                to={`/success/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
+                to={`/success-stories/${study.title.toLowerCase().replace(/\s+/g, '-')}`}
                 className="relative rounded-xl overflow-hidden block group hover:shadow-card-hover transition-all duration-500 animate-fade-in card-luxury-white"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
-                <img 
-                  src={study.image}
+                <CloudinaryImage 
+                  localPath={study.image}
                   alt={study.title}
                   className="w-full h-[450px] object-cover group-hover:scale-110 transition-transform duration-500"
                   loading="lazy"
@@ -189,7 +215,7 @@ const ManufacturedHousingPage = () => {
         <div className="container-custom relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="heading-lg text-white mb-8">
-              Serious Buyers See the Deal. The Internet Doesn't.
+              <span className="text-gradient-light">Serious Buyers</span> See the Deal. The Internet Doesn't.
             </h2>
             <p className="text-body-lg mb-12 opacity-85 leading-relaxed">
               We don't email-blast sensitive details to 5,000 "investors."<br />
@@ -197,7 +223,9 @@ const ManufacturedHousingPage = () => {
               If you're not, you won't.
             </p>
             <Button 
-              to="/exclusive-buyers"
+              to="https://form.typeform.com/to/b9sObSil"
+              target="_blank"
+              rel="noopener noreferrer"
               variant="primary"
               size="lg"
               className="bg-white text-plum hover:bg-white/90 mb-6"
@@ -266,15 +294,15 @@ const ManufacturedHousingPage = () => {
       </section>
 
       {/* Enhanced Talk to Specialist Section */}
-      <section className="section-padding bg-sand luxury-gradient-overlay">
+      <section className="section-padding bg-cloud luxury-gradient-overlay">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto">
             <div className="card-luxury-white rounded-xl content-padding py-12 text-center">
-              <img 
-                src="/assets/Leadership/andrew-headshot-image.webp" 
-                alt="Andrew Warner" 
+              <ProfileImage
+                localPath="/assets/Leadership/andrew-headshot-image.webp"
+                alt="Andrew Warner"
                 className="w-32 h-32 rounded-full mx-auto object-cover mb-8 shadow-lg"
-                loading="lazy"
+                size="small"
               />
               <h3 className="heading-md mb-3">
                 Andrew Warner, CCIM
@@ -304,7 +332,29 @@ const ManufacturedHousingPage = () => {
           </div>
         </div>
       </section>
-    </div>
+
+      {/* Social Share Section */}
+      <section className="py-16 bg-cloud">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto text-center">
+            <h3 className="font-display text-2xl font-bold mb-6 text-gray-900">
+              Share This Page
+            </h3>
+            <p className="text-gray-600 mb-8">
+              Know someone interested in manufactured housing community investments? Share our expertise.
+            </p>
+            <SocialShare 
+              url={typeof window !== 'undefined' ? window.location.href : 'https://specialtyone.com/manufactured-housing'}
+              title="Manufactured Housing Community Investment Brokerage | Specialty One"
+              description="Expert investment brokerage for manufactured housing communities. $304M+ in transactions with specialized market knowledge."
+              variant="large"
+              className="justify-center"
+            />
+          </div>
+        </div>
+      </section>
+      </div>
+    </>
   );
 };
 

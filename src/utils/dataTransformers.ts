@@ -44,3 +44,35 @@ export const parseJsonFields = (record: any, jsonFields: string[]): any => {
   
   return result;
 };
+
+/**
+ * Transform case study data from database format to component format
+ */
+export const transformCaseStudy = (dbRecord: any): any => {
+  // First parse JSON fields
+  const parsedRecord = parseJsonFields(dbRecord, ['results', 'additional_images', 'testimonial', 'tags']);
+  
+  // Convert snake_case to camelCase
+  const camelRecord = snakeToCamel(parsedRecord);
+  
+  // Apply specific transformations for case studies
+  return {
+    ...camelRecord,
+    // Maintain both snake_case and camelCase for compatibility
+    propertyType: camelRecord.propertyType || camelRecord.property_type,
+    isConfidential: camelRecord.isConfidential || camelRecord.is_confidential,
+    siteCount: camelRecord.siteCount || camelRecord.site_count,
+    squareFootage: camelRecord.squareFootage || camelRecord.square_footage,
+    salePrice: camelRecord.salePrice || camelRecord.sale_price,
+    capRate: camelRecord.capRate || camelRecord.cap_rate,
+    timeToSale: camelRecord.timeToSale || camelRecord.time_to_sale,
+    heroImage: camelRecord.heroImage || camelRecord.hero_image,
+    additionalImages: camelRecord.additionalImages || camelRecord.additional_images,
+    detailedChallenge: camelRecord.detailedChallenge || camelRecord.detailed_challenge,
+    agentImage: camelRecord.agentImage || camelRecord.agent_image,
+    metaDescription: camelRecord.metaDescription || camelRecord.meta_description,
+    createdAt: camelRecord.createdAt || camelRecord.created_at,
+    updatedAt: camelRecord.updatedAt || camelRecord.updated_at,
+    publishedAt: camelRecord.publishedAt || camelRecord.published_at,
+  };
+};

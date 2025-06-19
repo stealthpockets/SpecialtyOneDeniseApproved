@@ -143,14 +143,21 @@
   .bg-frosted-purple {
     background: linear-gradient(135deg, rgba(62, 28, 95, 0.1) 0%, rgba(42, 13, 59, 0.05) 100%);
   }
-
   /* Text Gradient */
   .text-gradient {
     background: linear-gradient(to right, var(--color-plum), var(--color-amethyst));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-  }  /* Button Gradient */
+  }
+
+  /* Text Gradient for Dark Backgrounds */
+  .text-gradient-light {
+    background: linear-gradient(to right, var(--color-sand), var(--color-sage));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }/* Button Gradient */
   .button-gradient {
     @apply bg-gradient-to-r from-plum to-amethyst text-white py-3 px-6 rounded-md font-semibold transition-all duration-300;
   }
@@ -238,6 +245,24 @@
     animation: slideUp 0.5s ease-out;
   }
   
+  /* Enhanced animation utilities for Success Page */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: 3s;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 4s ease-in-out infinite;
+  }
+  
+  .animate-bounce-slow {
+    animation: bounce 3s ease-in-out infinite;
+  }
+  
   /* Animation Keyframes */
   @keyframes fadeIn {
     from {
@@ -267,6 +292,15 @@
       transform: translateX(-50%);
     }
   }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
 }
 
 @layer utilities {
@@ -276,5 +310,40 @@
   
   .animation-paused {
     animation-play-state: paused;
+  }
+  
+  /* Smooth scroll behavior */
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  
+  /* Custom focus styles for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-plum focus:ring-offset-2;
+  }
+  
+  /* Smooth hover transitions */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Glass effect for cards */
+  .glass-effect {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Gradient text effect */
+  .text-gradient-success {
+    background: linear-gradient(135deg, #8a0067 0%, #6dae94 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 }

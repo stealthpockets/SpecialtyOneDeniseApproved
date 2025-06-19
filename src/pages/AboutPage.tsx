@@ -2,6 +2,8 @@ import { ArrowRight, Award, Users, Target, Shield } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { ProfileImage } from '../components/ui/CloudinaryImage';
+import { SocialShare } from '../components/ui/SocialShare';
+import { SEOHead } from '../components/ui/SEOHead';
 
 const teamMembers = [
 	{
@@ -119,7 +121,14 @@ const stats = [
 
 const AboutPage = () => {
 	return (
-		<div className="flex flex-col min-h-screen bg-luxury-dark">
+		<>
+			<SEOHead
+				title="About Specialty One Investment Brokerage | Leadership & Expertise"
+				description="Meet the leadership team at Specialty One Investment Brokerage. Specialized expertise in manufactured housing, RV parks, and self-storage properties. 25+ years combined experience."
+				keywords="commercial real estate team, Andrew Warner CCIM, Denise Nunez, CRE leadership, manufactured housing experts, RV park specialists, self storage brokers"
+				url="https://specialtyone.com/about"
+			/>
+			<div className="flex flex-col min-h-screen bg-luxury-dark">
 			{/* Hero Section */}
 			<section className="relative pt-40 pb-32 overflow-hidden">
 				<div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
@@ -190,13 +199,13 @@ const AboutPage = () => {
 						{stats.map((stat, index) => (
 							<Card
 								key={index}
-								className="text-center py-12 px-8 bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
+								className="text-center py-12 px-6 bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/15 transition-all duration-300"
 							>
-								<CardContent>
-									<div className="heading-luxury text-5xl md:text-6xl font-bold text-luxury-accent mb-4">
+								<CardContent className="text-center flex flex-col items-center justify-center">
+									<div className="heading-luxury text-3xl md:text-4xl lg:text-5xl font-bold text-luxury-accent mb-4 text-center w-full whitespace-nowrap">
 										{stat.value}
 									</div>
-									<div className="text-white/80 text-lg font-medium">
+									<div className="text-white/80 text-lg font-medium text-center w-full">
 										{stat.label}
 									</div>
 								</CardContent>
@@ -372,6 +381,27 @@ const AboutPage = () => {
 				</div>
 			</section>
 
+			{/* Social Share Section */}
+			<section className="py-16 bg-white">
+				<div className="container-custom">
+					<div className="max-w-3xl mx-auto text-center">
+						<h3 className="text-2xl font-bold text-obsidian mb-4">
+							Share Our Story
+						</h3>
+						<p className="text-gray-600 mb-8">
+							Help others discover the difference that specialized expertise makes in alternative real estate investments.
+						</p>
+						<SocialShare 
+							url="https://specialtyone.com/about"
+							title="About Specialty One - Alternative Real Estate Investment Specialists"
+							description="Meet the team behind $1B+ in alternative real estate transactions. Specialized expertise in manufactured housing, RV parks, and self-storage."
+							variant="large"
+							className="justify-center"
+						/>
+					</div>
+				</div>
+			</section>
+
 			{/* CTA Section */}
 			<section className="py-24 bg-gradient-luxury-dark">
 				<div className="container-custom">
@@ -408,42 +438,8 @@ const AboutPage = () => {
 				</div>
 			</section>
 
-			{/* Related Links */}
-			<section className="py-24 bg-luxury-dark">
-				<div className="container-custom">
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-						<Button
-							to="/manufactured-housing"
-							variant="outline"
-							className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
-						>
-							🏘 Manufactured Housing
-						</Button>
-						<Button
-							to="/rv-parks"
-							variant="outline"
-							className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
-						>
-							🚐 RV Parks
-						</Button>
-						<Button
-							to="/self-storage"
-							variant="outline"
-							className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
-						>
-							📦 Self-Storage
-						</Button>
-						<Button
-							to="/success-stories"
-							variant="outline"
-							className="text-center py-8 border-white/60 text-white hover:bg-white/20 hover:border-white text-lg"
-						>
-							📖 Success Stories
-						</Button>
-					</div>
-				</div>
-			</section>
-		</div>
+			</div>
+		</>
 	);
 };
 

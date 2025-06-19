@@ -29,25 +29,14 @@ export const HeroSection = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-6 mb-16 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <Button 
-              to="https://form.typeform.com/to/B0GIZ1ht" 
-              variant="primary" 
-              size="lg"
-              icon={<ArrowRight size={20} />}
-              iconPosition="right"
-              className="bg-white text-plum hover:bg-white/90"
+            <a
+              href="https://form.typeform.com/to/I3hYeHFX" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-primary text-white font-bold py-3 px-6 rounded-lg hover:bg-primary-dark transition-colors"
             >
-              Get Exclusive Listings
-            </Button>
-            
-            <Button 
-              to="/contact" 
-              variant="outline" 
-              size="lg"
-              className="border-white/40 text-white hover:bg-white/10 hover:border-white/60"
-            >
-              Contact Us
-            </Button>
+              Get a Free Property Valuation
+            </a>
           </div>
           
           <p className="text-caption text-white/70 max-w-2xl mx-auto animate-fade-in leading-relaxed" style={{ animationDelay: "0.5s" }}>

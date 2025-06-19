@@ -70,14 +70,35 @@ export const useMarketReports = (filters?: ContentFilters) => {
         if (error) {
           console.error('Error fetching market reports:', error);
           setError('Failed to load market reports');
-        } else {
-          // Transform the data to handle authors array (Supabase returns array even for single join)
-          const transformedData = (data || []).map(item => ({
-            ...item,
-            authors: item.authors && item.authors.length > 0 ? item.authors[0] : null,
-            property_types: item.property_types && item.property_types.length > 0 ? item.property_types[0] : null,
-            categories: item.categories && item.categories.length > 0 ? item.categories[0] : null
-          }));
+        } else {          // Transform the data to handle authors array (Supabase returns array even for single join)
+          const transformedData = (data || []).map((item: any) => {
+            // Handle joined data arrays properly
+            const singleAuthor = Array.isArray(item.authors) && item.authors.length > 0 
+              ? item.authors[0] 
+              : (item.authors && !Array.isArray(item.authors) ? item.authors : null);
+            
+            const singlePropertyType = Array.isArray(item.property_types) && item.property_types.length > 0 
+              ? item.property_types[0] 
+              : (item.property_types && !Array.isArray(item.property_types) ? item.property_types : null);
+            
+            const singleCategory = Array.isArray(item.categories) && item.categories.length > 0 
+              ? item.categories[0] 
+              : (item.categories && !Array.isArray(item.categories) ? item.categories : null);
+
+            return {
+              ...item,
+              locale: item.locale || 'en',
+              status: (item.status as MarketReport['status']) || 'published',
+              created_at: item.created_at || item.published_at || new Date().toISOString(),
+              updated_at: item.updated_at || item.published_at || new Date().toISOString(),
+              deleted_at: item.deleted_at || undefined,
+              author_id: singleAuthor?.id || item.author_id,
+              authors: singleAuthor,
+              property_types: singlePropertyType,
+              categories: singleCategory,
+              tags: item.tags || []
+            };
+          });
           setMarketReports(transformedData);
         }
       } catch (err) {
@@ -149,14 +170,33 @@ export const useMarketReport = (slug: string) => {
         if (error) {
           console.error('Error fetching market report:', error);
           setError('Market report not found');
-          setMarketReport(null);
-        } else {
+          setMarketReport(null);        } else {
           // Transform the data to handle joined arrays
+          const item = data as any;
+          const singleAuthor = Array.isArray(item.authors) && item.authors.length > 0 
+            ? item.authors[0] 
+            : (item.authors && !Array.isArray(item.authors) ? item.authors : null);
+          
+          const singlePropertyType = Array.isArray(item.property_types) && item.property_types.length > 0 
+            ? item.property_types[0] 
+            : (item.property_types && !Array.isArray(item.property_types) ? item.property_types : null);
+          
+          const singleCategory = Array.isArray(item.categories) && item.categories.length > 0 
+            ? item.categories[0] 
+            : (item.categories && !Array.isArray(item.categories) ? item.categories : null);
+
           const transformedData = {
-            ...data,
-            authors: data.authors && data.authors.length > 0 ? data.authors[0] : null,
-            property_types: data.property_types && data.property_types.length > 0 ? data.property_types[0] : null,
-            categories: data.categories && data.categories.length > 0 ? data.categories[0] : null
+            ...item,
+            locale: item.locale || 'en',
+            status: (item.status as MarketReport['status']) || 'published',
+            created_at: item.created_at || item.published_at || new Date().toISOString(),
+            updated_at: item.updated_at || item.published_at || new Date().toISOString(),
+            deleted_at: item.deleted_at || undefined,
+            author_id: singleAuthor?.id || item.author_id,
+            authors: singleAuthor,
+            property_types: singlePropertyType,
+            categories: singleCategory,
+            tags: item.tags || []
           };
           setMarketReport(transformedData);
         }

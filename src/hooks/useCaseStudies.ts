@@ -13,21 +13,39 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
       try {
         setLoading(true);
         
+        console.log('🔍 useCaseStudies filters:', JSON.stringify(filters, null, 2), 'at', new Date().toISOString());
+        
         let query = supabase
           .from('case_studies')
           .select('*');
         
         // Revised filter application logic
         if (filters) {
-          if (filters.isConfidential === true) {
+          console.log('🔧 Processing filters:', JSON.stringify(filters, null, 2));
+          
+          // Apply status filter first if provided
+          if (filters.status) {
+            console.log(`📋 Applying status filter: ${filters.status}`);
+            query = query.eq('status', filters.status);
+          }
+          
+          // Handle confidential filtering with explicit logic
+          if (filters.includeAll === true) {
+            console.log('✅ includeAll is TRUE - NOT applying any confidential filter');
+            // Do nothing - don't filter by is_confidential at all
+          } else if (filters.isConfidential === true) {
+            console.log('🔒 Filtering for confidential only');
             query = query.eq('is_confidential', true);
           } else if (filters.isConfidential === false) {
+            console.log('👁️ Filtering for non-confidential only');
             query = query.eq('is_confidential', false);
-          } else if (filters.status) { // Only apply status if isConfidential was not explicitly true/false
-            query = query.eq('status', filters.status);
-          } else {
-            // Default if filters object is present but doesn't set isConfidential (true/false) or status
-            query = query.eq('status', 'completed').eq('is_confidential', false);
+          } else if (!filters.includeAll) {
+            console.log('🛡️ Default filter: non-confidential only');
+            // Default: only show non-confidential and completed
+            if (!filters.status) {
+              query = query.eq('status', 'completed');
+            }
+            query = query.eq('is_confidential', false);
           }
 
           // Apply other filters additively
@@ -38,16 +56,21 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
             query = query.ilike('agent', `%${filters.agent}%`);
           }
         } else {
-          // Default when filters object itself is not provided
-          query = query.eq('status', 'completed').eq('is_confidential', false);
+          // TEMPORARY: When no filters provided, get ALL completed case studies (including confidential)
+          console.log('📋 No filters provided - getting ALL completed case studies');
+          query = query.eq('status', 'completed');
+          // Removed: .eq('is_confidential', false) to include confidential ones
         }
         
         query = query.order('published_at', { ascending: false });
         
+        console.log('🚀 Final query about to execute:', query);
+        
         const { data, error: supabaseError } = await query;
         
         if (supabaseError) {
-          throw new Error(supabaseError.message);
+          console.error('Supabase error fetching case studies:', supabaseError);
+          throw new Error('Failed to fetch case studies due to a database error.');
         }
         
         if (!data) {
@@ -78,30 +101,19 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
                 console.error('Invalid item after snakeToCamel:', camelCaseItem, 'Parsed item:', parsedItem);
                 return null;
             }
-            
-            // Explicitly map is_confidential to isConfidential and set status if needed
-            // Ensure item.is_confidential exists before accessing
-            if (Object.prototype.hasOwnProperty.call(item, 'is_confidential')) {
-              camelCaseItem.isConfidential = item.is_confidential;
-              if (item.is_confidential) {
-                camelCaseItem.status = 'confidential';
-              }
-            } else {
-              // Default if is_confidential is missing, though schema should prevent this
-              camelCaseItem.isConfidential = false; 
-            }
+
             return camelCaseItem;
-          } catch (transformError) {
-            console.error('Error transforming individual case study item:', item, transformError);
-            return null; // Skip this item if transformation fails
+          } catch (error) {
+            console.error('Error transforming case study data:', error, 'Original item:', item);
+            return null; // Return null for any item that fails transformation
           }
-        }).filter(Boolean) as CaseStudy[]; // Filter out any nulls introduced by errors or invalid items
-        
+        }).filter(Boolean) as CaseStudy[]; // Filter out nulls
+
         setCaseStudies(transformedData);
-        setError(null);
+
       } catch (err) {
-        setError('Failed to fetch case studies');
-        console.error('Error fetching case studies:', err);
+        console.error('Error in fetchCaseStudies:', err);
+        setError('An unexpected error occurred while fetching case studies.');
       } finally {
         setLoading(false);
       }
@@ -115,7 +127,7 @@ export const useCaseStudies = (filters?: CaseStudyFilters) => {
   return { caseStudies, loading, error };
 };
 
-export const useCaseStudy = (slug: string) => {
+export const useCaseStudy = (id: string) => {
   const [caseStudy, setCaseStudy] = useState<CaseStudy | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -129,40 +141,36 @@ export const useCaseStudy = (slug: string) => {
         const { data, error: supabaseError } = await supabase
           .from('case_studies')
           .select('*')
-          .eq('slug', slug)
-          .maybeSingle();
-        
+          .eq('id', id)
+          .single();
+
         if (supabaseError) {
-          throw new Error(supabaseError.message);
+          console.error(`Error fetching case study with id ${id}:`, supabaseError);
+          throw new Error('Failed to fetch case study due to a database error.');
         }
-        
-        if (!data) {
-          setCaseStudy(null);
-          setError('Case study not found');
-          return;
+
+        if (data) {
+          // Transform the data from database format to application format
+          // First parse any JSON fields that come as strings
+          const parsedData = parseJsonFields(data, ['results', 'testimonial', 'additional_images', 'tags']);
+          
+          // Then convert snake_case to camelCase
+          const camelCaseData = snakeToCamel(parsedData) as CaseStudy;
+          
+          setCaseStudy(camelCaseData);
         }
-        
-        // Transform the data from database format to application format
-        // First parse any JSON fields that come as strings
-        const parsedData = parseJsonFields(data, ['results', 'testimonial', 'additional_images', 'tags']);
-        
-        // Then convert snake_case to camelCase
-        const transformedData = snakeToCamel(parsedData) as CaseStudy;
-        
-        setCaseStudy(transformedData);
-        setError(null);
       } catch (err) {
-        setError('Failed to fetch case study');
-        console.error('Error fetching case study:', err);
+        console.error(`Error fetching case study with id ${id}:`, err);
+        setError('An unexpected error occurred while fetching the case study.');
       } finally {
         setLoading(false);
       }
     };
 
-    if (slug) {
+    if (id) {
       fetchCaseStudy();
     }
-  }, [slug]);
+  }, [id]);
 
   return { caseStudy, loading, error };
 };

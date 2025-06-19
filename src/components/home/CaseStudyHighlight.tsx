@@ -1,5 +1,6 @@
 import { ArrowRight } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { CloudinaryImage } from '../ui/CloudinaryImage';
 
 export const CaseStudyHighlight = () => {
   return (
@@ -14,9 +15,9 @@ export const CaseStudyHighlight = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Case Study Image */}
           <div className="relative gradient-overlay rounded-xl overflow-hidden h-[450px] animate-fade-in shadow-card">
-            <img 
-              src="/dist/assets/success-stories/desert-trails.webp" 
-              alt="Desert Trails RV Park" 
+            <CloudinaryImage
+              localPath="/dist/assets/success-stories/desert-trails.webp"
+              alt="Desert Trails RV Park"
               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
               loading="lazy"
             />

@@ -30,12 +30,11 @@ export const PropertyTypeBadge: React.FC<PropertyTypeBadgeProps> = ({
         return 'primary';
     }
   };
-
   return (
     <Badge 
       color={getColorForPropertyType(propertyType.name)}
-      variant="default"
-      className={`text-xs ${className}`}
+      variant="gradient"
+      className={`text-xs font-semibold shadow-sm ${className}`}
     >
       {propertyType.name}
     </Badge>

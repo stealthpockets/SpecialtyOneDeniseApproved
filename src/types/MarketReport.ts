@@ -56,14 +56,10 @@ export interface BaseContent {
 }
 
 // Market Report extends base content
-export interface MarketReport extends BaseContent {
-  // Market reports may have additional specific fields in the future
-}
+export interface MarketReport extends BaseContent {}
 
 // Insight extends base content  
-export interface Insight extends BaseContent {
-  // Insights may have additional specific fields in the future
-}
+export interface Insight extends BaseContent {}
 
 // Filtering interface for content queries
 export interface ContentFilters {
@@ -82,5 +78,32 @@ export const PROPERTY_TYPES = {
   MULTI_ASSET: 'Multi-Asset' as const,
 } as const;
 
-// Helper type for property type values
-export type PropertyTypeName = typeof PROPERTY_TYPES[keyof typeof PROPERTY_TYPES];
+// Raw Supabase response types (before transformation)
+export interface SupabaseContentResponse {
+  id: string;
+  slug: string;
+  locale: string;
+  title: string;
+  summary?: string;
+  content?: string;
+  property_type_id?: number;
+  category_id?: number;
+  author_id?: string;
+  status: 'draft' | 'scheduled' | 'published' | 'archived';
+  published_at?: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+  is_premium: boolean;
+  views: number;
+  downloads: number;
+  reading_time?: number;
+  image_url?: string;
+  pdf_url?: string;
+  pages?: number;
+  // Raw joined arrays from Supabase (before transformation)
+  authors?: Author[] | Author | null;
+  property_types?: PropertyType[] | PropertyType | null;
+  categories?: Category[] | Category | null;
+  tags?: Tag[];
+}

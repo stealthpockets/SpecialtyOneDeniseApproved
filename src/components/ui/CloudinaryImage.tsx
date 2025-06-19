@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { AdvancedImage, responsive, placeholder } from '@cloudinary/react';
 import { createOptimizedImage, getCloudinaryPublicId } from '../../lib/cloudinary';
 import { handleImageError, DEFAULT_TESTIMONIAL_IMAGE } from '../../utils/imageHelpers';
+import { performanceMonitor } from '../../utils/performanceMonitor';
+import { ImageErrorBoundary } from './ImageErrorBoundary';
 
 interface CloudinaryImageProps {
   publicId?: string;
@@ -30,24 +32,62 @@ export const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
   fallbackSrc,
   onClick
 }) => {
+  const [imageLoadTime] = useState(() => performance.now());
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  
   // Determine the public ID to use
   const resolvedPublicId = publicId || (localPath ? getCloudinaryPublicId(localPath) : null);
   
+  // Track image load performance
+  const trackImageLoad = useCallback(() => {
+    const loadTime = performance.now() - imageLoadTime;
+    const imageName = publicId || localPath || 'unknown';
+    performanceMonitor.trackImageLoad(imageName, loadTime);
+    setIsLoading(false);
+  }, [imageLoadTime, publicId, localPath]);
+  
+  // Add error handling for image load timeout
+  React.useEffect(() => {
+    if (isLoading && resolvedPublicId) {
+      const timeout = setTimeout(() => {
+        if (isLoading) {
+          console.warn(`Image load timeout for: ${resolvedPublicId}`);
+          setHasError(true);
+          setIsLoading(false);
+        }
+      }, 10000); // 10 second timeout
+
+      return () => clearTimeout(timeout);
+    }
+  }, [isLoading, resolvedPublicId]);
+  
   // If no Cloudinary public ID is available, fall back to regular img tag
-  if (!resolvedPublicId) {
+  if (!resolvedPublicId || hasError) {
+    // Normalize local path for fallback
+    let fallbackPath = localPath;
+    if (fallbackPath) {
+      // Handle backslashes and ensure correct path format
+      fallbackPath = fallbackPath.replace(/\\/g, '/');
+      // Ensure path starts with / for public directory
+      if (!fallbackPath.startsWith('/')) {
+        fallbackPath = '/' + fallbackPath;
+      }
+    }
+    
     return (
       <img
-        src={localPath || fallbackSrc || DEFAULT_TESTIMONIAL_IMAGE}
+        src={fallbackPath || fallbackSrc || DEFAULT_TESTIMONIAL_IMAGE}
         alt={alt}
         width={width}
         height={height}
         className={className}
         loading={loading}
+        onLoad={trackImageLoad}
         onError={handleImageError}
         onClick={onClick}
       />
-    );
-  }
+    );  }
 
   // Create optimized Cloudinary image
   const cloudinaryImage = createOptimizedImage(resolvedPublicId, {
@@ -58,32 +98,27 @@ export const CloudinaryImage: React.FC<CloudinaryImageProps> = ({
   });
 
   return (
-    <AdvancedImage
-      cldImg={cloudinaryImage}
-      alt={alt}
-      className={className}
-      plugins={[
-        responsive({ steps: [400, 800, 1200, 1600] }),
-        placeholder({ mode: 'blur' })
-      ]}
-      loading={loading}
-      onClick={onClick}
-      onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-        // Fallback to regular img if Cloudinary fails
-        const target = e.target as HTMLImageElement;
-        const fallbackImage = document.createElement('img');
-        fallbackImage.src = localPath || fallbackSrc || DEFAULT_TESTIMONIAL_IMAGE;
-        fallbackImage.alt = alt;
-        fallbackImage.className = className || '';
-        if (width) fallbackImage.width = width;
-        if (height) fallbackImage.height = height;
-        fallbackImage.loading = loading;
-        fallbackImage.onerror = (e) => handleImageError(e as any);
-        if (onClick) fallbackImage.onclick = onClick;
-        
-        target.parentNode?.replaceChild(fallbackImage, target);
-      }}
-    />
+    <ImageErrorBoundary>
+      <AdvancedImage
+        cldImg={cloudinaryImage}
+        alt={alt}
+        className={className}
+        plugins={[
+          responsive({ steps: [400, 800, 1200, 1600] }),
+          placeholder({ mode: 'blur' })
+        ]}        loading={loading}
+        onLoad={() => {
+          trackImageLoad();
+          setIsLoading(false);
+        }}
+        onClick={onClick}
+        onError={() => {
+          console.warn(`Cloudinary image failed to load: ${resolvedPublicId}`);
+          setHasError(true);
+          setIsLoading(false);
+        }}
+      />
+    </ImageErrorBoundary>
   );
 };
 

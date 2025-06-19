@@ -2,6 +2,8 @@ import { ClipboardCheck, Users, LineChart, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { ProfileImage } from '../components/ui/CloudinaryImage';
+import { SEOHead } from '../components/ui/SEOHead';
 
 const frameworkSteps = [
 	{
@@ -68,7 +70,7 @@ const stats = [
 		value: '80+',
 		label: 'Offers on a Single Listing',
 		isClickable: true,
-		linkTo: '/success/the-palms',
+		linkTo: '/success-stories/the-palms',
 	},
 	{ value: '200+', label: 'Self-Storage Facilities Sold' },
 	{ value: '100%', label: 'of RV Park Listings Sold' },
@@ -137,7 +139,14 @@ const executionPoints = [
 
 const AdvantagePage = () => {
 	return (
-		<div className="flex flex-col min-h-screen bg-luxury-dark">
+		<>
+			<SEOHead
+				title="The Specialty One Advantage | Strategic CRE Process & Expertise"
+				description="Discover the Specialty One advantage in commercial real estate. Our strategic approach to manufactured housing, RV parks, and self-storage transactions delivers results."
+				keywords="commercial real estate advantage, CRE strategy, specialized brokerage process, deal engineering, transaction management, specialty properties expertise"
+				url="https://specialtyone.com/advantage"
+			/>
+			<div className="flex flex-col min-h-screen bg-luxury-dark">
 			{/* Hero Section */}
 			<section className="relative pt-40 pb-32 overflow-hidden">
 				<div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
@@ -152,12 +161,12 @@ const AdvantagePage = () => {
 						</p>
 						<div className="flex flex-col sm:flex-row justify-center gap-6">
 							<Button
-								to="/contact"
+								to="https://form.typeform.com/to/NKQAZkUv"
 								variant="primary"
 								size="lg"
 								className="text-lg px-8 py-4"
 							>
-								Request a Custom Exit Strategy
+								Start Planning Your Exit
 							</Button>
 						</div>
 						<p className="text-sm mt-6 text-white/75">
@@ -315,14 +324,13 @@ const AdvantagePage = () => {
 								{stat.isClickable ? (
 									<Link to={stat.linkTo}>
 										<Card
-											className="text-center py-8 animate-fade-in cursor-pointer hover:shadow-card-hover transition-all duration-300 hover:scale-105"
-											style={{ animationDelay: `${0.1 * index}s` }}
+											className="text-center py-12 px-6 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300 cursor-pointer hover:shadow-card-hover hover:scale-105"
 										>
-											<CardContent>
-												<div className="font-display text-4xl font-bold text-plum mb-2">
+											<CardContent className="text-center flex flex-col items-center justify-center">
+												<div className="heading-luxury text-3xl md:text-4xl font-bold text-luxury-primary mb-4 text-center w-full whitespace-nowrap">
 													{stat.value}
 												</div>
-												<div className="text-gray-700 mb-2">
+												<div className="text-luxury-dark/80 text-lg font-medium text-center w-full mb-2">
 													{stat.label}
 												</div>
 												<div className="text-xs lg:text-sm text-plum font-medium">
@@ -333,14 +341,13 @@ const AdvantagePage = () => {
 									</Link>
 								) : (
 									<Card
-										className="text-center py-8 animate-fade-in"
-										style={{ animationDelay: `${0.1 * index}s` }}
+										className="text-center py-12 px-6 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300"
 									>
-										<CardContent>
-											<div className="font-display text-4xl font-bold text-plum mb-2">
+										<CardContent className="text-center flex flex-col items-center justify-center">
+											<div className="heading-luxury text-3xl md:text-4xl font-bold text-luxury-primary mb-4 text-center w-full whitespace-nowrap">
 												{stat.value}
 											</div>
-											<div className="text-gray-700">
+											<div className="text-luxury-dark/80 text-lg font-medium text-center w-full">
 												{stat.label}
 											</div>
 										</CardContent>
@@ -443,11 +450,11 @@ const AdvantagePage = () => {
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 						{/* Andrew Warner */}
 						<div className="bg-white rounded-lg p-8 text-center">
-							<img
-								src="/assets/Leadership/andrew-headshot-image.webp"
+							<ProfileImage
+								localPath="/assets/Leadership/andrew-headshot-image.webp"
 								alt="Andrew Warner"
 								className="w-32 h-32 rounded-full mx-auto object-cover mb-6"
-								loading="lazy"
+								size="small"
 							/>
 							<h3 className="font-display text-2xl font-bold mb-2">
 								Andrew Warner, CCIM
@@ -473,11 +480,11 @@ const AdvantagePage = () => {
 
 						{/* Denise Nuñez */}
 						<div className="bg-white rounded-lg p-8 text-center">
-							<img
-								src="/assets/Leadership/denise-nunez-self-storage.webp"
+							<ProfileImage
+								localPath="/assets/Leadership/denise-nunez-self-storage.webp"
 								alt="Denise Nuñez"
 								className="w-32 h-32 rounded-full mx-auto object-cover mb-6"
-								loading="lazy"
+								size="small"
 							/>
 							<h3 className="font-display text-2xl font-bold mb-2">
 								Denise Nuñez
@@ -503,50 +510,8 @@ const AdvantagePage = () => {
 					</div>
 				</div>
 			</section>
-
-			{/* Related Links */}
-			<section className="py-16 bg-sand">
-				<div className="container-custom">
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-						<Button
-							to="/manufactured-housing"
-							variant="outline"
-							className="text-center py-6"
-						>
-							🏘 Manufactured Housing
-						</Button>
-						<Button
-							to="/rv-parks"
-							variant="outline"
-							className="text-center py-6"
-						>
-							🚐 RV Parks
-						</Button>
-						<Button
-							to="/self-storage"
-							variant="outline"
-							className="text-center py-6"
-						>
-							📦 Self-Storage
-						</Button>
-						<Button
-							to="/1031-exchange"
-							variant="outline"
-							className="text-center py-6"
-						>
-							🔁 1031 Exchange Strategy
-						</Button>
-						<Button
-							to="/success-stories"
-							variant="outline"
-							className="text-center py-6"
-						>
-							📚 Client Success Stories
-						</Button>
-					</div>
-				</div>
-			</section>
-		</div>
+			</div>
+		</>
 	);
 };
 

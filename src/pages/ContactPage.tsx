@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle, ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
+import { SocialShare } from '../components/ui/SocialShare';
+import { SEOHead } from '../components/ui/SEOHead';
+import { FormValidator, RateLimiter, SecurityEnforcer, ValidationError } from '../utils/formValidation';
+import { submitContactForm, type ContactFormData } from '../lib/formService';
 
 const teamMembers = [
 	{
@@ -80,32 +84,135 @@ const faqs = [
 
 const ContactPage = () => {
 	const [formData, setFormData] = useState({
-		firstName: '',
-		lastName: '',
+		first_name: '',
+		last_name: '',
 		email: '',
 		phone: '',
 		company: '',
-		propertyType: '',
-		inquiryType: '',
+		property_type: '',
+		inquiry_type: '',
 		message: '',
-		preferredContact: 'email',
+		preferred_contact: 'email' as 'email' | 'phone',
 	});
 
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+	const [submitError, setSubmitError] = useState<string>('');
+	const [file, setFile] = useState<File | null>(null);
+
+	// Enforce HTTPS on component mount
+	useEffect(() => {
+		SecurityEnforcer.enforceHTTPS();
+	}, []);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 		const { name, value } = e.target;
+		
+		// Clear validation errors for this field
+		setValidationErrors(prev => prev.filter(error => error.field !== name));
+		setSubmitError('');
+		
 		setFormData((prev) => ({
 			...prev,
 			[name]: value,
 		}));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const selectedFile = e.target.files?.[0];
+		if (selectedFile) {
+			// Validate file type and size
+			const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+			const maxSize = 5 * 1024 * 1024; // 5MB
+
+			if (!allowedTypes.includes(selectedFile.type)) {
+				setSubmitError('Invalid file type. Please upload a PDF, JPG, or PNG.');
+				setFile(null);
+				return;
+			}
+
+			if (selectedFile.size > maxSize) {
+				setSubmitError('File size exceeds 5MB. Please upload a smaller file.');
+				setFile(null);
+				return;
+			}
+
+			setFile(selectedFile);
+			setSubmitError('');
+		}
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// Handle form submission here
-		console.log('Form submitted:', formData);
-		setIsSubmitted(true);
+		setIsSubmitting(true);
+		setValidationErrors([]);
+		setSubmitError('');
+
+		try {
+			// Check rate limiting
+			const rateLimitCheck = RateLimiter.canSubmit();
+			if (!rateLimitCheck.allowed) {
+				setSubmitError(rateLimitCheck.message || 'Too many submissions');
+				return;
+			}
+
+			// Validate form data
+			const validation = FormValidator.validateContactForm(formData);
+			if (!validation.isValid) {
+				setValidationErrors(validation.errors);
+				setSubmitError('Please correct the errors below');
+				return;
+			}
+
+			// Check if we're in a secure context
+			if (!SecurityEnforcer.isSecureContext()) {
+				setSubmitError('This form requires a secure connection. Please ensure you\'re using HTTPS.');
+				return;
+			}
+
+			// Prevent sensitive data storage
+			if (!SecurityEnforcer.preventSensitiveStorage(validation.sanitizedData)) {
+				setSubmitError('Invalid data detected. Please review your submission.');
+				return;
+			}
+
+			let attachmentUrl = '';
+			if (file) {
+				const formData = new FormData();
+				formData.append('attachment', file);
+
+				const response = await fetch('/api/secure-file-upload', {
+					method: 'POST',
+					body: formData,
+				});
+
+				if (!response.ok) {
+					const { error } = await response.json();
+					throw new Error(error || 'File upload failed.');
+				}
+
+				const { publicUrl } = await response.json();
+				attachmentUrl = publicUrl;
+			}
+
+			// Submit to Supabase with attachment URL
+			await submitContactForm({ ...validation.sanitizedData, attachment_url: attachmentUrl } as ContactFormData);
+			
+			// Record submission for rate limiting
+			RateLimiter.recordSubmission();
+			
+			setIsSubmitted(true);
+		} catch (error) {
+			console.error('Form submission error:', error);
+			setSubmitError('An error occurred while submitting the form. Please try again.');
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
+
+	const getFieldError = (fieldName: string): string | undefined => {
+		return validationErrors.find(error => error.field === fieldName)?.message;
 	};
 
 	if (isSubmitted) {
@@ -150,7 +257,14 @@ const ContactPage = () => {
 	}
 
 	return (
-		<div className="flex flex-col min-h-screen bg-luxury-dark">
+		<>
+			<SEOHead
+				title="Contact Specialty One Investment Brokerage | Get Expert CRE Advice"
+				description="Contact our specialized commercial real estate team for manufactured housing, RV parks, and self-storage properties. Schedule a consultation with our experts today."
+				keywords="contact commercial real estate broker, CRE consultation, specialty property expert, manufactured housing advisor, RV park specialist, self storage broker"
+				url="https://specialtyone.com/contact"
+			/>
+			<div className="flex flex-col min-h-screen bg-luxury-dark">
 			{/* Hero Section */}
 			<section className="relative pt-40 pb-32 overflow-hidden">
 				<div className="absolute inset-0 bg-gradient-luxury-dark opacity-95"></div>
@@ -211,6 +325,14 @@ const ContactPage = () => {
 						<div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-3xl p-12">
 							<h2 className="heading-luxury text-white text-3xl md:text-4xl font-bold mb-8">Send Us a Message</h2>
 
+							{/* Error Display */}
+							{submitError && (
+								<div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-200 flex items-center">
+									<AlertCircle size={20} className="mr-3 flex-shrink-0" />
+									<span>{submitError}</span>
+								</div>
+							)}
+
 							<form onSubmit={handleSubmit} className="space-y-6">
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 									<div>
@@ -223,12 +345,18 @@ const ContactPage = () => {
 										<input
 											type="text"
 											id="firstName"
-											name="firstName"
+											name="first_name"
 											required
-											value={formData.firstName}
+											maxLength={100}
+											value={formData.first_name}
 											onChange={handleInputChange}
-											className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+												getFieldError('first_name') ? 'border-red-500/50' : 'border-white/30'
+											}`}
 										/>
+										{getFieldError('first_name') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('first_name')}</p>
+										)}
 									</div>
 									<div>
 										<label
@@ -240,12 +368,18 @@ const ContactPage = () => {
 										<input
 											type="text"
 											id="lastName"
-											name="lastName"
+											name="last_name"
 											required
-											value={formData.lastName}
+											maxLength={100}
+											value={formData.last_name}
 											onChange={handleInputChange}
-											className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+												getFieldError('last_name') ? 'border-red-500/50' : 'border-white/30'
+											}`}
 										/>
+										{getFieldError('last_name') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('last_name')}</p>
+										)}
 									</div>
 								</div>
 
@@ -262,10 +396,16 @@ const ContactPage = () => {
 											id="email"
 											name="email"
 											required
+											maxLength={255}
 											value={formData.email}
 											onChange={handleInputChange}
-											className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+												getFieldError('email') ? 'border-red-500/50' : 'border-white/30'
+											}`}
 										/>
+										{getFieldError('email') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('email')}</p>
+										)}
 									</div>
 									<div>
 										<label
@@ -278,10 +418,17 @@ const ContactPage = () => {
 											type="tel"
 											id="phone"
 											name="phone"
+											pattern="[0-9\-\+\(\)\s]+"
+											maxLength={20}
 											value={formData.phone}
 											onChange={handleInputChange}
-											className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+												getFieldError('phone') ? 'border-red-500/50' : 'border-white/30'
+											}`}
 										/>
+										{getFieldError('phone') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('phone')}</p>
+										)}
 									</div>
 								</div>
 
@@ -296,10 +443,16 @@ const ContactPage = () => {
 										type="text"
 										id="company"
 										name="company"
+										maxLength={200}
 										value={formData.company}
 										onChange={handleInputChange}
-										className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+										className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+											getFieldError('company') ? 'border-red-500/50' : 'border-white/30'
+										}`}
 									/>
+									{getFieldError('company') && (
+										<p className="mt-2 text-red-300 text-sm">{getFieldError('company')}</p>
+									)}
 								</div>
 
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -312,10 +465,12 @@ const ContactPage = () => {
 										</label>
 										<select
 											id="propertyType"
-											name="propertyType"
-											value={formData.propertyType}
+											name="property_type"
+											value={formData.property_type}
 											onChange={handleInputChange}
-											className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+												getFieldError('property_type') ? 'border-red-500/50' : 'border-white/30'
+											}`}
 										>
 											<option value="">Select Property Type</option>
 											<option value="manufactured-housing">Manufactured Housing</option>
@@ -323,6 +478,9 @@ const ContactPage = () => {
 											<option value="self-storage">Self-Storage</option>
 											<option value="other">Other</option>
 										</select>
+										{getFieldError('property_type') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('property_type')}</p>
+										)}
 									</div>
 									<div>
 										<label
@@ -333,11 +491,13 @@ const ContactPage = () => {
 										</label>
 										<select
 											id="inquiryType"
-											name="inquiryType"
+											name="inquiry_type"
 											required
-											value={formData.inquiryType}
+											value={formData.inquiry_type}
 											onChange={handleInputChange}
-											className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm"
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+												getFieldError('inquiry_type') ? 'border-red-500/50' : 'border-white/30'
+											}`}
 										>
 											<option value="">Select Reason</option>
 											<option value="selling">Selling a Property</option>
@@ -346,6 +506,9 @@ const ContactPage = () => {
 											<option value="market-info">Market Information</option>
 											<option value="general">General Inquiry</option>
 										</select>
+										{getFieldError('inquiry_type') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('inquiry_type')}</p>
+										)}
 									</div>
 								</div>
 
@@ -361,11 +524,18 @@ const ContactPage = () => {
 										name="message"
 										rows={6}
 										required
+										minLength={10}
+										maxLength={2000}
 										value={formData.message}
 										onChange={handleInputChange}
-										className="w-full px-4 py-4 bg-white/10 border border-white/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm resize-none"
+										className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm resize-none ${
+											getFieldError('message') ? 'border-red-500/50' : 'border-white/30'
+										}`}
 										placeholder="Tell us more about your needs..."
 									></textarea>
+									{getFieldError('message') && (
+										<p className="mt-2 text-red-300 text-sm">{getFieldError('message')}</p>
+									)}
 								</div>
 
 								<div>
@@ -377,9 +547,9 @@ const ContactPage = () => {
 											<input
 												type="radio"
 												id="contact-email"
-												name="preferredContact"
+												name="preferred_contact"
 												value="email"
-												checked={formData.preferredContact === 'email'}
+												checked={formData.preferred_contact === 'email'}
 												onChange={handleInputChange}
 												className="focus:ring-luxury-accent h-5 w-5 text-luxury-accent border-white/30 bg-white/10"
 											/>
@@ -389,9 +559,9 @@ const ContactPage = () => {
 											<input
 												type="radio"
 												id="contact-phone"
-												name="preferredContact"
+												name="preferred_contact"
 												value="phone"
-												checked={formData.preferredContact === 'phone'}
+												checked={formData.preferred_contact === 'phone'}
 												onChange={handleInputChange}
 												className="focus:ring-luxury-accent h-5 w-5 text-luxury-accent border-white/30 bg-white/10"
 											/>
@@ -400,14 +570,38 @@ const ContactPage = () => {
 									</div>
 								</div>
 
+								{/* File Upload */}
+								<div className="mb-6">
+									<label htmlFor="attachment" className="block text-sm font-medium text-gray-700 mb-2">
+										Attach a File (Optional)
+									</label>
+									<input
+										type="file"
+										name="attachment"
+										id="attachment"
+										onChange={handleFileChange}
+										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-shadow duration-200 ease-in-out shadow-sm"
+									/>
+									<p className="text-xs text-gray-500 mt-2">Max file size: 5MB. Allowed types: PDF, PNG, JPG.</p>
+								</div>
+
 								<div className="mt-8">
-									<Button
-										variant="primary"
-										size="lg"
-										className="w-full flex items-center justify-center text-lg py-4"
+									<button
+										type="submit"
+										disabled={isSubmitting}
+										className="w-full flex items-center justify-center text-lg py-4 bg-gradient-to-r from-luxury-accent via-plum to-luxury-accent text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
 									>
-										Send Message <Send size={20} className="ml-2" />
-									</Button>
+										{isSubmitting ? (
+											<>
+												<div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
+												Sending...
+											</>
+										) : (
+											<>
+												Send Message <Send size={20} className="ml-2" />
+											</>
+										)}
+									</button>
 								</div>
 								<p className="text-sm text-white/60 text-center mt-4">
 									We respect your privacy. Your information will not be shared.
@@ -529,6 +723,26 @@ const ContactPage = () => {
 				</div>
 			</section>
 
+			{/* Social Share Section */}
+			<section className="py-16 bg-sand">
+				<div className="container-custom">
+					<div className="max-w-3xl mx-auto text-center">
+						<h3 className="text-2xl font-bold text-obsidian mb-4">
+							Share Our Contact Information
+						</h3>
+						<p className="text-gray-600 mb-8">
+							Help others connect with specialized alternative real estate experts.
+						</p>
+						<SocialShare 
+							url="https://specialtyone.com/contact"
+							title="Contact Specialty One - Alternative Real Estate Investment Experts"
+							description="Connect with our specialized team for manufactured housing, RV parks, and self-storage investment opportunities."
+							variant="large"
+							className="justify-center"
+						/>
+					</div>
+				</div>
+			</section>
 
 			{/* FAQ Section */}
 			<section className="py-24 bg-luxury-dark">
@@ -556,7 +770,8 @@ const ContactPage = () => {
 					</div>
 				</div>
 			</section>
-		</div>
+			</div>
+		</>
 	);
 };
 

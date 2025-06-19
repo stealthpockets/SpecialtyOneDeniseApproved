@@ -1,10 +1,14 @@
-import React, { useState, useMemo } from 'react'; // Added useMemo
-import { Lock, Shield, Eye, Users, CheckCircle, ArrowRight, Building2, TrendingUp, Clock, Star, MapPin } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react'; // Added useMemo
+import { Lock, Shield, Eye, Users, CheckCircle, ArrowRight, Building2, TrendingUp, Clock, Star, MapPin, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { SEOHead } from '../components/ui/SEOHead';
+import { CloudinaryImage } from '../components/ui/CloudinaryImage';
 import { useCaseStudies } from '../hooks/useCaseStudies';
 import { CaseStudy } from '../types/caseStudy';
+import { FormValidator, RateLimiter, SecurityEnforcer, ValidationError } from '../utils/formValidation';
+import { submitBuyerApplication, type BuyerApplicationData } from '../lib/formService';
 
 const networkBenefits = [
   {
@@ -112,24 +116,30 @@ const faqs = [
   }
 ];
 
-const ExclusiveBuyerNetworkPage = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+const ExclusiveBuyerNetworkPage = () => {  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
     company: '',
     title: '',
-    investmentRange: '',
-    propertyTypes: [] as string[],
+    investment_range: '',
+    property_types: [] as string[],
     markets: '',
     timeline: '',
     experience: '',
     references: '',
-    additionalInfo: ''
+    additional_info: ''
   });
-
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [submitError, setSubmitError] = useState<string>('');
+
+  // Enforce HTTPS on component mount
+  useEffect(() => {
+    SecurityEnforcer.enforceHTTPS();
+  }, []);
 
   // Memoize the filters object to prevent re-renders in useCaseStudies
   const recentDealsFilters = useMemo(() => ({ isConfidential: true }), []); 
@@ -139,50 +149,127 @@ const ExclusiveBuyerNetworkPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    // Clear validation errors for this field
+    setValidationErrors(prev => prev.filter(error => error.field !== name));
+    setSubmitError('');
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
-
   const handleCheckboxChange = (value: string) => {
     setFormData(prev => ({
       ...prev,
-      propertyTypes: prev.propertyTypes.includes(value)
-        ? prev.propertyTypes.filter(type => type !== value)
-        : [...prev.propertyTypes, value]
+      property_types: prev.property_types.includes(value)
+        ? prev.property_types.filter(type => type !== value)
+        : [...prev.property_types, value]
     }));
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Application submitted:', formData);
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setValidationErrors([]);
+    setSubmitError('');
+
+    try {
+      // Check rate limiting
+      const rateLimitCheck = RateLimiter.canSubmit();
+      if (!rateLimitCheck.allowed) {
+        setSubmitError(rateLimitCheck.message || 'Too many submissions');
+        return;
+      }      // Validate form data - create extended validation for buyer network
+      const validation = FormValidator.validateContactForm({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        message: formData.additional_info || 'Buyer network application'
+      });
+
+      // Additional validation for buyer-specific fields
+      if (!formData.title.trim()) {
+        validation.errors.push({ field: 'title', message: 'Title/Position is required' });
+        validation.isValid = false;
+      }
+
+      if (!formData.investment_range) {
+        validation.errors.push({ field: 'investment_range', message: 'Investment range is required' });
+        validation.isValid = false;
+      }
+
+      if (!validation.isValid) {
+        setValidationErrors(validation.errors);
+        setSubmitError('Please correct the errors below');
+        return;
+      }
+
+      // Check if we're in a secure context
+      if (!SecurityEnforcer.isSecureContext()) {
+        setSubmitError('This form requires a secure connection. Please ensure you\'re using HTTPS.');
+        return;
+      }
+
+      // Submit to Supabase
+      const buyerData: BuyerApplicationData = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        title: formData.title,
+        investment_range: formData.investment_range,
+        property_types: formData.property_types,
+        markets: formData.markets,
+        timeline: formData.timeline,
+        experience: formData.experience,
+        references: formData.references,
+        additional_info: formData.additional_info
+      };
+
+      await submitBuyerApplication(buyerData);
+      
+      // Record submission for rate limiting
+      RateLimiter.recordSubmission();
+      
+      setIsSubmitted(true);
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setSubmitError('An error occurred while submitting the application. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
+  const getFieldError = (fieldName: string): string | undefined => {
+    return validationErrors.find(error => error.field === fieldName)?.message;
+  };
   if (isSubmitted) {
     return (
-      <div className="flex flex-col min-h-screen bg-sand">
-        <section className="pt-32 pb-20 bg-gradient-hero text-white flex-grow flex items-center">
-          <div className="container-custom">
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle size={40} className="text-white" />
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-sand via-cloud to-sand">
+        <section className="pt-32 pb-20 bg-gradient-hero text-white flex-grow flex items-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-radial-modern-hero opacity-80"></div>
+          <div className="container-custom relative z-10">
+            <div className="max-w-3xl mx-auto text-center">
+              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center mx-auto mb-8 shadow-luxury">
+                <CheckCircle size={48} className="text-white" />
               </div>
-              <h1 className="font-display text-4xl md:text-5xl font-bold mb-6">
+              <h1 className="heading-luxury font-display text-4xl md:text-5xl font-bold mb-8 leading-tight">
                 Application Received
               </h1>
-              <p className="text-xl mb-8 opacity-90">
+              <p className="text-xl md:text-2xl mb-12 opacity-90 leading-relaxed font-medium">
                 Thank you for your interest in our Exclusive Buyer Network. 
                 We'll review your application and respond within 48 hours.
               </p>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8">
-                <h3 className="font-bold text-lg mb-2">What Happens Next?</h3>
-                <div className="text-left space-y-2">
-                  <p>✓ Application review within 48 hours</p>
-                  <p>✓ Reference verification (if applicable)</p>
-                  <p>✓ Welcome packet with current opportunities</p>
-                  <p>✓ Direct access to our deal flow</p>
+              <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-12 border border-white/20 shadow-luxury">
+                <h3 className="font-bold text-xl mb-6 text-gradient-luxury">What Happens Next?</h3>
+                <div className="text-left space-y-4">
+                  <p className="flex items-center gap-3 font-medium"><CheckCircle size={20} className="text-green-300" /> Application review within 48 hours</p>
+                  <p className="flex items-center gap-3 font-medium"><CheckCircle size={20} className="text-green-300" /> Reference verification (if applicable)</p>
+                  <p className="flex items-center gap-3 font-medium"><CheckCircle size={20} className="text-green-300" /> Welcome packet with current opportunities</p>
+                  <p className="flex items-center gap-3 font-medium"><CheckCircle size={20} className="text-green-300" /> Direct access to our deal flow</p>
                 </div>
               </div>
               <Button 
@@ -195,38 +282,45 @@ const ExclusiveBuyerNetworkPage = () => {
               </Button>
             </div>
           </div>
-        </section>
-      </div>
+        </section>      </div>
     );
   }
-
   return (
-    <div className="flex flex-col min-h-screen bg-sand">
+    <>
+      <SEOHead
+        title="Exclusive Buyer Network | Off-Market CRE Deals | Specialty One"
+        description="Join our exclusive buyer network for first access to off-market manufactured housing, RV park, and self-storage opportunities. Pre-qualified deals, no public competition."
+        keywords="off-market commercial real estate, exclusive buyer network, manufactured housing deals, RV park opportunities, self storage investments, private CRE listings"
+        url="https://specialtyone.com/exclusive-buyers"
+        image="/assets/property-types/manufactured-housing-community-investment.webp"
+      />
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-sand via-cloud to-sand">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-hero text-white">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center text-sand">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+      <section className="pt-32 pb-20 bg-gradient-hero text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-radial-modern-hero opacity-80"></div>
+        <div className="container-custom relative z-10">
+          <div className="max-w-4xl mx-auto text-center text-sand">
+            <h1 className="heading-luxury font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-8 animate-fade-in leading-tight">
               The Best Deals Never Hit
-              <span className="block">the Open Market</span>
+              <span className="block text-gradient-luxury">the Open Market</span>
             </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: "0.2s" }}>
+            <p className="text-xl md:text-2xl mb-12 opacity-90 animate-fade-in leading-relaxed font-medium" style={{ animationDelay: "0.2s" }}>
               Join our exclusive network of serious buyers and get first access to 
               off-market opportunities in Manufactured Housing, RV Parks, and Self-Storage.
             </p>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="font-bold text-2xl">$1B+</div>
-                  <div className="text-sm lg:text-base opacity-90">Network Transaction Volume</div>
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-12 border border-white/20 animate-fade-in shadow-luxury" style={{ animationDelay: "0.3s" }}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div className="space-y-2">
+                  <div className="font-bold text-3xl md:text-4xl text-gradient-luxury">$1B+</div>
+                  <div className="text-sm lg:text-base opacity-90 font-medium">Network Transaction Volume</div>
                 </div>
-                <div>
-                  <div className="font-bold text-2xl">48hrs</div>
-                  <div className="text-sm lg:text-base opacity-90">Average Response Time</div>
+                <div className="space-y-2">
+                  <div className="font-bold text-3xl md:text-4xl text-gradient-luxury">48hrs</div>
+                  <div className="text-sm lg:text-base opacity-90 font-medium">Average Response Time</div>
                 </div>
-                <div>
-                  <div className="font-bold text-2xl">85%</div>
-                  <div className="text-sm lg:text-base opacity-90">Off-Market Deal Flow</div>
+                <div className="space-y-2">
+                  <div className="font-bold text-3xl md:text-4xl text-gradient-luxury">85%</div>
+                  <div className="text-sm lg:text-base opacity-90 font-medium">Off-Market Deal Flow</div>
                 </div>
               </div>
             </div>
@@ -234,70 +328,65 @@ const ExclusiveBuyerNetworkPage = () => {
               href="#application"
               variant="primary"
               size="lg"
+              className="mb-6"
             >
               Apply for Access
             </Button>
-            <p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <p className="text-sm opacity-75 animate-fade-in font-medium" style={{ animationDelay: "0.4s" }}>
               Invitation only. Serious buyers with proven track records.
             </p>
           </div>
         </div>
-      </section>
-
-      {/* Network Benefits */}
-      <section className="py-16 bg-sand">
+      </section>      {/* Network Benefits */}
+      <section className="py-24 bg-gradient-to-br from-sand via-cloud to-sand">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-charcoal text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             Why Join Our Network?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             {networkBenefits.map((benefit, index) => (
-              <div 
+              <Card 
                 key={index}
-                className="flex gap-6 animate-fade-in"
+                className="bg-white/80 backdrop-blur-lg border border-white/40 hover:bg-white/90 hover:shadow-luxury transition-all duration-500 rounded-2xl animate-fade-in"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center">
-                    {benefit.icon}
+                <CardContent className="p-8">
+                  <div className="flex items-start space-x-6">
+                    <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-plum to-amethyst flex items-center justify-center shadow-lg">
+                      {benefit.icon}
+                    </div>
+                    <div className="flex-grow space-y-4">
+                      <h3 className="text-2xl font-display font-bold text-charcoal">{benefit.title}</h3>
+                      <p className="text-charcoal/80 leading-relaxed font-medium">{benefit.description}</p>
+                      <ul className="space-y-3">
+                        {benefit.details.map((detail, idx) => (
+                          <li key={idx} className="flex items-center space-x-3 text-charcoal/70">
+                            <CheckCircle size={16} className="text-plum flex-shrink-0" />
+                            <span className="font-medium">{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <h3 className="font-display text-xl font-bold mb-3">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-700 mb-4">
-                    {benefit.description}
-                  </p>
-                  <ul className="space-y-1">
-                    {benefit.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-gray-600">
-                        <CheckCircle size={16} className="text-sage mt-1 flex-shrink-0" />
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Recent Off-Market Deals */}
-      <section className="py-16 bg-cloud">
+      </section>      {/* Recent Off-Market Deals */}
+      <section className="py-24 bg-gradient-to-br from-cloud via-sand to-cloud">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-charcoal text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             Recent Off-Market Successes
           </h2>
           {recentDealsLoading && (
-            <div className="text-center py-12">
-              <p className="text-gray-600">Loading recent deals...</p>
+            <div className="text-center py-16">
+              <p className="text-charcoal/60 text-lg">Loading recent deals...</p>
             </div>
           )}
           {recentDealsError && (
-            <div className="text-center py-12">
-              <p className="text-red-600">Error loading deals: {recentDealsError}</p>
+            <div className="text-center py-16">
+              <p className="text-red-500 text-lg">Error loading deals: {recentDealsError}</p>
             </div>
           )}
           {!recentDealsLoading && !recentDealsError && recentDeals && recentDeals.length > 0 && (
@@ -305,56 +394,54 @@ const ExclusiveBuyerNetworkPage = () => {
               {recentDeals.map((deal: CaseStudy, index: number) => (
                 <Card 
                   key={deal.id}
-                  className="overflow-hidden animate-fade-in flex flex-col" // Added flex flex-col
+                  className="overflow-hidden bg-white/80 backdrop-blur-lg border border-white/40 hover:bg-white/90 hover:shadow-luxury transition-all duration-500 rounded-2xl animate-fade-in flex flex-col"
                   style={{ animationDelay: `${0.2 * index}s` }}
-                >
-                  <div className="relative h-48">
-                    <img 
-                      src={deal.heroImage || '/dist/assets/property-types/default-property.webp'}
+                >                  <div className="relative h-48">
+                    <CloudinaryImage 
+                      localPath={deal.heroImage || 'default-property.webp'}
                       alt={deal.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute top-4 right-4">
-                      <Badge color="primary" variant="gradient">
+                      <Badge color="primary" variant="gradient" className="shadow-md">
                         {deal.propertyType}
                       </Badge>
                     </div>
                      {/* Display "Sold Off-Market" and TimeToSale if available */}
-                    <div className="absolute top-4 left-4 flex flex-col space-y-1">
-                        <Badge color="success" variant="gradient">
+                    <div className="absolute top-4 left-4 flex flex-col space-y-2">
+                        <Badge color="success" variant="gradient" className="shadow-md">
                             Sold Off-Market
                         </Badge>
                         {deal.timeToSale && (
-                            <Badge color="secondary" variant="gradient" className="mt-1">
+                            <Badge color="secondary" variant="gradient" className="shadow-md">
                                 {deal.timeToSale}
                             </Badge>
                         )}
                     </div>
                   </div>
                   
-                  <CardContent className="p-6 flex flex-col flex-grow"> {/* Added flex flex-col flex-grow */}
-                    <div className="flex items-center gap-2 text-gray-600 mb-3">
+                  <CardContent className="p-8 flex flex-col flex-grow">                    <div className="flex items-center gap-2 text-charcoal/60 mb-4">
                       <MapPin size={16} />
-                      <span>{deal.location}</span>
+                      <span className="font-medium">{deal.location}</span>
                     </div>
                     
-                    <h3 className="font-display text-xl font-bold mb-3">
+                    <h3 className="text-xl font-display font-bold mb-4 text-charcoal">
                       {deal.title}
                     </h3>
                     
-                    <div className="mb-4 flex-grow"> {/* Added flex-grow */}
+                    <div className="mb-6 flex-grow">
                       {deal.challenge && (
-                        <p className="text-gray-600 mb-2 text-sm">
-                          <strong>Challenge:</strong> {deal.challenge}
+                        <p className="text-charcoal/70 mb-3 leading-relaxed">
+                          <strong className="text-charcoal">Challenge:</strong> {deal.challenge}
                         </p>
                       )}
                       {deal.solution && (
-                        <p className="text-gray-600 mb-2 text-sm">
-                          <strong>Solution:</strong> {deal.solution}
+                        <p className="text-charcoal/70 mb-3 leading-relaxed">
+                          <strong className="text-charcoal">Solution:</strong> {deal.solution}
                         </p>
                       )}
                        {!deal.challenge && !deal.solution && deal.subtitle && (
-                        <p className="text-gray-600 mb-2 text-sm">
+                        <p className="text-charcoal/70 leading-relaxed">
                           {deal.subtitle}
                         </p>
                       )}
@@ -373,54 +460,54 @@ const ExclusiveBuyerNetworkPage = () => {
                 </Card>
               ))}
             </div>
-          )}
-          {!recentDealsLoading && !recentDealsError && (!recentDeals || recentDeals.length === 0) && (
-            <div className="text-center py-12">
-              <p className="text-gray-600">No confidential off-market deals to display at this time.</p>
+          )}          {!recentDealsLoading && !recentDealsError && (!recentDeals || recentDeals.length === 0) && (
+            <div className="text-center py-16">
+              <p className="text-charcoal/60 text-lg">No confidential off-market deals to display at this time.</p>
             </div>
           )}
-          <div className="text-center mt-8">
-            <p className="text-gray-600 mb-4">
-              These deals were available exclusively to our network members.
-            </p>
-            <Button 
-              href="#application"
-              variant="primary"
-            >
-              Join to See Current Opportunities
-            </Button>
+          <div className="text-center mt-12">
+            <div className="bg-white/70 backdrop-blur-lg rounded-2xl p-8 border border-white/30 max-w-2xl mx-auto">
+              <p className="text-charcoal/80 mb-6 text-lg font-medium">
+                These deals were available exclusively to our network members.
+              </p>
+              <Button 
+                href="#application"
+                variant="primary"
+                size="lg"
+              >
+                Join to See Current Opportunities
+              </Button>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* Buyer Types */}
-      <section className="py-16 bg-sand">
+      </section>      {/* Buyer Types */}
+      <section className="py-24 bg-gradient-to-br from-sand via-cloud to-sand">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-charcoal text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             Who We Work With
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {buyerTypes.map((type, index) => (
               <Card 
                 key={index}
-                className="text-center py-8 animate-fade-in"
+                className="bg-white/80 backdrop-blur-lg border border-white/40 hover:bg-white/90 hover:shadow-luxury transition-all duration-500 rounded-2xl text-center py-8 animate-fade-in"
                 style={{ animationDelay: `${0.1 * index}s` }}
               >
-                <CardContent>
-                  <div className="text-4xl mb-4">
+                <CardContent className="p-8">
+                  <div className="text-4xl mb-6">
                     {type.icon}
                   </div>
-                  <h3 className="font-bold mb-3">
+                  <h3 className="text-xl font-display font-bold mb-4 text-charcoal">
                     {type.title}
                   </h3>
-                  <p className="text-gray-600 mb-4">
+                  <p className="text-charcoal/70 mb-6 leading-relaxed font-medium">
                     {type.description}
                   </p>
-                  <div className="space-y-1">
+                  <div className="space-y-3">
                     {type.criteria.map((criterion, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-sm lg:text-base text-gray-600">
-                        <CheckCircle size={14} className="text-sage mt-1 flex-shrink-0" />
-                        <span>{criterion}</span>
+                      <div key={idx} className="flex items-center gap-3 text-charcoal/70">
+                        <CheckCircle size={16} className="text-plum flex-shrink-0" />
+                        <span className="font-medium">{criterion}</span>
                       </div>
                     ))}
                   </div>
@@ -429,63 +516,62 @@ const ExclusiveBuyerNetworkPage = () => {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-16 bg-cloud">
+      </section>      {/* Testimonials */}
+      <section className="py-24 bg-gradient-to-br from-cloud via-sand to-cloud">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-charcoal text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             What Network Members Say
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-1 gap-8"> {/* Changed md:grid-cols-3 to md:grid-cols-1 */}
+          <div className="grid grid-cols-1 gap-8">
             {testimonials.map((testimonial, index) => (
-              <div 
+              <Card 
                 key={index}
-                className="bg-white rounded-lg p-8 animate-fade-in text-center transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-1" // Added hover animation classes
+                className="bg-white/80 backdrop-blur-lg border border-white/40 hover:bg-white/90 hover:shadow-luxury transition-all duration-500 rounded-2xl text-center animate-fade-in max-w-4xl mx-auto"
                 style={{ animationDelay: `${0.2 * index}s` }}
               >
-                <div className="text-5xl text-plum opacity-20 mb-4">"</div>
-                <blockquote className="text-lg font-medium mb-6">
-                  {testimonial.quote}
-                </blockquote>
-                <div>
-                  <p className="font-bold">
-                    {testimonial.author}
-                  </p>
-                  <p className="text-gray-600">
-                    {testimonial.company} {/* Corrected to display company */}
-                  </p>
-                  {/* Removed p tag for testimonial.dealCount as it's not in the new data */}
-                </div>
-              </div>
+                <CardContent className="p-12">
+                  <div className="text-5xl text-plum/20 mb-6">"</div>
+                  <blockquote className="text-xl font-medium mb-8 text-charcoal leading-relaxed italic">
+                    {testimonial.quote}
+                  </blockquote>
+                  <div className="space-y-2">
+                    <p className="font-bold text-lg text-charcoal">
+                      {testimonial.author}
+                    </p>
+                    <p className="text-charcoal/70 font-medium">
+                      {testimonial.company}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
-      </section>
-
-      {/* Application Requirements */}
-      <section className="py-16 bg-sand">
+      </section>      {/* Application Requirements */}
+      <section className="py-24 bg-gradient-to-br from-sand via-cloud to-sand">
         <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="heading-luxury text-charcoal text-4xl md:text-5xl font-bold mb-16 text-center leading-tight">
             Application Requirements
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {applicationRequirements.map((requirement, index) => (
-              <div 
+              <Card 
                 key={index}
-                className="text-center animate-fade-in"
+                className="bg-white/80 backdrop-blur-lg border border-white/40 hover:bg-white/90 hover:shadow-luxury transition-all duration-500 rounded-2xl text-center animate-fade-in"
                 style={{ animationDelay: `${0.1 * index}s` }}
               >
-                <div className="w-16 h-16 rounded-full bg-cloud flex items-center justify-center mx-auto mb-4">
-                  {requirement.icon}
-                </div>
-                <h3 className="font-bold mb-3">
-                  {requirement.title}
-                </h3>
-                <p className="text-gray-600">
-                  {requirement.description}
-                </p>
-              </div>
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cloud to-sand flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    {requirement.icon}
+                  </div>
+                  <h3 className="text-xl font-display font-bold mb-4 text-charcoal">
+                    {requirement.title}
+                  </h3>
+                  <p className="text-charcoal/70 leading-relaxed font-medium">
+                    {requirement.description}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
@@ -502,41 +588,57 @@ const ExclusiveBuyerNetworkPage = () => {
               <p className="text-lg text-gray-700">
                 Complete the application below. We review all submissions within 48 hours.
               </p>
-            </div>
-
-            <Card>
+            </div>            <Card>
               <CardContent className="p-8">
+                {/* Error Display */}
+                {submitError && (
+                  <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 flex items-center">
+                    <AlertCircle size={20} className="mr-3 flex-shrink-0" />
+                    <span>{submitError}</span>
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Personal Information */}
                   <div>
                     <h3 className="font-bold text-xl mb-4">Personal Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>                      <label htmlFor="firstName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                        First Name *
-                      </label>
-                        <input
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">                      <div>
+                        <label htmlFor="firstName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+                          First Name *
+                        </label>                        <input
                           type="text"
                           id="firstName"
-                          name="firstName"
+                          name="first_name"
                           required
-                          value={formData.firstName}
+                          maxLength={100}
+                          value={formData.first_name}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent ${
+                            getFieldError('first_name') ? 'border-red-300' : 'border-gray-300'
+                          }`}
                         />
+                        {getFieldError('first_name') && (
+                          <p className="mt-1 text-red-600 text-sm">{getFieldError('first_name')}</p>
+                        )}
                       </div>
                       <div>
                         <label htmlFor="lastName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
                           Last Name *
-                        </label>
-                        <input
+                        </label>                        <input
                           type="text"
                           id="lastName"
-                          name="lastName"
+                          name="last_name"
                           required
-                          value={formData.lastName}
+                          maxLength={100}
+                          value={formData.last_name}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+                          className={`w-full px-4 py-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent ${
+                            getFieldError('last_name') ? 'border-red-300' : 'border-gray-300'
+                          }`}
                         />
+                        {getFieldError('last_name') && (
+                          <p className="mt-1 text-red-600 text-sm">{getFieldError('last_name')}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -617,9 +719,9 @@ const ExclusiveBuyerNetworkPage = () => {
                       </label>
                       <select
                         id="investmentRange"
-                        name="investmentRange"
+                        name="investment_range"
                         required
-                        value={formData.investmentRange}
+                        value={formData.investment_range}
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
                       >
@@ -640,7 +742,7 @@ const ExclusiveBuyerNetworkPage = () => {
                           <label key={type} className="flex items-center">
                             <input
                               type="checkbox"
-                              checked={formData.propertyTypes.includes(type)}
+                              checked={formData.property_types.includes(type)}
                               onChange={() => handleCheckboxChange(type)}
                               className="mr-2"
                             />
@@ -728,9 +830,9 @@ const ExclusiveBuyerNetworkPage = () => {
                       </label>
                       <textarea
                         id="additionalInfo"
-                        name="additionalInfo"
+                        name="additional_info"
                         rows={3}
-                        value={formData.additionalInfo}
+                        value={formData.additional_info}
                         onChange={handleInputChange}
                         placeholder="Any additional information that would help us understand your investment goals and requirements..."
                         className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
@@ -800,12 +902,12 @@ const ExclusiveBuyerNetworkPage = () => {
                 className="border-white text-white hover:bg-white/10"
               >
                 Send Message
-              </Button>
-            </div>
+              </Button>            </div>
           </div>
         </div>
       </section>
     </div>
+    </>
   );
 };
 

@@ -1,870 +1,1047 @@
-import React, { useState, useMemo } from 'react';
-import { Shield, Eye, Users, Target, CheckCircle, ArrowRight, Building2, Clock, Award, Lock, MapPin } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Shield, Eye, Users, Target, CheckCircle, ArrowRight, Building2, Clock, Award, Lock, MapPin, AlertCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
+import { SEOHead } from '../components/ui/SEOHead';
 import { useCaseStudies } from '../hooks/useCaseStudies';
 import { CaseStudy } from '../types/caseStudy';
+import { FormValidator, RateLimiter, SecurityEnforcer, ValidationError } from '../utils/formValidation';
+import { submitSellerInquiry, type SellerInquiryData } from '../lib/formService';
 
 const sellerBenefits = [
-  {
-    icon: <Shield size={32} className="text-white" />,
-    title: 'Complete Confidentiality',
-    description: 'Your sale remains private until you decide otherwise. No public marketing unless you approve it.',
-    details: ['NDA-protected process', 'Vetted buyer access only', 'No market noise or speculation']
-  },
-  {
-    icon: <Users size={32} className="text-white" />,
-    title: 'Pre-Qualified Buyers Only',
-    description: 'Every buyer is financially verified and has a proven track record before seeing your property.',
-    details: ['Financial capacity confirmed', 'Track record verified', 'Serious intent validated']
-  },
-  {
-    icon: <Target size={32} className="text-white" />,
-    title: 'Strategic Positioning',
-    description: 'We position your property to the right buyers at the right time for maximum value.',
-    details: ['Market timing optimization', 'Buyer-specific presentations', 'Value maximization strategy']
-  },
-  {
-    icon: <Eye size={32} className="text-white" />,
-    title: 'Controlled Exposure',
-    description: 'You control every step of the process. Nothing happens without your explicit approval.',
-    details: ['Seller-controlled timeline', 'Approved buyer list', 'Staged information release']
-  }
+	{
+		icon: <Shield size={32} className="text-white" />,
+		title: 'Complete Confidentiality',
+		description:
+			'Your sale remains private until you decide otherwise. No public marketing unless you approve it.',
+		details: [
+			'NDA-protected process',
+			'Vetted buyer access only',
+			'No market noise or speculation',
+		],
+	},
+	{
+		icon: <Users size={32} className="text-white" />,
+		title: 'Pre-Qualified Buyers Only',
+		description:
+			'Every buyer is financially verified and has a proven track record before seeing your property.',
+		details: [
+			'Financial capacity confirmed',
+			'Track record verified',
+			'Serious intent validated',
+		],
+	},
+	{
+		icon: <Target size={32} className="text-white" />,
+		title: 'Strategic Positioning',
+		description:
+			'We position your property to the right buyers at the right time for maximum value.',
+		details: [
+			'Market timing optimization',
+			'Buyer-specific presentations',
+			'Value maximization strategy',
+		],
+	},
+	{
+		icon: <Eye size={32} className="text-white" />,
+		title: 'Controlled Exposure',
+		description:
+			'You control every step of the process. Nothing happens without your explicit approval.',
+		details: [
+			'Seller-controlled timeline',
+			'Approved buyer list',
+			'Staged information release',
+		],
+	},
 ];
 
 const sellerTypes = [
-  {
-    icon: '👨‍👩‍👧‍👦',
-    title: 'Family Owners',
-    description: 'Multi-generational properties requiring sensitive handling and legacy preservation.',
-    concerns: ['Family dynamics', 'Employee retention', 'Community impact', 'Tax optimization']
-  },
-  {
-    icon: '🏢',
-    title: 'Institutional Sellers',
-    description: 'Funds and REITs requiring strategic, confidential disposition of assets.',
-    concerns: ['Market timing', 'Portfolio impact', 'Investor relations', 'Strategic positioning']
-  },
-  {
-    icon: '⚖️',
-    title: 'Estate & Trust Sales',
-    description: 'Fiduciary sales requiring careful handling and maximum value realization.',
-    concerns: ['Beneficiary interests', 'Timeline constraints', 'Value maximization', 'Legal compliance']
-  },
-  {
-    icon: '🔄',
-    title: '1031 Exchange Sellers',
-    description: 'Time-sensitive sales requiring coordination with replacement property acquisition.',
-    concerns: ['Timeline management', 'Qualified buyers', 'Exchange compliance', 'Backup options']
-  }
+	{
+		icon: '👨‍👩‍👧‍👦',
+		title: 'Family Owners',
+		description:
+			'Multi-generational properties requiring sensitive handling and legacy preservation.',
+		concerns: [
+			'Family dynamics',
+			'Employee retention',
+			'Community impact',
+			'Tax optimization',
+		],
+	},
+	{
+		icon: '🏢',
+		title: 'Institutional Sellers',
+		description:
+			'Funds and REITs requiring strategic, confidential disposition of assets.',
+		concerns: [
+			'Market timing',
+			'Portfolio impact',
+			'Investor relations',
+			'Strategic positioning',
+		],
+	},
+	{
+		icon: '⚖️',
+		title: 'Estate & Trust Sales',
+		description:
+			'Fiduciary sales requiring careful handling and maximum value realization.',
+		concerns: [
+			'Beneficiary interests',
+			'Timeline constraints',
+			'Value maximization',
+			'Legal compliance',
+		],
+	},
+	{
+		icon: '🔄',
+		title: '1031 Exchange Sellers',
+		description:
+			'Time-sensitive sales requiring coordination with replacement property acquisition.',
+		concerns: [
+			'Timeline management',
+			'Qualified buyers',
+			'Exchange compliance',
+			'Backup options',
+		],
+	},
 ];
 
 const processSteps = [
-  {
-    step: 1,
-    title: 'Confidential Consultation',
-    description: 'Private meeting to understand your goals, timeline, and confidentiality requirements.',
-    duration: '1-2 hours'
-  },
-  {
-    step: 2,
-    title: 'Strategic Positioning',
-    description: 'Develop positioning strategy, identify target buyers, and create confidential marketing materials.',
-    duration: '1-2 weeks'
-  },
-  {
-    step: 3,
-    title: 'Buyer Qualification',
-    description: 'Vet and qualify potential buyers before any property information is shared.',
-    duration: 'Ongoing'
-  },
-  {
-    step: 4,
-    title: 'Controlled Exposure',
-    description: 'Present opportunity to qualified buyers with your approval at each stage.',
-    duration: '2-4 weeks'
-  },
-  {
-    step: 5,
-    title: 'Negotiation & Close',
-    description: 'Manage negotiations and closing process with complete transparency to you.',
-    duration: '4-8 weeks'
-  }
+	{
+		step: 1,
+		title: 'Confidential Consultation',
+		description:
+			'Private meeting to understand your goals, timeline, and confidentiality requirements.',
+		duration: '1-2 hours',
+	},
+	{
+		step: 2,
+		title: 'Strategic Positioning',
+		description:
+			'Develop positioning strategy, identify target buyers, and create confidential marketing materials.',
+		duration: '1-2 weeks',
+	},
+	{
+		step: 3,
+		title: 'Buyer Qualification',
+		description:
+			'Vet and qualify potential buyers before any property information is shared.',
+		duration: 'Ongoing',
+	},
+	{
+		step: 4,
+		title: 'Controlled Exposure',
+		description:
+			'Present opportunity to qualified buyers with your approval at each stage.',
+		duration: '2-4 weeks',
+	},
+	{
+		step: 5,
+		title: 'Negotiation & Close',
+		description:
+			'Manage negotiations and closing process with complete transparency to you.',
+		duration: '4-8 weeks',
+	},
 ];
 
 const testimonials = [
-  {
-    quote: "They handled our family property sale with incredible discretion. Our employees never knew we were considering a sale until we decided to move forward.",
-    author: "Anonymous Family Owner",
-    property: "Multi-Generational MH Community",
-    outcome: "Confidential sale completed"
-  },
-  {
-    quote: "The private sale process allowed us to explore our options without market speculation or operational disruption. Exactly what we needed.",
-    author: "Anonymous Institutional Seller",
-    property: "Storage Portfolio",
-    outcome: "Strategic disposition"
-  },
-  {
-    quote: "They found the right buyer who understood our vision and paid accordingly. The entire process was handled with complete professionalism.",
-    author: "Anonymous Estate Representative",
-    property: "Premium RV Resort",
-    outcome: "Estate settlement"
-  }
+	{
+		quote:
+			"They handled our family property sale with incredible discretion. Our employees never knew we were considering a sale until we decided to move forward.",
+		author: 'Anonymous Family Owner',
+		property: 'Multi-Generational MH Community',
+		outcome: 'Confidential sale completed',
+	},
+	{
+		quote:
+			"The private sale process allowed us to explore our options without market speculation or operational disruption. Exactly what we needed.",
+		author: 'Anonymous Institutional Seller',
+		property: 'Storage Portfolio',
+		outcome: 'Strategic disposition',
+	},
+	{
+		quote:
+			'They found the right buyer who understood our vision and paid accordingly. The entire process was handled with complete professionalism.',
+		author: 'Anonymous Estate Representative',
+		property: 'Premium RV Resort',
+		outcome: 'Estate settlement',
+	},
 ];
 
 const guarantees = [
-  {
-    icon: <Lock size={24} className="text-plum" />,
-    title: 'Confidentiality Guarantee',
-    description: 'Your property information is never shared without explicit written consent.'
-  },
-  {
-    icon: <Users size={24} className="text-plum" />,
-    title: 'Qualified Buyers Only',
-    description: 'Every buyer is pre-qualified financially and operationally before property access.'
-  },
-  {
-    icon: <Clock size={24} className="text-plum" />,
-    title: 'Your Timeline',
-    description: 'We work on your schedule with no pressure to move faster than you\'re comfortable.'
-  },
-  {
-    icon: <Award size={24} className="text-plum" />,
-    title: 'Value Maximization',
-    description: 'Our process is designed to achieve the highest possible value for your property.'
-  }
+	{
+		icon: <Lock size={24} className="text-plum" />,
+		title: 'Confidentiality Guarantee',
+		description:
+			'Your property information is never shared without explicit written consent.',
+	},
+	{
+		icon: <Users size={24} className="text-plum" />,
+		title: 'Qualified Buyers Only',
+		description:
+			'Every buyer is pre-qualified financially and operationally before property access.',
+	},
+	{
+		icon: <Clock size={24} className="text-plum" />,
+		title: 'Your Timeline',
+		description:
+			'We work on your schedule with no pressure to move faster than you\'re comfortable.',
+	},
+	{
+		icon: <Award size={24} className="text-plum" />,
+		title: 'Value Maximization',
+		description:
+			'Our process is designed to achieve the highest possible value for your property.',
+	},
 ];
 
-const ExclusiveSellerNetworkPage = () => {
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    propertyType: '',
-    propertyLocation: '',
-    ownershipType: '',
-    timeline: '',
-    confidentialityLevel: '',
-    currentSituation: '',
-    goals: '',
-    additionalInfo: ''
-  });
+const ExclusiveSellerNetworkPage = () => {	const [formData, setFormData] = useState({
+		first_name: '',
+		last_name: '',
+		email: '',
+		phone: '',
+		property_type: '',
+		property_location: '',
+		ownership_type: '',
+		timeline: '',
+		confidentiality_level: '',
+		current_situation: '',
+		goals: '',
+		additional_info: '',
+	});
+	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+	const [submitError, setSubmitError] = useState<string>('');
+	// Enforce HTTPS on component mount
+	useEffect(() => {
+		SecurityEnforcer.enforceHTTPS();
+	}, []);
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+	const confidentialSalesFilters = useMemo(() => ({ isConfidential: true }), []);
+	const {
+		caseStudies: confidentialSalesData,
+		loading: isLoadingConfidentialSales,
+		error: errorConfidentialSales,
+	} = useCaseStudies(confidentialSalesFilters);
 
-  const confidentialSalesFilters = useMemo(() => ({ isConfidential: true }), []);
-  const { 
-    caseStudies: confidentialSalesData, 
-    loading: isLoadingConfidentialSales, 
-    error: errorConfidentialSales 
-  } = useCaseStudies(confidentialSalesFilters);
+	const handleInputChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+	) => {
+		const { name, value } = e.target;
+		
+		// Clear validation errors for this field
+		setValidationErrors(prev => prev.filter(error => error.field !== name));
+		setSubmitError('');
+		
+		setFormData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setIsSubmitting(true);
+		setValidationErrors([]);
+		setSubmitError('');
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Confidential inquiry submitted:', formData);
-    setIsSubmitted(true);
-  };
+		try {
+			// Check rate limiting
+			const rateLimitCheck = RateLimiter.canSubmit();
+			if (!rateLimitCheck.allowed) {
+				setSubmitError(rateLimitCheck.message || 'Too many submissions');
+				return;
+			}			// Validate form data
+			const validation = FormValidator.validateContactForm({
+				first_name: formData.first_name,
+				last_name: formData.last_name,
+				email: formData.email,
+				phone: formData.phone,
+				message: formData.current_situation || 'Seller inquiry'
+			});
 
-  if (isSubmitted) {
-    return (
-      <div className="flex flex-col min-h-screen bg-sand">
-        <section className="pt-32 pb-20 bg-gradient-hero text-white flex-grow flex items-center">
-          <div className="container-custom">
-            <div className="max-w-2xl mx-auto text-center">
-              <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle size={40} className="text-white" />
-              </div>
-              <h1 className="font-display text-4xl md:text-5xl font-bold mb-6">
-                Confidential Inquiry Received
-              </h1>
-              <p className="text-xl mb-8 opacity-90">
-                Thank you for your confidential inquiry. We'll contact you within 24 hours 
-                to discuss your situation and how we can help.
-              </p>
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8">
-                <h3 className="font-bold text-lg mb-2">What Happens Next?</h3>
-                <div className="text-left space-y-2">
-                  <p>✓ Confidential review of your inquiry</p>
-                  <p>✓ Initial consultation within 24 hours</p>
-                  <p>✓ Preliminary strategy discussion</p>
-                  <p>✓ No obligation assessment</p>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
-                <Button 
-                  to="/"
-                  variant="primary"
-                  className="bg-white text-plum hover:bg-cloud"
-                  size="lg"
-                >
-                  Return Home
-                </Button>
-                <Button 
-                  href="tel:602-730-9967"
-                  variant="outline"
-                  className="border-white text-white hover:bg-white/10"
-                  size="lg"
-                >
-                  Call for Urgent Matters
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-    );
-  }
+			// Additional validation for seller-specific fields
+			if (!formData.property_type) {
+				validation.errors.push({ field: 'property_type', message: 'Property type is required' });
+				validation.isValid = false;
+			}
 
-  return (
-    <div className="flex flex-col min-h-screen bg-sand">
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-hero text-white">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center text-sand">
-            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
-              Sell Quietly. Sell Smart.
-              <span className="block">Sell Successfully.</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-              For property owners who value discretion, our exclusive seller network 
-              provides confidential sales processes that protect your interests and maximize value.
-            </p>
-            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="font-bold text-2xl">100%</div>                  <div className="text-sm lg:text-base opacity-90">Confidentiality Maintained</div>
-                </div>
-                <div>
-                  <div className="font-bold text-2xl">$1B+</div>
-                  <div className="text-sm lg:text-base opacity-90">Confidential Sales Volume</div>
-                </div>
-                <div>
-                  <div className="font-bold text-2xl">Zero</div>
-                  <div className="text-sm lg:text-base opacity-90">Information Leaks</div>
-                </div>
-              </div>
-            </div>
-            <Button 
-              href="#consultation"
-              variant="primary"
-              size="lg"
-            >
-              Request Confidential Consultation
-            </Button>
-            <p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-              Completely confidential. No obligation. No public exposure.
-            </p>
-          </div>
-        </div>
-      </section>
+			if (!validation.isValid) {
+				setValidationErrors(validation.errors);
+				setSubmitError('Please correct the errors below');
+				return;
+			}
 
-      {/* Why Choose Confidential Sales */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center mb-12">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
-              Why Sell Confidentially?
-            </h2>
-            <p className="text-lg text-gray-700">
-              Not every property sale should be public. Sometimes discretion is not just preferred—it's essential.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {sellerBenefits.map((benefit, index) => (
-              <div 
-                key={index}
-                className="flex gap-6 animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="flex-shrink-0">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center">
-                    {benefit.icon}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="font-display text-xl font-bold mb-3">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-gray-700 mb-4">
-                    {benefit.description}
-                  </p>
-                  <ul className="space-y-1">
-                    {benefit.details.map((detail, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-gray-600">
-                        <CheckCircle size={16} className="text-sage mt-1 flex-shrink-0" />
-                        <span>{detail}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+			// Check if we're in a secure context
+			if (!SecurityEnforcer.isSecureContext()) {
+				setSubmitError('This form requires a secure connection. Please ensure you\'re using HTTPS.');
+				return;
+			}
 
-      {/* Confidential Sales Success Stories */}
-      {/* The console logs added above will give insight into why this block might not be rendering as expected */}
-      <section className="py-16 bg-cloud">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Recent Confidential Sales
-          </h2>
-          {isLoadingConfidentialSales && <p className="text-center">Loading confidential sales...</p>}
-          {errorConfidentialSales && <p className="text-center text-red-500">Error loading confidential sales: {errorConfidentialSales}</p>}
-          {!isLoadingConfidentialSales && !errorConfidentialSales && confidentialSalesData && confidentialSalesData.length === 0 && (
-            <p className="text-center text-gray-700">No confidential sales to display at this time.</p>
-          )}
-          {!isLoadingConfidentialSales && !errorConfidentialSales && confidentialSalesData && confidentialSalesData.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {confidentialSalesData.map((deal: CaseStudy, index: number) => (
-                <Card 
-                  key={deal.id || index}
-                  className="animate-fade-in flex flex-col" // Added flex flex-col
-                  style={{ animationDelay: `${0.1 * index}s` }}
-                >
-                  <CardContent className="p-6 flex flex-col flex-grow"> {/* Added flex flex-col flex-grow */}
-                    <div className="flex items-center justify-between mb-4">
-                      <Badge variant="outline">
-                        {deal.subtitle || 'Confidential Sale'} {/* Using subtitle for outcome */}
-                      </Badge>
-                      {deal.timeToSale && (
-                        <Badge variant="outline">
-                          <Clock size={14} className="mr-1 inline" />
-                          {deal.timeToSale}
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    <h3 className="font-display text-xl font-bold mb-2">
-                      {deal.title}
-                    </h3>
-                    
-                    <div className="space-y-1 mb-4 text-gray-600 text-sm">
-                      {deal.location && (
-                        <div className="flex items-center">
-                          <MapPin size={14} className="mr-2 text-plum flex-shrink-0" />
-                          <span>{deal.location}</span>
-                        </div>
-                      )}
-                      {deal.propertyType && (
-                        <div className="flex items-center">
-                          <Building2 size={14} className="mr-2 text-plum flex-shrink-0" />
-                          <span>{deal.propertyType}</span>
-                        </div>
-                      )}
-                      {(deal.siteCount || deal.squareFootage) && (
-                        <div className="flex items-center">
-                          {/* Using a generic icon or deciding based on type might be better */}
-                          <Target size={14} className="mr-2 text-plum flex-shrink-0" /> 
-                          <span>
-                            {deal.siteCount ? `${deal.siteCount} Sites` : ''}
-                            {deal.siteCount && deal.squareFootage ? ' / ' : ''}
-                            {deal.squareFootage ? `${deal.squareFootage.toLocaleString()} SF` : ''}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    
-                    {deal.subtitle && (
-                        <p className="text-gray-700 mb-4 text-sm flex-grow"> {/* Added flex-grow */}
-                        {deal.subtitle}
-                        </p>
-                    )}
-                    
-                    {(deal.challenge || deal.solution) && (
-                        <div className="border-t border-gray-200 pt-4 mt-auto"> {/* Added mt-auto */}
-                        {deal.challenge && (
-                            <>
-                            <h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wider mb-1">Challenge:</h4>
-                            <p className="text-sm text-gray-600 mb-3">{deal.challenge}</p>
-                            </>
-                        )}
-                        {deal.solution && (
-                            <>
-                            <h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wider mb-1">Solution:</h4>
-                            <p className="text-sm text-gray-600">{deal.solution}</p>
-                            </>
-                        )}
-                        </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-          <div className="text-center mt-8">
-            <p className="text-gray-600 mb-4">
-              All sales completed without public exposure or market speculation.
-            </p>
-            <Button 
-              href="#consultation"
-              variant="primary"
-            >
-              Discuss Your Confidential Sale
-            </Button>
-          </div>
-        </div>
-      </section>
+			// Submit to Supabase
+			const sellerData: SellerInquiryData = {
+				first_name: formData.first_name,
+				last_name: formData.last_name,
+				email: formData.email,
+				phone: formData.phone,
+				property_type: formData.property_type,
+				property_location: formData.property_location,
+				ownership_type: formData.ownership_type,
+				timeline: formData.timeline,
+				confidentiality_level: formData.confidentiality_level,
+				current_situation: formData.current_situation,
+				goals: formData.goals,
+				additional_info: formData.additional_info
+			};
 
-      {/* Seller Types */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Who Benefits from Confidential Sales?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {sellerTypes.map((type, index) => (
-              <Card 
-                key={index}
-                className="text-center py-8 animate-fade-in"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                <CardContent>
-                  <div className="text-4xl mb-4">
-                    {type.icon}
-                  </div>
-                  <h3 className="font-bold mb-3">
-                    {type.title}
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    {type.description}
-                  </p>
-                  <div className="space-y-1">
-                    <h4 className="font-medium text-sm">Common Concerns:</h4>
-                    {type.concerns.map((concern, idx) => (                      <div key={idx} className="text-xs lg:text-sm text-gray-500">
-                        • {concern}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
+			await submitSellerInquiry(sellerData);
+			
+			// Record submission for rate limiting
+			RateLimiter.recordSubmission();
+			
+			setIsSubmitted(true);
+		} catch (error) {
+			console.error('Form submission error:', error);
+			setSubmitError('An error occurred while submitting the inquiry. Please try again.');
+		} finally {
+			setIsSubmitting(false);
+		}
+	};
 
-      {/* Process Overview */}
-      <section className="py-16 bg-cloud">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Our Confidential Sales Process
-          </h2>
-          <div className="relative">
-            {/* Process Line */}
-            <div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-plum to-sage transform -translate-x-1/2 z-0"></div>
-            
-            <div className="space-y-16 lg:space-y-0">
-              {processSteps.map((step, index) => (
-                <div 
-                  key={index} 
-                  className={`
+	const getFieldError = (fieldName: string): string | undefined => {
+		return validationErrors.find(error => error.field === fieldName)?.message;
+	};
+	if (isSubmitted) {
+		return (
+			<div className="flex flex-col min-h-screen bg-gradient-to-br from-sand via-cloud to-sand">
+				<section className="pt-32 pb-20 bg-gradient-hero text-white flex-grow flex items-center relative overflow-hidden">
+					<div className="absolute inset-0 bg-radial-modern-hero opacity-80"></div>
+					<div className="container-custom relative z-10">
+						<div className="max-w-3xl mx-auto text-center">
+							<div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-lg flex items-center justify-center mx-auto mb-8 shadow-luxury">
+								<CheckCircle size={48} className="text-white" />
+							</div>
+							<h1 className="heading-luxury font-display text-4xl md:text-5xl font-bold mb-8 leading-tight">
+								Confidential Inquiry Received
+							</h1>
+							<p className="text-xl md:text-2xl mb-12 opacity-90 leading-relaxed font-medium">
+								Thank you for your confidential inquiry. We'll contact you within 24
+								hours to discuss your situation and how we can help.
+							</p>
+							<div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-12 border border-white/20 shadow-luxury">
+								<h3 className="font-bold text-xl mb-6 text-gradient-luxury">
+									What Happens Next?
+								</h3>
+								<div className="text-left space-y-4">
+									<p className="flex items-center gap-3 font-medium">
+										<CheckCircle size={20} className="text-green-300" /> Confidential
+										review of your inquiry
+									</p>
+									<p className="flex items-center gap-3 font-medium">
+										<CheckCircle size={20} className="text-green-300" /> Initial
+										consultation within 24 hours
+									</p>
+									<p className="flex items-center gap-3 font-medium">
+										<CheckCircle size={20} className="text-green-300" /> Preliminary
+										strategy discussion
+									</p>
+									<p className="flex items-center gap-3 font-medium">
+										<CheckCircle size={20} className="text-green-300" /> No obligation
+										assessment
+									</p>
+								</div>
+							</div>
+							<div className="flex flex-col sm:flex-row justify-center gap-4">
+								<Button
+									to="/"
+									variant="primary"
+									className="bg-white text-plum hover:bg-cloud"
+									size="lg"
+								>
+									Return Home
+								</Button>
+								<Button
+									href="tel:602-730-9967"
+									variant="outline"
+									className="border-white text-white hover:bg-white/10"
+									size="lg"
+								>
+									Call for Urgent Matters
+								</Button>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		);	}
+
+	return (
+		<>
+			<SEOHead
+				title="Exclusive Seller Network | Confidential Property Sales | Specialty One"
+				description="Confidential sales process for manufactured housing, RV parks, and self-storage owners. Pre-qualified buyers, maximum discretion, optimal value realization."
+				keywords="confidential property sales, exclusive seller network, private CRE transactions, manufactured housing sale, RV park sale, self storage sale, discretionary CRE sales"
+				url="https://specialtyone.com/exclusive-sellers"
+				image="/assets/property-types/manufactured-housing-community-investment.webp"
+			/>
+			<div className="flex flex-col min-h-screen bg-sand">
+			{/* Hero Section */}
+			<section className="pt-32 pb-20 bg-gradient-hero text-white">
+				<div className="container-custom">
+					<div className="max-w-3xl mx-auto text-center text-sand">
+						<h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold mb-6 animate-fade-in">
+							Sell Quietly. Sell Smart.
+							<span className="block">Sell Successfully.</span>
+						</h1>
+						<p className="text-xl md:text-2xl mb-8 opacity-90 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+							For property owners who value discretion, our exclusive seller network
+							provides confidential sales processes that protect your interests and maximize value.
+						</p>
+						<div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+								<div>
+									<div className="font-bold text-2xl">100%</div>
+									<div className="text-sm lg:text-base opacity-90">Confidentiality Maintained</div>
+								</div>
+								<div>
+									<div className="font-bold text-2xl">$1B+</div>
+									<div className="text-sm lg:text-base opacity-90">Confidential Sales Volume</div>
+								</div>
+								<div>
+									<div className="font-bold text-2xl">Zero</div>
+									<div className="text-sm lg:text-base opacity-90">Information Leaks</div>
+								</div>
+							</div>
+						</div>
+						<Button
+							href="#consultation"
+							variant="primary"
+							size="lg"
+						>
+							Request Confidential Consultation
+						</Button>
+						<p className="text-sm mt-4 opacity-75 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+							Completely confidential. No obligation. No public exposure.
+						</p>
+					</div>
+				</div>
+			</section>
+
+			{/* Why Choose Confidential Sales */}
+			<section className="py-16 bg-sand">
+				<div className="container-custom">
+					<div className="max-w-3xl mx-auto text-center mb-12">
+						<h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+							Why Sell Confidentially?
+						</h2>
+						<p className="text-lg text-gray-700">
+							Not every property sale should be public. Sometimes discretion is not just preferred—it's essential.
+						</p>
+					</div>
+
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+						{sellerBenefits.map((benefit, index) => (
+							<div
+								key={index}
+								className="flex gap-6 animate-fade-in"
+								style={{ animationDelay: `${0.2 * index}s` }}
+							>
+								<div className="flex-shrink-0">
+									<div className="w-16 h-16 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center">
+										{benefit.icon}
+									</div>
+								</div>
+								<div>
+									<h3 className="font-display text-xl font-bold mb-3">
+										{benefit.title}
+									</h3>
+									<p className="text-gray-700 mb-4">
+										{benefit.description}
+									</p>
+									<ul className="space-y-1">
+										{benefit.details.map((detail, idx) => (
+											<li key={idx} className="flex items-start gap-2 text-gray-600">
+												<CheckCircle size={16} className="text-sage mt-1 flex-shrink-0" />
+												<span>{detail}</span>
+											</li>
+										))}
+									</ul>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			{/* Confidential Sales Success Stories */}
+			{/* The console logs added above will give insight into why this block might not be rendering as expected */}
+			<section className="py-16 bg-cloud">
+				<div className="container-custom">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+						Recent Confidential Sales
+					</h2>
+					{isLoadingConfidentialSales && <p className="text-center">Loading confidential sales...</p>}
+					{errorConfidentialSales && <p className="text-center text-red-500">Error loading confidential sales: {errorConfidentialSales}</p>}
+					{!isLoadingConfidentialSales && !errorConfidentialSales && confidentialSalesData && confidentialSalesData.length === 0 && (
+						<p className="text-center text-gray-700">No confidential sales to display at this time.</p>
+					)}
+					{!isLoadingConfidentialSales && !errorConfidentialSales && confidentialSalesData && confidentialSalesData.length > 0 && (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+							{confidentialSalesData.map((deal: CaseStudy, index: number) => (
+								<Card
+									key={deal.id || index}
+									className="animate-fade-in flex flex-col" // Added flex flex-col
+									style={{ animationDelay: `${0.1 * index}s` }}
+								>
+									<CardContent className="p-6 flex flex-col flex-grow"> {/* Added flex flex-col flex-grow */}
+										<div className="flex items-center justify-between mb-4">
+											<Badge variant="outline">
+												{deal.subtitle || 'Confidential Sale'} {/* Using subtitle for outcome */}
+											</Badge>
+											{deal.timeToSale && (
+												<Badge variant="outline">
+													<Clock size={14} className="mr-1 inline" />
+													{deal.timeToSale}
+												</Badge>
+											)}
+										</div>
+
+										<h3 className="font-display text-xl font-bold mb-2">
+											{deal.title}
+										</h3>
+
+										<div className="space-y-1 mb-4 text-gray-600 text-sm">
+											{deal.location && (
+												<div className="flex items-center">
+													<MapPin size={14} className="mr-2 text-plum flex-shrink-0" />
+													<span>{deal.location}</span>
+												</div>
+											)}
+											{deal.propertyType && (
+												<div className="flex items-center">
+													<Building2 size={14} className="mr-2 text-plum flex-shrink-0" />
+													<span>{deal.propertyType}</span>
+												</div>
+											)}
+											{(deal.siteCount || deal.squareFootage) && (
+												<div className="flex items-center">
+													{/* Using a generic icon or deciding based on type might be better */}
+													<Target size={14} className="mr-2 text-plum flex-shrink-0" />
+													<span>
+														{deal.siteCount ? `${deal.siteCount} Sites` : ''}
+														{deal.siteCount && deal.squareFootage ? ' / ' : ''}
+														{deal.squareFootage ? `${deal.squareFootage.toLocaleString()} SF` : ''}
+													</span>
+												</div>
+											)}
+										</div>
+
+										{deal.subtitle && (
+											<p className="text-gray-700 mb-4 text-sm flex-grow"> {/* Added flex-grow */}
+												{deal.subtitle}
+											</p>
+										)}
+
+										{(deal.challenge || deal.solution) && (
+											<div className="border-t border-gray-200 pt-4 mt-auto"> {/* Added mt-auto */}
+												{deal.challenge && (
+													<>
+														<h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wider mb-1">Challenge:</h4>
+														<p className="text-sm text-gray-600 mb-3">{deal.challenge}</p>
+													</>
+												)}
+												{deal.solution && (
+													<>
+														<h4 className="font-semibold text-xs text-gray-500 uppercase tracking-wider mb-1">Solution:</h4>
+														<p className="text-sm text-gray-600">{deal.solution}</p>
+													</>
+												)}
+											</div>
+										)}
+									</CardContent>
+								</Card>
+							))}
+						</div>
+					)}
+					<div className="text-center mt-8">
+						<p className="text-gray-600 mb-4">
+							All sales completed without public exposure or market speculation.
+						</p>
+						<Button
+							href="#consultation"
+							variant="primary"
+						>
+							Discuss Your Confidential Sale
+						</Button>
+					</div>
+				</div>
+			</section>
+
+			{/* Seller Types */}
+			<section className="py-16 bg-sand">
+				<div className="container-custom">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+						Who Benefits from Confidential Sales?
+					</h2>
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+						{sellerTypes.map((type, index) => (
+							<Card
+								key={index}
+								className="text-center py-8 animate-fade-in"
+								style={{ animationDelay: `${0.1 * index}s` }}
+							>
+								<CardContent>
+									<div className="text-4xl mb-4">
+										{type.icon}
+									</div>
+									<h3 className="font-bold mb-3">
+										{type.title}
+									</h3>
+									<p className="text-gray-600 mb-4">
+										{type.description}
+									</p>
+									<div className="space-y-1">
+										<h4 className="font-medium text-sm">Common Concerns:</h4>
+										{type.concerns.map((concern, idx) => (
+											<div key={idx} className="text-xs lg:text-sm text-gray-500">
+												• {concern}
+											</div>
+										))}
+									</div>
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				</div>
+			</section>
+
+			{/* Process Overview */}
+			<section className="py-16 bg-cloud">
+				<div className="container-custom">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+						Our Confidential Sales Process
+					</h2>
+					<div className="relative">
+						{/* Process Line */}
+						<div className="hidden lg:block absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-plum to-sage transform -translate-x-1/2 z-0"></div>
+
+						<div className="space-y-16 lg:space-y-0">
+							{processSteps.map((step, index) => (
+								<div
+									key={index}
+									className={`
                     flex flex-col lg:flex-row items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}
                     relative animate-fade-in
                   `}
-                  style={{ animationDelay: `${0.2 * index}s` }}
-                >
-                  {/* Step Circle */}
-                  <div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 z-10">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center text-white font-bold text-xl">
-                      {step.step}
-                    </div>
-                  </div>
-                  
-                  {/* Step Content */}
-                  <div className={`
-                    lg:w-5/12 ${index % 2 === 0 ? 'lg:pr-16 lg:text-right' : 'lg:pl-16'}
+									style={{ animationDelay: `${0.2 * index}s` }}
+								>
+									{/* Step Circle */}
+									<div className="hidden lg:flex absolute left-1/2 transform -translate-x-1/2 z-10">
+										<div className="w-12 h-12 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center text-white font-bold text-xl">
+											{step.step}
+										</div>
+									</div>
+
+									{/* Step Content */}
+									<div className={`
+                    lg:w-5/12 ${index % 2 === 0 ? 'lg:pr-16 lg:text-right' : 'lg:flex-row-reverse'}
                   `}>
-                    <div className="mb-4 lg:hidden">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center text-white font-bold text-xl mx-auto">
-                        {step.step}
-                      </div>
-                    </div>
-                    
-                    <h3 className="font-display text-xl font-bold mb-3 text-center lg:text-inherit">
-                      {step.title}
-                    </h3>
-                    <p className="text-gray-700 mb-2 text-center lg:text-inherit">
-                      {step.description}
-                    </p>
-                    <p className="text-sm text-plum font-medium text-center lg:text-inherit">
-                      Duration: {step.duration}
-                    </p>
-                  </div>
-                  
-                  {/* Spacer */}
-                  <div className="hidden lg:block lg:w-5/12"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+										<div className="mb-4 lg:hidden">
+											<div className="w-12 h-12 rounded-full bg-gradient-to-br from-plum to-amethyst flex items-center justify-center text-white font-bold text-xl mx-auto">
+												{step.step}
+											</div>
+										</div>
 
-      {/* Testimonials */}
-      <section className="py-16 bg-sand">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            What Sellers Say About Our Process
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <div 
-                key={index}
-                className="bg-cloud rounded-lg p-8 animate-fade-in"
-                style={{ animationDelay: `${0.2 * index}s` }}
-              >
-                <div className="text-5xl text-plum opacity-20 mb-4">"</div>
-                <blockquote className="text-lg font-medium mb-6">
-                  {testimonial.quote}
-                </blockquote>
-                <div>
-                  <p className="font-bold">
-                    {testimonial.author}
-                  </p>                  <p className="text-gray-600 text-sm lg:text-base">
-                    {testimonial.property}
-                  </p>
-                  <p className="text-plum text-sm lg:text-base font-medium mt-1">
-                    {testimonial.outcome}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+										<h3 className="font-display text-xl font-bold mb-3 text-center lg:text-inherit">
+											{step.title}
+										</h3>
+										<p className="text-gray-700 mb-2 text-center lg:text-inherit">
+											{step.description}
+										</p>
+										<p className="text-sm text-plum font-medium text-center lg:text-inherit">
+											Duration: {step.duration}
+										</p>
+									</div>
 
-      {/* Guarantees */}
-      <section className="py-16 bg-cloud">
-        <div className="container-custom">
-          <h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
-            Our Commitments to You
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {guarantees.map((guarantee, index) => (
-              <div 
-                key={index}
-                className="text-center animate-fade-in"
-                style={{ animationDelay: `${0.1 * index}s` }}
-              >
-                <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto mb-4 shadow-md">
-                  {guarantee.icon}
-                </div>
-                <h3 className="font-bold mb-3">
-                  {guarantee.title}
-                </h3>
-                <p className="text-gray-600">
-                  {guarantee.description}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+									{/* Spacer */}
+									<div className="hidden lg:block lg:w-5/12"></div>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			</section>
 
-      {/* Confidential Consultation Form */}
-      <section id="consultation" className="py-16 bg-sand">
-        <div className="container-custom">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
-                Request Confidential Consultation
-              </h2>
-              <p className="text-lg text-gray-700">
-                All information shared is strictly confidential. No obligation. No public exposure.
-              </p>
-            </div>
+			{/* Testimonials */}
+			<section className="py-16 bg-sand">
+				<div className="container-custom">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+						What Sellers Say About Our Process
+					</h2>
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+						{testimonials.map((testimonial, index) => (
+							<div
+								key={index}
+								className="bg-cloud rounded-lg p-8 animate-fade-in"
+								style={{ animationDelay: `${0.2 * index}s` }}
+							>
+								<div className="text-5xl text-plum opacity-20 mb-4">"</div>
+								<blockquote className="text-lg font-medium mb-6">
+									{testimonial.quote}
+								</blockquote>
+								<div>
+									<p className="font-bold">
+										{testimonial.author}
+									</p>
+									<p className="text-gray-600 text-sm lg:text-base">
+										{testimonial.property}
+									</p>
+									<p className="text-plum text-sm lg:text-base font-medium mt-1">
+										{testimonial.outcome}
+									</p>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
 
-            <Card>
-              <CardContent className="p-8">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Personal Information */}
-                  <div>
-                    <h3 className="font-bold text-xl mb-4">Contact Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>                        <label htmlFor="firstName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                          First Name *
-                        </label>
-                        <input
-                          type="text"
-                          id="firstName"
-                          name="firstName"
-                          required
-                          value={formData.firstName}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                        />
-                      </div>
-                      <div>                        <label htmlFor="lastName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                          Last Name *
-                        </label>
-                        <input
-                          type="text"
-                          id="lastName"
-                          name="lastName"
-                          required
-                          value={formData.lastName}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                        />
-                      </div>
-                    </div>
-                  </div>
+			{/* Guarantees */}
+			<section className="py-16 bg-cloud">
+				<div className="container-custom">
+					<h2 className="font-display text-3xl md:text-4xl font-bold mb-12 text-center">
+						Our Commitments to You
+					</h2>
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+						{guarantees.map((guarantee, index) => (
+							<div
+								key={index}
+								className="text-center animate-fade-in"
+								style={{ animationDelay: `${0.1 * index}s` }}
+							>
+								<div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto mb-4 shadow-md">
+									{guarantee.icon}
+								</div>
+								<h3 className="font-bold mb-3">
+									{guarantee.title}
+								</h3>
+								<p className="text-gray-600">
+									{guarantee.description}
+								</p>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>                      <label htmlFor="email" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                        Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                      />
-                    </div>
-                    <div>                      <label htmlFor="phone" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                        Phone Number *
-                      </label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        required
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                      />
-                    </div>
-                  </div>
+			{/* Confidential Consultation Form */}
+			<section id="consultation" className="py-16 bg-sand">
+				<div className="container-custom">
+					<div className="max-w-4xl mx-auto">
+						<div className="text-center mb-12">
+							<h2 className="font-display text-3xl md:text-4xl font-bold mb-4">
+								Request Confidential Consultation
+							</h2>
+							<p className="text-lg text-gray-700">
+								All information shared is strictly confidential. No obligation. No public exposure.
+							</p>
+						</div>
 
-                  {/* Property Information */}
-                  <div>
-                    <h3 className="font-bold text-xl mb-4">Property Information</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>                        <label htmlFor="propertyType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                          Property Type *
-                        </label>
-                        <select
-                          id="propertyType"
-                          name="propertyType"
-                          required
-                          value={formData.propertyType}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                        >
-                          <option value="">Select Property Type</option>
-                          <option value="manufactured-housing">Manufactured Housing Community</option>
-                          <option value="rv-park">RV Park / Resort</option>
-                          <option value="self-storage">Self-Storage Facility</option>
-                          <option value="portfolio">Portfolio / Multiple Properties</option>
-                        </select>
-                      </div>
-                      <div>                        <label htmlFor="propertyLocation" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                          Property Location *
-                        </label>
-                        <input
-                          type="text"
-                          id="propertyLocation"
-                          name="propertyLocation"
-                          required
-                          value={formData.propertyLocation}
-                          onChange={handleInputChange}
-                          placeholder="City, State"
-                          className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                        />
-                      </div>
-                    </div>
-                  </div>
+						<Card>
+							<CardContent className="p-8">
+								<form onSubmit={handleSubmit} className="space-y-6">
+									{/* Personal Information */}
+									<div>
+										<h3 className="font-bold text-xl mb-4">Contact Information</h3>
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+											<div>
+												<label htmlFor="firstName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+													First Name *
+												</label>
+												<input
+													type="text"
+													id="firstName"
+													name="first_name"
+													required
+													value={formData.first_name}
+													onChange={handleInputChange}
+													className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+												/>
+											</div>
+											<div>
+												<label htmlFor="lastName" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+													Last Name *
+												</label>
+												<input
+													type="text"
+													id="lastName"
+													name="last_name"
+													required
+													value={formData.last_name}
+													onChange={handleInputChange}
+													className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+												/>
+											</div>
+										</div>
+									</div>
 
-                  {/* Ownership and Timeline */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>                      <label htmlFor="ownershipType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                        Ownership Type *
-                      </label>
-                      <select
-                        id="ownershipType"
-                        name="ownershipType"
-                        required
-                        value={formData.ownershipType}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                      >
-                        <option value="">Select Ownership Type</option>
-                        <option value="individual">Individual/Family</option>
-                        <option value="partnership">Partnership</option>
-                        <option value="corporation">Corporation</option>
-                        <option value="trust">Trust/Estate</option>
-                        <option value="fund">Fund/Institutional</option>
-                      </select>
-                    </div>
-                    <div>                      <label htmlFor="timeline" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                        Sale Timeline *
-                      </label>
-                      <select
-                        id="timeline"
-                        name="timeline"
-                        required
-                        value={formData.timeline}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                      >
-                        <option value="">Select Timeline</option>
-                        <option value="immediate">Immediate (0-3 months)</option>
-                        <option value="short-term">Short-term (3-6 months)</option>
-                        <option value="medium-term">Medium-term (6-12 months)</option>
-                        <option value="exploring">Just exploring options</option>
-                      </select>
-                    </div>
-                  </div>
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+										<div>
+											<label htmlFor="email" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+												Email Address *
+											</label>
+											<input
+												type="email"
+												id="email"
+												name="email"
+												required
+												value={formData.email}
+												onChange={handleInputChange}
+												className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+											/>
+										</div>
+										<div>
+											<label htmlFor="phone" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+												Phone Number *
+											</label>
+											<input
+												type="tel"
+												id="phone"
+												name="phone"
+												required
+												value={formData.phone}
+												onChange={handleInputChange}
+												className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+											/>
+										</div>
+									</div>
 
-                  {/* Confidentiality Level */}
-                  <div>                    <label htmlFor="confidentialityLevel" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                      Confidentiality Requirements *
-                    </label>
-                    <select
-                      id="confidentialityLevel"
-                      name="confidentialityLevel"
-                      required
-                      value={formData.confidentialityLevel}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                    >
-                      <option value="">Select Confidentiality Level</option>
-                      <option value="maximum">Maximum - No public exposure at all</option>
-                      <option value="high">High - Very limited, vetted exposure only</option>
-                      <option value="moderate">Moderate - Some controlled marketing acceptable</option>
-                      <option value="standard">Standard - Normal marketing with some discretion</option>
-                    </select>
-                  </div>
+									{/* Property Information */}
+									<div>
+										<h3 className="font-bold text-xl mb-4">Property Information</h3>
+										<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+											<div>
+												<label htmlFor="propertyType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+													Property Type *
+												</label>
+												<select
+													id="propertyType"
+													name="property_type"
+													required
+													value={formData.property_type}
+													onChange={handleInputChange}
+													className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+												>
+													<option value="">Select Property Type</option>
+													<option value="manufactured-housing">Manufactured Housing Community</option>
+													<option value="rv-park">RV Park / Resort</option>
+													<option value="self-storage">Self-Storage Facility</option>
+													<option value="portfolio">Portfolio / Multiple Properties</option>
+												</select>
+											</div>
+											<div>
+												<label htmlFor="propertyLocation" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+													Property Location *
+												</label>
+												<input
+													type="text"
+													id="propertyLocation"
+													name="property_location"
+													required
+													value={formData.property_location}
+													onChange={handleInputChange}
+													placeholder="City, State"
+													className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+												/>
+											</div>
+										</div>
+									</div>
 
-                  {/* Current Situation */}
-                  <div>                    <label htmlFor="currentSituation" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                      Current Situation *
-                    </label>
-                    <textarea
-                      id="currentSituation"
-                      name="currentSituation"
-                      required
-                      rows={4}
-                      value={formData.currentSituation}
-                      onChange={handleInputChange}
-                      placeholder="Please describe your current situation and why you're considering a sale..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                    />
-                  </div>
+									{/* Ownership and Timeline */}
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+										<div>
+											<label htmlFor="ownershipType" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+												Ownership Type *
+											</label>
+											<select
+												id="ownershipType"
+												name="ownership_type"
+												required
+												value={formData.ownership_type}
+												onChange={handleInputChange}
+												className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+											>
+												<option value="">Select Ownership Type</option>
+												<option value="individual">Individual/Family</option>
+												<option value="partnership">Partnership</option>
+												<option value="corporation">Corporation</option>
+												<option value="trust">Trust/Estate</option>
+												<option value="fund">Fund/Institutional</option>
+											</select>
+										</div>
+										<div>
+											<label htmlFor="timeline" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+												Sale Timeline *
+											</label>
+											<select
+												id="timeline"
+												name="timeline"
+												required
+												value={formData.timeline}
+												onChange={handleInputChange}
+												className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+											>
+												<option value="">Select Timeline</option>
+												<option value="immediate">Immediate (0-3 months)</option>
+												<option value="short-term">Short-term (3-6 months)</option>
+												<option value="medium-term">Medium-term (6-12 months)</option>
+												<option value="exploring">Just exploring options</option>
+											</select>
+										</div>
+									</div>
 
-                  {/* Goals */}
-                  <div>                    <label htmlFor="goals" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                      Sale Goals & Objectives
-                    </label>
-                    <textarea
-                      id="goals"
-                      name="goals"
-                      rows={3}
-                      value={formData.goals}
-                      onChange={handleInputChange}
-                      placeholder="What are your primary goals for this sale? (e.g., maximize value, quick sale, tax optimization, etc.)"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                    />
-                  </div>
+									{/* Confidentiality Level */}
+									<div>
+										<label htmlFor="confidentialityLevel" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+											Confidentiality Requirements *
+										</label>
+										<select
+											id="confidentialityLevel"
+											name="confidentiality_level"
+											required
+											value={formData.confidentiality_level}
+											onChange={handleInputChange}
+											className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+										>
+											<option value="">Select Confidentiality Level</option>
+											<option value="maximum">Maximum - No public exposure at all</option>
+											<option value="high">High - Very limited, vetted exposure only</option>
+											<option value="moderate">Moderate - Some controlled marketing acceptable</option>
+											<option value="standard">Standard - Normal marketing with some discretion</option>
+										</select>
+									</div>
 
-                  {/* Additional Information */}
-                  <div>                    <label htmlFor="additionalInfo" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
-                      Additional Information
-                    </label>
-                    <textarea
-                      id="additionalInfo"
-                      name="additionalInfo"
-                      rows={3}
-                      value={formData.additionalInfo}
-                      onChange={handleInputChange}
-                      placeholder="Any additional information that would help us understand your situation and requirements..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
-                    />
-                  </div>
+									{/* Current Situation */}
+									<div>
+										<label htmlFor="currentSituation" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+											Current Situation *
+										</label>
+										<textarea
+											id="currentSituation"
+											name="current_situation"
+											required
+											rows={4}
+											value={formData.current_situation}
+											onChange={handleInputChange}
+											placeholder="Please describe your current situation and why you're considering a sale..."
+											className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+										/>
+									</div>
 
-                  <div className="border-t border-gray-200 pt-6">
-                    <div className="bg-cloud rounded-lg p-4 mb-6">
-                      <h4 className="font-medium mb-2">Confidentiality Commitment</h4>                      <ul className="text-sm lg:text-base text-gray-600 space-y-1">
-                        <li>• All information shared is strictly confidential</li>
-                        <li>• No property details will be shared without your explicit consent</li>
-                        <li>• Initial consultation is completely obligation-free</li>
-                        <li>• We will contact you within 24 hours to schedule a private discussion</li>
-                      </ul>
-                    </div>
+									{/* Goals */}
+									<div>
+										<label htmlFor="goals" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+											Sale Goals & Objectives
+										</label>
+										<textarea
+											id="goals"
+											name="goals"
+											rows={3}
+											value={formData.goals}
+											onChange={handleInputChange}
+											placeholder="What are your primary goals for this sale? (e.g., maximize value, quick sale, tax optimization, etc.)"
+											className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+										/>
+									</div>
 
-                    <Button 
-                      onClick={() => handleSubmit({} as React.FormEvent)}
-                      variant="primary"
-                      size="lg"
-                      className="w-full"
-                      icon={<ArrowRight size={20} />}
-                      iconPosition="right"
-                    >
-                      Submit Confidential Inquiry
-                    </Button>                    <p className="text-sm lg:text-base text-gray-600 text-center mt-4">
-                      By submitting this form, you acknowledge that all information will be kept strictly confidential 
-                      and used solely for the purpose of providing you with a consultation.
-                    </p>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+									{/* Additional Information */}
+									<div>
+										<label htmlFor="additionalInfo" className="block text-sm lg:text-base font-medium text-gray-700 mb-2">
+											Additional Information
+										</label>
+										<textarea
+											id="additionalInfo"
+											name="additional_info"
+											rows={3}
+											value={formData.additional_info}
+											onChange={handleInputChange}
+											placeholder="Any additional information that would help us understand your situation and requirements..."
+											className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-plum focus:border-transparent"
+										/>
+									</div>
 
-      {/* Contact CTA */}
-      <section className="py-16 bg-gradient-to-br from-obsidian to-amethyst text-white">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
-              Prefer to Discuss by Phone?
-            </h2>
-            <p className="text-lg mb-8 opacity-90">
-              For immediate confidential consultation or urgent matters, 
-              speak directly with our principals.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button 
-                href="tel:602-730-9967"
-                variant="secondary"
-                size="lg"
-              >
-                Call: 602-730-9967
-              </Button>
-              
-              <Button 
-                to="/contact"
-                variant="outline"
-                size="lg"
-                className="border-white text-white hover:bg-white/10"
-              >
-                Send Secure Message
-              </Button>
-            </div>            <p className="text-sm lg:text-base mt-4 opacity-75">
-              All conversations are confidential and protected by broker-client privilege.
-            </p>
-          </div>
-        </div>
-      </section>
-    </div>
-  );
+									<div className="border-t border-gray-200 pt-6">
+										<div className="bg-cloud rounded-lg p-4 mb-6">
+											<h4 className="font-medium mb-2">Confidentiality Commitment</h4>
+											<ul className="text-sm lg:text-base text-gray-600 space-y-1">
+												<li>• All information shared is strictly confidential</li>
+												<li>• No property details will be shared without your explicit consent</li>
+												<li>• Initial consultation is completely obligation-free</li>
+												<li>• We will contact you within 24 hours to schedule a private discussion</li>
+											</ul>
+										</div>
+
+										<Button
+											onClick={() => handleSubmit({} as React.FormEvent)}
+											variant="primary"
+											size="lg"
+											className="w-full"
+											icon={<ArrowRight size={20} />}
+											iconPosition="right"
+										>
+											Submit Confidential Inquiry
+										</Button>
+										<p className="text-sm lg:text-base text-gray-600 text-center mt-4">
+											By submitting this form, you acknowledge that all information will be kept strictly confidential
+											and used solely for the purpose of providing you with a consultation.
+										</p>
+									</div>
+								</form>
+							</CardContent>
+						</Card>
+					</div>
+				</div>
+			</section>
+
+			{/* Contact CTA */}
+			<section className="py-16 bg-gradient-to-br from-obsidian to-amethyst text-white">
+				<div className="container-custom">
+					<div className="max-w-3xl mx-auto text-center">
+						<h2 className="font-display text-3xl md:text-4xl font-bold mb-6">
+							Prefer to Discuss by Phone?
+						</h2>
+						<p className="text-lg mb-8 opacity-90">
+							For immediate confidential consultation or urgent matters,
+							speak directly with our principals.
+						</p>
+						<div className="flex flex-col sm:flex-row justify-center gap-4">
+							<Button
+								href="tel:602-730-9967"
+								variant="secondary"
+								size="lg"
+							>
+								Call: 602-730-9967
+							</Button>
+
+							<Button
+								to="/contact"
+								variant="outline"
+								size="lg"
+								className="border-white text-white hover:bg-white/10"
+							>
+								Send Secure Message
+							</Button>
+						</div>						<p className="text-sm lg:text-base mt-4 opacity-75">
+							All conversations are confidential and protected by broker-client privilege.
+						</p>
+					</div>
+				</div>
+			</section>
+		</div>
+		</>
+	);
 };
 
 export default ExclusiveSellerNetworkPage;

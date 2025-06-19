@@ -63,9 +63,8 @@ const TrackRecordInteractiveMap: React.FC<InteractiveMapProps> = ({ transactions
     if (selectedTransaction && mapRef.current) {
       mapRef.current.setView([selectedTransaction.latitude, selectedTransaction.longitude], 12);
     }
-  }, [selectedTransaction]);
-  return (
-    <div className="bg-white rounded-xl shadow-card overflow-hidden">
+  }, [selectedTransaction]);  return (
+    <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
       <div className="h-[500px] relative z-10">
         <MapContainer
           center={[39.8283, -98.5795]} // Center of US
@@ -87,7 +86,7 @@ const TrackRecordInteractiveMap: React.FC<InteractiveMapProps> = ({ transactions
               <Popup className="custom-popup">
                 <div className="p-3 min-w-[280px]">
                   <div className="flex items-start justify-between mb-3">
-                    <h3 className="font-display font-bold text-obsidian text-base leading-tight pr-2">
+                    <h3 className="heading-luxury font-bold text-luxury-dark text-base leading-tight pr-2">
                       {transaction.property}
                     </h3>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${CLASSIFICATION_MAP[transaction.classification].bgColor} ${CLASSIFICATION_MAP[transaction.classification].color} whitespace-nowrap`}>
@@ -95,20 +94,22 @@ const TrackRecordInteractiveMap: React.FC<InteractiveMapProps> = ({ transactions
                     </span>
                   </div>
                   
-                  <div className="space-y-2 text-sm text-evergreen">
+                  <div className="space-y-2 text-sm text-luxury-dark/80">
                     <div className="flex items-center">
-                      <span className="font-semibold text-plum min-w-[80px]">Location:</span>
+                      <span className="font-semibold text-luxury-accent min-w-[80px]">Location:</span>
                       <span className="ml-2">{transaction.address}</span>
-                    </div>                    {formatSize(transaction.size_nrsf, transaction.classification) && (
+                    </div>
+                    
+                    {formatSize(transaction.size_nrsf, transaction.classification) && (
                       <div className="flex items-center">
-                        <span className="font-semibold text-plum min-w-[80px]">Size:</span>
+                        <span className="font-semibold text-luxury-accent min-w-[80px]">Size:</span>
                         <span className="ml-2">{formatSize(transaction.size_nrsf, transaction.classification)}</span>
                       </div>
                     )}
                     
                     {formatUnits(transaction) && (
                       <div className="flex items-center">
-                        <span className="font-semibold text-plum min-w-[80px]">Units:</span>
+                        <span className="font-semibold text-luxury-accent min-w-[80px]">Units:</span>
                         <span className="ml-2">{formatUnits(transaction)}</span>
                       </div>
                     )}
@@ -121,19 +122,19 @@ const TrackRecordInteractiveMap: React.FC<InteractiveMapProps> = ({ transactions
       </div>
       
       {/* Legend */}
-      <div className="p-6 bg-gradient-to-r from-sand to-cloud border-t border-gray-200">
+      <div className="p-8 bg-gradient-to-r from-white/5 to-white/10 backdrop-blur-sm border-t border-white/10">
         <div className="flex items-center justify-between">
-          <span className="text-base font-display font-semibold text-obsidian">Property Types:</span>
-          <div className="flex items-center space-x-6">
+          <span className="text-lg heading-luxury font-bold text-white">Property Types:</span>
+          <div className="flex items-center space-x-8">
             {Object.entries(CLASSIFICATION_MAP).map(([key, info]) => (
               <div key={key} className="flex items-center space-x-3">
                 <div 
-                  className="w-5 h-5 rounded-full border-3 border-white shadow-md"
+                  className="w-6 h-6 rounded-full border-3 border-white shadow-lg"
                   style={{ 
                     backgroundColor: key === 'MH' ? '#1a473a' : key === 'RV' ? '#8a0067' : '#500f61' 
                   }}
                 />
-                <span className="text-sm font-medium text-evergreen">{info.label}</span>
+                <span className="text-sm font-semibold text-white/90">{info.label}</span>
               </div>
             ))}
           </div>

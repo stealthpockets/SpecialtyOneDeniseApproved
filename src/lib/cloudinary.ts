@@ -80,8 +80,7 @@ export const CLOUDINARY_MAPPINGS = {
     'andrew-headshot-image.webp': 'Leadership/andrew-headshot-image',
     'denise-nunez-self-storage.webp': 'Leadership/denise-nunez-self-storage',
   },
-  
-  // Property types
+    // Property types
   propertyTypes: {
     'manufactured-housing-community-investment.webp': 'specialty-one/property-types/manufactured-housing-community-investment',
     'rv-park-investment.webp': 'specialty-one/property-types/rv-park-investment',
@@ -96,9 +95,11 @@ export const CLOUDINARY_MAPPINGS = {
     'mh_park_apache_junction_arizona.webp': 'specialty-one/property-types/mh_park_apache_junction_arizona',
     'mhp_arizona_pueblo_mobile_manor.webp': 'specialty-one/property-types/mhp_arizona_pueblo_mobile_manor',
     'rv_park_resort_arizona.webp': 'specialty-one/property-types/rv_park_resort_arizona',
+    // Background hero images - map to existing assets
+    'mobile-home-park-specialty-one.webp': 'specialty-one/property-types/manufactured-housing-community-investment',
+    'outdoor-hospitality-rv-park.webp': 'specialty-one/property-types/rv_park_resort_arizona',
   },
-  
-  // Success stories
+    // Success stories
   successStories: {
     'american-ss-mail.webp': 'specialty-one/success-stories/american-ss-mail',
     'caravan-oasis.webp': 'specialty-one/success-stories/caravan-oasis',
@@ -108,6 +109,16 @@ export const CLOUDINARY_MAPPINGS = {
     'desert-trails.webp': 'specialty-one/success-stories/desert-trails',
     'mogollon-rv.webp': 'specialty-one/success-stories/mogollon-rv',
     'the-palms.webp': 'specialty-one/success-stories/the-palms',
+    'hero-success-stories.webp': 'specialty-one/success-stories/hero-success-stories',
+    // Add support for more flexible path matching
+    'success-stories/american-ss-mail.webp': 'specialty-one/success-stories/american-ss-mail',
+    'success-stories/caravan-oasis.webp': 'specialty-one/success-stories/caravan-oasis',
+    'success-stories/confidential-mhc-buyer.webp': 'specialty-one/success-stories/confidential-mhc-buyer',
+    'success-stories/confidential-rv-resort.webp': 'specialty-one/success-stories/confidential-rv-resort',
+    'success-stories/desert-retreat.webp': 'specialty-one/success-stories/desert-retreat',
+    'success-stories/desert-trails.webp': 'specialty-one/success-stories/desert-trails',
+    'success-stories/mogollon-rv.webp': 'specialty-one/success-stories/mogollon-rv',
+    'success-stories/the-palms.webp': 'specialty-one/success-stories/the-palms',
   },
   
   // Logo assets
@@ -134,19 +145,50 @@ export const CLOUDINARY_MAPPINGS = {
 
 /**
  * Get Cloudinary public ID from local asset path
- * @param localPath - Local asset path (e.g., '/assets/leadership/andrew-headshot-image.webp' or '/dist/assets/property-types/rv-park-investment.webp')
+ * @param localPath - Local asset path (e.g., '/assets/leadership/andrew-headshot-image.webp' or '/dist/assets/property-types/rv-park-investment.webp' or just 'the-palms.webp')
  * @returns Cloudinary public ID or null if not found
  */
 export const getCloudinaryPublicId = (localPath: string): string | null => {
-  const normalizedPath = localPath.startsWith('/dist/assets/') 
-    ? localPath.substring('/dist/assets/'.length) 
-    : localPath;
+  // Normalize path - handle both forward and back slashes
+  let normalizedPath = localPath.replace(/\\/g, '/');
+  
+  // Remove common prefixes
+  if (normalizedPath.startsWith('/dist/assets/')) {
+    normalizedPath = normalizedPath.substring('/dist/assets/'.length);
+  } else if (normalizedPath.startsWith('/assets/')) {
+    normalizedPath = normalizedPath.substring('/assets/'.length);
+  } else if (normalizedPath.startsWith('assets/')) {
+    normalizedPath = normalizedPath.substring('assets/'.length);
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // Check all categories for exact matches
   for (const [_categoryName, category] of Object.entries(CLOUDINARY_MAPPINGS)) {
     for (const [key, value] of Object.entries(category)) {
       if (key === normalizedPath) {
         return value;
+      }
+    }
+  }
+    // Special handling for success-stories paths
+  if (normalizedPath.includes('success-stories/')) {
+    const filename = normalizedPath.split('/').pop();
+    if (filename) {
+      const successStoriesMapping = CLOUDINARY_MAPPINGS.successStories as { [key: string]: string };
+      if (successStoriesMapping[filename]) {
+        return successStoriesMapping[filename];
+      }
+    }
+  }
+  
+  // If no exact match found and input is just a filename, try to find it in any category
+  if (!normalizedPath.includes('/')) {
+    for (const [_categoryName, category] of Object.entries(CLOUDINARY_MAPPINGS)) {
+      for (const [key, value] of Object.entries(category)) {
+        // Extract filename from the key path
+        const keyFilename = key.split('/').pop();
+        if (keyFilename === normalizedPath) {
+          return value;
+        }
       }
     }
   }

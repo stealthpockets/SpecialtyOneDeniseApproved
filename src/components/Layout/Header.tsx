@@ -6,7 +6,7 @@ import { Logo } from '../ui/Logo';
 const NavLink = ({ to, children }: { to: string; children: React.ReactNode }) => (
   <Link
     to={to}
-    className="text-obsidian hover:text-plum transition-colors duration-200 font-medium text-caption tracking-wide"
+    className="text-obsidian hover:text-plum transition-colors duration-200 font-medium text-base lg:text-lg tracking-wide"
   >
     {children}
   </Link>
@@ -22,9 +22,8 @@ const DropdownLink = ({
   const [isOpen, setIsOpen] = useState(false);
   
   return (
-    <div className="relative group">
-      <button
-        className="flex items-center text-obsidian hover:text-plum transition-colors duration-200 font-medium text-caption tracking-wide"
+    <div className="relative group">      <button
+        className="flex items-center text-obsidian hover:text-plum transition-colors duration-200 font-medium text-base lg:text-lg tracking-wide"
         onClick={() => setIsOpen(!isOpen)}
       >
         {title}
@@ -37,11 +36,10 @@ const DropdownLink = ({
         }`}
       >
         <div className="py-2">
-          {items.map((item) => (
-            <Link
+          {items.map((item) => (            <Link
               key={item.path}
               to={item.path}
-              className="block px-4 py-3 text-caption text-obsidian hover:bg-plum/10 hover:text-plum transition-colors duration-200"
+              className="block px-4 py-3 text-base text-obsidian hover:bg-plum/10 hover:text-plum transition-colors duration-200"
               onClick={() => setIsOpen(false)}
             >
               {item.name}
@@ -122,15 +120,14 @@ export const Header = () => {
                 className="flex items-center justify-between w-full text-left py-2"
                 onClick={() => {}}
               >
-                <span className="font-medium text-caption">Property Types</span>
+                <span className="font-medium text-lg">Property Types</span>
                 <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className="pl-4 py-3 space-y-3">
+              </button>              <div className="pl-4 py-3 space-y-3">
                 {propertyTypes.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="block py-1 text-caption text-obsidian hover:text-plum transition-colors duration-200"
+                    className="block py-1 text-base text-obsidian hover:text-plum transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -138,18 +135,16 @@ export const Header = () => {
                 ))}
               </div>
             </div>
-            
-            <Link
+              <Link
               to="/advantage"
-              className="block py-3 border-b border-gray-100 text-caption font-medium"
+              className="block py-3 border-b border-gray-100 text-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               The Advantage
             </Link>
-            
-            <Link
+              <Link
               to="/1031-exchange"
-              className="block py-3 border-b border-gray-100 text-caption font-medium"
+              className="block py-3 border-b border-gray-100 text-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               1031 Exchange
@@ -160,15 +155,14 @@ export const Header = () => {
                 className="flex items-center justify-between w-full text-left py-2"
                 onClick={() => {}}
               >
-                <span className="font-medium text-caption">Resources</span>
+                <span className="font-medium text-lg">Resources</span>
                 <ChevronDown className="w-4 h-4" />
-              </button>
-              <div className="pl-4 py-3 space-y-3">
+              </button>              <div className="pl-4 py-3 space-y-3">
                 {resources.map((item) => (
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="block py-1 text-caption text-obsidian hover:text-plum transition-colors duration-200"
+                    className="block py-1 text-base text-obsidian hover:text-plum transition-colors duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -176,10 +170,9 @@ export const Header = () => {
                 ))}
               </div>
             </div>
-            
-            <Link
+              <Link
               to="/about"
-              className="block py-3 border-b border-gray-100 text-caption font-medium"
+              className="block py-3 border-b border-gray-100 text-lg font-medium"
               onClick={() => setIsMenuOpen(false)}
             >
               About

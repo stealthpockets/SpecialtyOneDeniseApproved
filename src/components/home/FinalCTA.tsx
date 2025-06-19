@@ -1,5 +1,6 @@
 import { Button } from '../ui/Button';
 import { Link } from 'react-router-dom'; // Import Link
+import { ChevronRight } from 'lucide-react';
 
 export const FinalCTA = () => {
   return (
@@ -20,7 +21,7 @@ export const FinalCTA = () => {
           
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16">
             <Button
-              to="/exclusive-buyers"
+              to="https://form.typeform.com/to/B0GIZ1ht"
               variant="primary"
               className="w-full sm:w-auto"
               size="lg"
@@ -43,16 +44,22 @@ export const FinalCTA = () => {
             </Link>
           </div>
           
-          <div className="mt-16 pt-8 border-t border-white/20">
-            <p className="heading-sm text-white/90 mb-4">
-              Serious buyers and sellers read Specialty One's insights before making moves.
-            </p>
-            <Link 
-              to="/newsletter"
-              className="inline-block card-glassmorphism text-white px-6 py-3 rounded-lg transition-all duration-300 hover:bg-white/20 text-caption font-medium"
-            >
-              Join the Newsletter
-            </Link>
+          <div className="border-t border-gray-700 md:border-t-0 md:border-l md:pl-12 pt-8 md:pt-0">
+            <h3 className="text-2xl font-bold mb-4">Or, Explore Other Options:</h3>
+            <ul className="space-y-4">
+              <li>
+                <a href="https://form.typeform.com/to/I3hYeHFX" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors inline-flex items-center group">
+                  <ChevronRight className="w-5 h-5 mr-2 text-primary transition-transform group-hover:translate-x-1" />
+                  <span>Get a Free Property Valuation</span>
+                </a>
+              </li>
+              <li>
+                <a href="https://form.typeform.com/to/oX1bWHD5" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-colors inline-flex items-center group">
+                  <ChevronRight className="w-5 h-5 mr-2 text-primary transition-transform group-hover:translate-x-1" />
+                  <span>Explore 1031 Exchange Solutions</span>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

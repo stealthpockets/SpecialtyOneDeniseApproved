@@ -1,35 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Helmet } from 'react-helmet';
-import { TwitterShareButton, LinkedinShareButton } from 'react-share';
+import { SEOHead } from '../components/ui/SEOHead';
+import { SocialShare } from '../components/ui/SocialShare';
 import { ArrowLeft, Calendar, Clock, User, ChevronRight, ArrowUp } from 'lucide-react';
 import { useCharts } from '../hooks/useCharts';
 import { SimpleChartProcessor } from '../lib/simpleChartProcessor';
 import PDFDownload from '../components/PDFDownload';
+import { Insight, MarketReport } from '../types/MarketReport';
+import { useInsights } from '../hooks/useInsights';
+import { useMarketReports } from '../hooks/useMarketReports';
+import { supabase } from '../lib/supabase';
 import '../styles/markdown-content.css';
 
 interface ArticleDetailProps {
   type: 'insights' | 'market_reports';
 }
 
-interface Article {
-  id: string;
-  slug: string;
-  title: string;
-  content: string;
-  summary: string;
-  published_at: string;
-  image_url?: string;
-  pdf_url?: string;
-  reading_time?: number;
-  authors: {
-    name: string;
-    avatar_url?: string;
-  } | null;
-}
+type Article = Insight | MarketReport;
 
 interface RelatedArticle {
   id: string;
@@ -53,6 +42,36 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
   // Chart integration
   const { charts, loading: chartsLoading } = useCharts();
   const [chartProcessor, setChartProcessor] = useState<SimpleChartProcessor | null>(null);
+  // Use appropriate hooks for data fetching
+  const { insights, loading: insightsLoading } = useInsights();
+  const { marketReports, loading: marketReportsLoading } = useMarketReports();
+
+  // Safely convert any value to string, handling Symbols and other problematic types
+  const safeToString = (value: any, fallback: string = ''): string => {
+    if (value === null || value === undefined) return fallback;
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+    if (typeof value === 'symbol') return fallback;
+    if (typeof value === 'object') {
+      try {
+        return JSON.stringify(value);
+      } catch {
+        return fallback;
+      }
+    }
+    try {
+      return String(value);
+    } catch {
+      return fallback;
+    }
+  };
+
+  // Safely extract author name from authors field
+  const getAuthorName = (authors: any): string => {
+    if (!authors) return "Specialty One Investment Brokerage";
+    if (typeof authors === 'object' && authors.name) return safeToString(authors.name, "Specialty One Investment Brokerage");
+    if (Array.isArray(authors) && authors.length > 0 && authors[0]?.name) return safeToString(authors[0].name, "Specialty One Investment Brokerage");
+    return "Specialty One Investment Brokerage";  };
 
   // Initialize chart processor when charts are loaded
   useEffect(() => {
@@ -81,59 +100,37 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
   }, [slug]);
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const findArticleBySlug = () => {
       if (!slug) return;
 
-      try {        const { data, error } = await supabase
-          .from(type)
-          .select(`
-            id,
-            slug,
-            title,
-            content,
-            summary,
-            published_at,
-            image_url,
-            ${type === 'insights' ? 'pdf_url,' : ''}
-            reading_time,
-            author_id
-          `)
-          .eq('slug', slug)
-          .eq('status', 'published')
-          .single();if (error) {
-          setError('Article not found');
-          return;
+      try {
+        setLoading(true);
+        let foundArticle: Article | null = null;
+
+        if (type === 'insights') {
+          foundArticle = insights.find(insight => insight.slug === slug) || null;
+        } else {
+          foundArticle = marketReports.find(report => report.slug === slug) || null;
         }
 
-        // Fetch author separately if author_id exists
-        let authors = null;
-        if (data.author_id) {
-          const { data: authorData } = await supabase
-            .from('authors')
-            .select('name, avatar_url')
-            .eq('id', data.author_id)
-            .single();
-          
-          if (authorData) {
-            authors = { name: authorData.name, avatar_url: authorData.avatar_url };
-          }
-        }        const transformedData: Article = {
-          ...data,
-          pdf_url: data.pdf_url || undefined, // Handle optional pdf_url
-          authors
-        };
-
-        setArticle(transformedData);
-        fetchRelatedArticles(data.id);
+        if (foundArticle) {
+          setArticle(foundArticle);
+          fetchRelatedArticles(foundArticle.id);
+        } else {
+          setError('Article not found');
+        }
       } catch (err) {
-        setError('Failed to load article');
+        setError('Failed to load article. Please try again later.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchArticle();
-  }, [slug, type]);
+    // Only proceed if data is loaded and we have a slug
+    if (slug && !insightsLoading && !marketReportsLoading) {
+      findArticleBySlug();
+    }
+  }, [slug, type, insights, marketReports, insightsLoading, marketReportsLoading]);
 
   const fetchRelatedArticles = async (currentId: string) => {
     try {
@@ -209,20 +206,20 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
       console.error('Failed to fetch related articles:', err);
     }
   };
-
-  if (loading) {
+  if (loading || insightsLoading || marketReportsLoading) {
     return (
       <div className="min-h-screen bg-sand flex items-center justify-center">
         <div className="text-xl">Loading...</div>
       </div>
     );
   }
-
   if (error || !article) {
+    const typeUrl = type === 'insights' ? 'insights' : 'market-reports';
     return (
       <div className="min-h-screen bg-sand flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>          <Link to={`/${typeUrl}`} className="text-plum hover:underline">
+          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
+          <Link to={`/${typeUrl}`} className="text-plum hover:underline">
             Back to {type === 'insights' ? 'Insights' : 'Market Reports'}
           </Link>
         </div>
@@ -232,23 +229,23 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
   const shareUrl = window.location.href;
   const pageTitle = type === 'insights' ? 'Insights' : 'Market Reports';
   const typeUrl = type === 'insights' ? 'insights' : 'market-reports';
-  
-  // Default fallback image
+    // Default fallback image
   const defaultImage = '/assets/property-types/manufactured-housing-community-investment.webp';
-  const articleImage = article.image_url || defaultImage;
-
-  return (
+  const articleImage = article.image_url || defaultImage;  return (
     <>
-      <Helmet>
-        <title>{article.title} - Specialty One</title>
-        <meta name="description" content={article.summary} />
-        <meta property="og:title" content={article.title} />
-        <meta property="og:description" content={article.summary} />
-        <meta property="og:image" content={articleImage} />
-        <meta property="og:url" content={shareUrl} />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+      <SEOHead
+        title={safeToString(article.title ? `${safeToString(article.title)} - Specialty One` : 'Article - Specialty One')}
+        description={safeToString(article.summary || 'Specialty One market analysis')}
+        keywords={`${type === 'insights' ? 'market insights' : 'market reports'}, commercial real estate, specialty properties, CRE analysis`}
+        image={safeToString(articleImage)}
+        url={safeToString(shareUrl)}
+        type="article"
+        articleMeta={{
+          publishedTime: safeToString(article.published_at || new Date().toISOString()),
+          author: safeToString(getAuthorName(article.authors)),
+          section: type === 'insights' ? 'Market Insights' : 'Market Reports'
+        }}
+      />
 
       <div className="min-h-screen bg-sand">
         {/* Professional Breadcrumb Navigation */}
@@ -261,9 +258,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
               <Link to={`/${typeUrl}`} className="hover:text-sage transition-colors">
                 {pageTitle}
               </Link>
-              <ChevronRight size={16} className="mx-2 text-gray-500" />
-              <span className="text-white font-medium truncate">
-                {article.title}
+              <ChevronRight size={16} className="mx-2 text-gray-500" />              <span className="text-white font-medium truncate">
+                {safeToString(article.title, 'Article')}
               </span>
             </div>
             
@@ -288,12 +284,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
               {/* Article Header */}
               <header className="mb-6 md:mb-8 lg:mb-12">                {/* Article Title */}
                 <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900" style={{ lineHeight: '1.4' }}>
-                  {article.title}
+                  {safeToString(article.title, 'Article Title')}
                 </h1>
                 
                 {/* Article Summary */}
                 <div className="text-base md:text-lg lg:text-xl text-gray-700 mb-6 md:mb-8 leading-relaxed max-w-3xl">
-                  {article.summary}
+                  {safeToString(article.summary, 'Summary unavailable')}
                 </div>
                 
                 {/* Article Meta */}
@@ -301,31 +297,34 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   <div className="flex items-center gap-2">
                     <User size={16} className="sm:hidden text-plum" />
                     <User size={18} className="hidden sm:block text-plum" />
-                    <span className="font-medium">{article.authors?.name || 'Specialty One Team'}</span>
+                    <span className="font-medium">{getAuthorName(article.authors)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="sm:hidden text-plum" />
-                    <Calendar size={18} className="hidden sm:block text-plum" />
-                    <span>{new Date(article.published_at).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: window.innerWidth < 640 ? 'short' : 'long', 
-                      day: 'numeric' 
-                    })}</span>
-                  </div>
-                  {article.reading_time && (
+                    <Calendar size={18} className="hidden sm:block text-plum" />                    <span>{safeToString(article.published_at) ? (() => {
+                      try {
+                        return new Date(safeToString(article.published_at)).toLocaleDateString('en-US', { 
+                          year: 'numeric', 
+                          month: window.innerWidth < 640 ? 'short' : 'long', 
+                          day: 'numeric' 
+                        });
+                      } catch {
+                        return 'Date unavailable';
+                      }
+                    })() : 'Date unavailable'}</span>
+                  </div>                  {safeToString(article.reading_time) && (
                     <div className="flex items-center gap-2">
                       <Clock size={16} className="sm:hidden text-plum" />
                       <Clock size={18} className="hidden sm:block text-plum" />
-                      <span>{article.reading_time} min read</span>
+                      <span>{safeToString(article.reading_time)} min read</span>
                     </div>
                   )}
                 </div>
 
                 {/* Featured Image */}
-                <div className="relative mb-6 md:mb-8 lg:mb-12">
-                  <img
+                <div className="relative mb-6 md:mb-8 lg:mb-12">                  <img
                     src={articleImage}
-                    alt={article.title}
+                    alt={safeToString(article.title, 'Article image')}
                     className="w-full h-48 sm:h-64 md:h-80 lg:h-96 object-cover rounded-lg md:rounded-xl shadow-lg"
                     loading="lazy"
                     onError={(e) => {
@@ -337,10 +336,10 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   />
                 </div>
               </header>              {/* Professional Article Content with Enhanced Styling and Chart Integration */}
-              <div className="markdown-content mb-8 md:mb-12 lg:mb-16">
-                {chartProcessor ? (
+              <div className="markdown-content mb-8 md:mb-12 lg:mb-16">                {chartProcessor ? (
                   (() => {
-                    const result = chartProcessor.processContent(article.content.replace(/\\n/g, '\n'));
+                    const safeContent = safeToString(article.content, '');
+                    const result = chartProcessor.processContent(safeContent.replace(/\\n/g, '\n'));
                     
                     if (!result.hasCharts) {
                       // No charts, use regular ReactMarkdown
@@ -355,7 +354,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                             ),
                           }}
                         >
-                          {article.content.replace(/\\n/g, '\n')}
+                          {safeContent.replace(/\\n/g, '\n') || 'Content unavailable'}
                         </ReactMarkdown>
                       );
                     }
@@ -388,8 +387,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                         })}
                       </>
                     );
-                  })()
-                ) : (
+                  })()                ) : (
                   // Fallback while charts are loading
                   <ReactMarkdown 
                     remarkPlugins={[remarkGfm]}
@@ -401,16 +399,14 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                       ),
                     }}
                   >
-                    {article.content.replace(/\\n/g, '\n')}
+                    {safeToString(article.content, 'Content unavailable').replace(/\\n/g, '\n')}
                   </ReactMarkdown>
                 )}
-              </div>
-
-              {/* PDF Download Section */}
-              {article.pdf_url && (
+              </div>              {/* PDF Download Section */}
+              {safeToString(article.pdf_url) && (
                 <PDFDownload
-                  pdfUrl={article.pdf_url}
-                  title={`Download ${article.title} - Full Report`}
+                  pdfUrl={safeToString(article.pdf_url)}
+                  title={`Download ${safeToString(article.title, 'Report')} - Full Report`}
                   description="Get the complete analysis in PDF format for offline reading and sharing."
                   className="mb-8 md:mb-12 lg:mb-16"
                 />
@@ -440,24 +436,17 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     </Link>
                   </div>
                 </div>
-              </div>
-
-              {/* Social Sharing */}
+              </div>              {/* Social Sharing */}
               <div className="border-t border-gray-200 pt-6 md:pt-8 mb-8 md:mb-12">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
                   <div className="w-full md:w-auto">
                     <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">Share this article</h3>
-                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4">                      <TwitterShareButton url={shareUrl} title={article.title}>
-                        <div className="px-4 sm:px-6 py-3 min-h-[44px] border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium text-sm md:text-base w-full sm:w-auto text-center cursor-pointer">
-                          Share on Twitter
-                        </div>
-                      </TwitterShareButton>
-                      <LinkedinShareButton url={shareUrl} title={article.title}>
-                        <div className="px-4 sm:px-6 py-3 min-h-[44px] border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium text-sm md:text-base w-full sm:w-auto text-center cursor-pointer">
-                          Share on LinkedIn
-                        </div>
-                      </LinkedinShareButton>
-                    </div>
+                    <SocialShare 
+                      url={shareUrl} 
+                      title={article.title} 
+                      description={article.summary}
+                      variant="default"
+                    />
                   </div>
                 </div>
               </div>
@@ -494,7 +483,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Published:</span>
                       <span className="font-medium text-gray-900">
-                        {new Date(article.published_at).toLocaleDateString()}
+                        {article.published_at ? new Date(article.published_at).toLocaleDateString() : 'Date unavailable'}
                       </span>
                     </div>
                     <div className="flex justify-between">
@@ -506,7 +495,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     <div className="flex justify-between">
                       <span className="text-gray-600">Author:</span>
                       <span className="font-medium text-gray-900">
-                        {article.authors?.name || 'Specialty One Team'}
+                        {getAuthorName(article.authors)}
                       </span>
                     </div>
                   </div>
@@ -563,8 +552,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                           <p className="text-gray-600 mb-3 md:mb-4 line-clamp-3 leading-relaxed text-sm md:text-base">
                             {related.summary}
                           </p>
-                          <div className="flex items-center justify-between">
-                            <p className="text-xs md:text-sm text-plum font-semibold">
+                          <div className="flex items-center justify-between">                            <p className="text-xs md:text-sm text-plum font-semibold">
                               {related.authors?.name || 'Specialty One Team'}
                             </p>
                             <span className="text-plum font-medium text-xs md:text-sm group-hover:underline">

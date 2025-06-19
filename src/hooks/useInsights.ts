@@ -32,49 +32,57 @@ export const useInsights = (filters?: ContentFilters) => {
           `)
           .eq('status', 'published')
           .is('deleted_at', null)
-          .order('published_at', { ascending: false });
-
-        // Apply filters if provided
-        if (filters?.propertyType) {
-          query = query.eq('property_type_id', filters.propertyType);
+          .order('published_at', { ascending: false });        // Apply filters if provided
+        if (filters?.propertyTypeId) {
+          query = query.eq('property_type_id', filters.propertyTypeId);
         }
 
-        if (filters?.category) {
-          query = query.eq('category_id', filters.category);
+        if (filters?.categoryId) {
+          query = query.eq('category_id', filters.categoryId);
         }
 
-        if (filters?.searchQuery) {
-          query = query.or(`title.ilike.%${filters.searchQuery}%,summary.ilike.%${filters.searchQuery}%,content.ilike.%${filters.searchQuery}%`);
+        if (filters?.search) {
+          query = query.or(`title.ilike.%${filters.search}%,summary.ilike.%${filters.search}%,content.ilike.%${filters.search}%`);
         }
 
         const { data, error } = await query;
 
         if (error) {
           throw error;
-        }
+        }        if (data) {
+          // Transform raw Supabase data to proper Insight format
+          const transformedData: Insight[] = data.map((item: any): Insight => {
+            // Handle joined data arrays properly
+            const singleAuthor = Array.isArray(item.authors) && item.authors.length > 0 
+              ? item.authors[0] 
+              : (item.authors && !Array.isArray(item.authors) ? item.authors : null);
+            
+            const singlePropertyType = Array.isArray(item.property_types) && item.property_types.length > 0 
+              ? item.property_types[0] 
+              : (item.property_types && !Array.isArray(item.property_types) ? item.property_types : null);
+            
+            const singleCategory = Array.isArray(item.categories) && item.categories.length > 0 
+              ? item.categories[0] 
+              : (item.categories && !Array.isArray(item.categories) ? item.categories : null);
 
-        if (data) {
-          const transformedData: Insight[] = data.map((item: any): Insight => ({
-            ...item,
-            property_type_id: item.property_type_id || undefined,
-            category_id: item.category_id || undefined,
-            author_id: (item as any).authors?.[0]?.id || undefined,
-            locale: 'en',
-            status: 'published' as const,
-            created_at: item.published_at || new Date().toISOString(),
-            updated_at: item.published_at || new Date().toISOString(),
-            deleted_at: undefined,
-            pages: undefined,
-            // Transform joined arrays to single objects
-            authors: Array.isArray((item as any).authors) && (item as any).authors.length > 0 ? (item as any).authors[0] : (item as any).authors,
-            property_types: Array.isArray((item as any).property_types) && (item as any).property_types.length > 0 ? (item as any).property_types[0] : (item as any).property_types,
-            categories: Array.isArray((item as any).categories) && (item as any).categories.length > 0 ? (item as any).categories[0] : (item as any).categories,
-            tags: []
-          }));          setInsights(transformedData);
+            return {
+              ...item,
+              locale: item.locale || 'en',
+              status: (item.status as Insight['status']) || 'published',
+              created_at: item.created_at || item.published_at || new Date().toISOString(),
+              updated_at: item.updated_at || item.published_at || new Date().toISOString(),
+              deleted_at: item.deleted_at || undefined,
+              author_id: singleAuthor?.id || item.author_id,
+              authors: singleAuthor,
+              property_types: singlePropertyType,
+              categories: singleCategory,
+              tags: item.tags || []
+            };
+          });setInsights(transformedData);
         }
       } catch (err) {
         console.error('Error fetching insights:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch insights');
+        setError('Failed to fetch insights. Please try again later.');
         setInsights([]);
       } finally {
         setLoading(false);
@@ -126,25 +134,33 @@ export const useInsight = (slug: string) => {
 
         if (error) {
           throw error;
-        }
+        }        if (data) {
+          // Transform single insight data (with type assertion for missing fields)
+          const item = data as any;
+          const singleAuthor = Array.isArray(item.authors) && item.authors.length > 0 
+            ? item.authors[0] 
+            : (item.authors && !Array.isArray(item.authors) ? item.authors : null);
+          
+          const singlePropertyType = Array.isArray(item.property_types) && item.property_types.length > 0 
+            ? item.property_types[0] 
+            : (item.property_types && !Array.isArray(item.property_types) ? item.property_types : null);
+          
+          const singleCategory = Array.isArray(item.categories) && item.categories.length > 0 
+            ? item.categories[0] 
+            : (item.categories && !Array.isArray(item.categories) ? item.categories : null);
 
-        if (data) {
           const transformedData: Insight = {
-            ...data,
-            property_type_id: data.property_type_id || undefined,
-            category_id: data.category_id || undefined,
-            author_id: (data as any).authors?.[0]?.id || undefined,
-            locale: 'en',
-            status: 'published' as const,
-            created_at: data.published_at || new Date().toISOString(),
-            updated_at: data.published_at || new Date().toISOString(),
-            deleted_at: undefined,
-            pages: undefined,
-            // Transform joined arrays to single objects
-            authors: Array.isArray((data as any).authors) && (data as any).authors.length > 0 ? (data as any).authors[0] : (data as any).authors,
-            property_types: Array.isArray((data as any).property_types) && (data as any).property_types.length > 0 ? (data as any).property_types[0] : (data as any).property_types,
-            categories: Array.isArray((data as any).categories) && (data as any).categories.length > 0 ? (data as any).categories[0] : (data as any).categories,
-            tags: []
+            ...item,
+            locale: item.locale || 'en',
+            status: (item.status as Insight['status']) || 'published',
+            created_at: item.created_at || item.published_at || new Date().toISOString(),
+            updated_at: item.updated_at || item.published_at || new Date().toISOString(),
+            deleted_at: item.deleted_at || undefined,
+            author_id: singleAuthor?.id || item.author_id,
+            authors: singleAuthor,
+            property_types: singlePropertyType,
+            categories: singleCategory,
+            tags: item.tags || []
           };
           setInsight(transformedData);
         }

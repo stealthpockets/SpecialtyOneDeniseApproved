@@ -10,8 +10,7 @@ export const transactions: Transaction[] = [
     sale_price: 3980000,
     latitude: 33.539170,
     longitude: -112.186000
-  },
-  {
+  },  {
     rank: 1,
     classification: 'RV',
     property: 'Sunland RV Park',
@@ -20,7 +19,8 @@ export const transactions: Transaction[] = [
     sale_price: 10750000,
     latitude: 32.692650,
     longitude: -114.628000
-  },  {
+  },
+  {
     rank: 1,
     classification: 'MH',
     property: 'White Sands Estates',
@@ -72,16 +72,15 @@ export const transactions: Transaction[] = [
     sale_price: 1100000,
     latitude: 38.581570,
     longitude: -121.494000
-  },
-  {
+  },  {
     rank: 1,
     classification: 'RV',
-    property: 'Del Pueblo RV Park',
-    address: 'Yuma, AZ',
+    property: 'Del Pueblo RV Park & Tennis Resort',
+    address: '14794 S Avenue 3 E, Yuma, AZ 85365',
     size_nrsf: 478,
     sale_price: 1370000,
-    latitude: 32.692650,
-    longitude: -114.628000
+    latitude: 32.61314915,
+    longitude: -114.58083055
   },
   {
     rank: 1,
@@ -156,16 +155,15 @@ export const transactions: Transaction[] = [
     sale_price: 10200000,
     latitude: 27.800580,
     longitude: -97.396400
-  },
-  {
+  },  {
     rank: 1,
     classification: 'RV',
     property: 'Las Quintas Oasis RV',
     address: 'Yuma, AZ',
     size_nrsf: 460,
     sale_price: 3785000,
-    latitude: 32.692650,
-    longitude: -114.628000
+    latitude: 32.693650, // Offset slightly north
+    longitude: -114.629000 // Offset slightly west
   },
   {
     rank: 1,
@@ -198,16 +196,15 @@ export const transactions: Transaction[] = [
     sale_price: 1600000,
     latitude: 38.661120,
     longitude: -96.493100
-  },
-  {
+  },  {
     rank: 1,
     classification: 'RV',
     property: 'Blue Sky RV Park',
     address: 'Yuma, AZ',
     size_nrsf: 252,
     sale_price: 350000,
-    latitude: 32.692650,
-    longitude: -114.628000
+    latitude: 32.694650, // Offset north
+    longitude: -114.627500 // Offset east
   },
   {
     rank: 1,
@@ -524,6 +521,65 @@ export const transactions: Transaction[] = [
     size_nrsf: 49,
     sale_price: 2209000,
     latitude: 32.879500,
-    longitude: -111.757000
+    longitude: -111.757000  },
+  {
+    rank: 1,
+    classification: 'RV',
+    property: 'Las Quintas Oasis RV Resort (55+)',
+    address: '10442 N Frontage Rd, Yuma, AZ 85365',
+    size_nrsf: 200,
+    sale_price: 3500000,
+    latitude: 32.671340,
+    longitude: -114.453740
+  },
+  {
+    rank: 1,
+    classification: 'RV',
+    property: 'Fortuna de Oro RV Resort (Yuma Foothills)',
+    address: '13650 N Frontage Rd, Yuma, AZ 85367',
+    size_nrsf: 150,
+    sale_price: 2800000,
+    latitude: 32.668310,
+    longitude: -114.398530
+  },
+  {
+    rank: 1,
+    classification: 'RV',
+    property: 'Blue Sky RV Resort',
+    address: '10247 S Frontage Rd, Yuma, AZ 85365',
+    size_nrsf: 180,
+    sale_price: 3200000,
+    latitude: 32.401217,
+    longitude: -114.272343
+  },
+  {
+    rank: 1,
+    classification: 'RV',
+    property: 'Caravan Oasis RV Resort (55+)',
+    address: '10500 N Frontage Rd, Yuma, AZ 85365',
+    size_nrsf: 220,
+    sale_price: 4100000,
+    latitude: 32.671270,
+    longitude: -114.449620
+  },
+  {
+    rank: 1,
+    classification: 'RV',
+    property: 'Arizona Sands RV Park (now Blue Sky Ranch RV Park)',
+    address: '5510 E 32nd St, Yuma, AZ 85365',
+    size_nrsf: 160,
+    sale_price: 2600000,
+    latitude: 32.670036,
+    longitude: -114.538219
+  },
+  {
+    rank: 1,
+    classification: 'RV',
+    property: 'Westward Village Mobile Home & RV Park',
+    address: '3300 S 8th Ave, Yuma, AZ 85365',
+    size_nrsf: 120,
+    sale_price: 1900000,
+    latitude: 32.66700,
+    longitude: -114.62990
   }
 ];

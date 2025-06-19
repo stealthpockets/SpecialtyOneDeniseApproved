@@ -111,16 +111,11 @@ const TrackRecordTransactionTable: React.FC<TransactionTableProps> = ({
       }
       
       return sortDirection === 'asc' ? comparison : -comparison;
-    });
-  }, [transactions, sortField, sortDirection, filterClassification, searchTerm]);
+    });  }, [transactions, sortField, sortDirection, filterClassification, searchTerm]);
   // Notify parent component when filtered data changes
   useEffect(() => {
     onFilteredDataChange?.(filteredAndSortedTransactions);  }, [filteredAndSortedTransactions, onFilteredDataChange]);
 
-  const formatPrice = (price?: number) => {
-    if (!price) return '—';
-    return `$${(price / 1000000).toFixed(2)}M`;
-  };
   const formatSize = (size?: number, classification?: string) => {
     if (!size) return '—';
     // For MH and RV, don't show size_nrsf as it represents units
@@ -150,14 +145,13 @@ const TrackRecordTransactionTable: React.FC<TransactionTableProps> = ({
       <ChevronUp className="w-4 h-4 text-plum" /> : 
       <ChevronDown className="w-4 h-4 text-plum" />;
   };
-
   return (
     <div className="bg-white rounded-xl shadow-card">
-      <div className="bg-gradient-to-r from-plum to-amethyst p-6 text-white">
+      <div className="bg-gradient-to-r from-sand to-cloud p-6 text-charcoal">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h2 className="text-2xl font-display font-bold mb-2">Transaction Details</h2>
-            <p className="text-sage-100 font-medium">
+            <p className="text-charcoal/80 font-medium">
               Showing {filteredAndSortedTransactions.length} of {transactions.length} completed transactions
             </p>
           </div>
@@ -165,27 +159,27 @@ const TrackRecordTransactionTable: React.FC<TransactionTableProps> = ({
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
               <input
                 type="text"
                 placeholder="Search properties..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-white/20 rounded-lg text-sm bg-white/10 backdrop-blur-sm text-white placeholder-white/70 focus:ring-2 focus:ring-white/30 focus:border-white/30 transition-all duration-300"
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm bg-white/80 backdrop-blur-sm text-charcoal placeholder-gray-500 focus:ring-2 focus:ring-plum focus:border-plum transition-all duration-300"
               />
             </div>
             
             {/* Filter */}
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500" />
               <select
                 value={filterClassification}
                 onChange={(e) => setFilterClassification(e.target.value)}
-                className="pl-10 pr-8 py-2 border border-white/20 rounded-lg text-sm bg-white/10 backdrop-blur-sm text-white focus:ring-2 focus:ring-white/30 focus:border-white/30 appearance-none transition-all duration-300"
+                className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg text-sm bg-white/80 backdrop-blur-sm text-charcoal focus:ring-2 focus:ring-plum focus:border-plum appearance-none transition-all duration-300"
               >
-                <option value="all" className="text-obsidian">All Types</option>
+                <option value="all" className="text-charcoal">All Types</option>
                 {Object.entries(CLASSIFICATION_MAP).map(([key, info]) => (
-                  <option key={key} value={key} className="text-obsidian">{info.label}</option>
+                  <option key={key} value={key} className="text-charcoal">{info.label}</option>
                 ))}
               </select>
             </div>

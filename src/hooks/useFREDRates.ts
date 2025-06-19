@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { MarketRatesData, MarketRate, FREDRateResponse, RateSeriesConfig, DisplayStrategy } from '../types/marketRates';
+import { performanceMonitor } from '../utils/performanceMonitor';
 
 // const FRED_API_BASE = 'https://api.stlouisfed.org/fred/series/observations'; // Commented out or remove
 const SUPABASE_FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fred-proxy`;
 const CACHE_KEY = 'specialty_one_market_rates_v3';
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours instead of 24 hours
+const STALE_WHILE_REVALIDATE = 30 * 60 * 1000; // 30 minutes for stale-while-revalidate
 
 // Enhanced CRE-focused rate series configuration
 const CRE_RATE_SERIES: RateSeriesConfig[] = [
@@ -154,22 +156,31 @@ export const useFREDRates = (enabled: boolean = true) => {
       setError(null);
 
 
-      try {
-        // Check cache first
+      try {        // Check cache first with stale-while-revalidate strategy
         const cachedData = localStorage.getItem(CACHE_KEY);
+        let shouldRefreshInBackground = false;
+        
         if (cachedData) {
           const parsedCache: MarketRatesData = JSON.parse(cachedData);
-          if (new Date().getTime() - new Date(parsedCache.lastFetched).getTime() < CACHE_DURATION) {
-
+          const cacheAge = new Date().getTime() - new Date(parsedCache.lastFetched).getTime();
+          
+          // If cache is fresh, use it immediately
+          if (cacheAge < CACHE_DURATION) {
             setRates(parsedCache);
             setLoading(false);
             return;
           }
-
-        }
-
-        // Fetch all rates from the proxy
-        const fetchedRateDetails = await fetchAllRatesFromProxy(CRE_RATE_SERIES);
+          
+          // If cache is stale but within revalidate window, use it but refresh in background
+          if (cacheAge < CACHE_DURATION + STALE_WHILE_REVALIDATE) {
+            setRates(parsedCache);
+            setLoading(false);
+            shouldRefreshInBackground = true;
+          }
+        }        // Fetch all rates from the proxy with performance tracking
+        const fetchedRateDetails = await performanceMonitor.trackApiCall('fred-rates-full', async () => {
+          return await fetchAllRatesFromProxy(CRE_RATE_SERIES);
+        });
         
         const newMarketRates: Record<string, MarketRate> = {};
         const now = new Date().toISOString();

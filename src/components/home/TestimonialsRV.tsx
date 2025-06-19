@@ -70,7 +70,7 @@ export const TestimonialsRV = () => {
         setTestimonials(formattedData);
       } catch (err) {
         console.error('Error fetching testimonials:', err);
-        setError(err instanceof Error ? err.message : 'Failed to fetch testimonials');
+        setError('Failed to fetch testimonials. Please try again later.');
         setTestimonials([]);
       } finally {
         setLoading(false);

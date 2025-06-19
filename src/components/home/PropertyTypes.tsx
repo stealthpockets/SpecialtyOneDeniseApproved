@@ -1,24 +1,23 @@
-import { Link } from 'react-router-dom';
 import { PropertyImage } from '../ui/CloudinaryImage';
 
 const propertyTypes = [
 	{
 		title: 'Manufactured Housing',
 		description: '$304M+ closed. No listings left behind.',
-		path: '/manufactured-housing',
-		image: '/dist/assets/property-types/manufactured-housing-community-investment.webp',
+		path: 'https://form.typeform.com/to/Isxy11zm',
+		image: 'manufactured-housing-community-investment.webp',
 	},
 	{
 		title: 'RV Parks & Outdoor Hospitality',
 		description: 'Seasonal or year-round, we optimize outcome.',
-		path: '/rv-parks',
-		image: '/dist/assets/property-types/rv-park-investment-opportunity.webp',
+		path: 'https://form.typeform.com/to/CpdFYMm6',
+		image: 'rv-park-investment-opportunity.webp',
 	},
 	{
 		title: 'Self-Storage',
 		description: '$721M+ sold. Led by our 25-year storage expert.',
-		path: '/self-storage',
-		image: '/dist/assets/property-types/self-storage-facility-investment.webp',
+		path: 'https://form.typeform.com/to/bWvmdW4G',
+		image: 'self-storage-facility-investment.webp',
 	},
 ];
 
@@ -42,9 +41,11 @@ export const PropertyTypes = () => {
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 					{propertyTypes.map((type, index) => (
-						<Link
-							to={type.path}
+						<a
+							href={type.path}
 							key={index}
+							target="_blank"
+							rel="noopener noreferrer"
 							className="group block animate-fade-in rounded-lg shadow-card overflow-hidden transition-all duration-300 hover:shadow-card-hover card-luxury-white"
 							style={{ animationDelay: `${0.2 * index}s` }}
 						>
@@ -57,20 +58,20 @@ export const PropertyTypes = () => {
 										className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
 									/>
 									{/* Enhanced sophisticated gradient overlay */}
-									<div className="absolute inset-0 bg-gradient-to-t from-obsidian/95 via-deep-purple/40 to-transparent"></div>
+									<div className="absolute inset-0 bg-gradient-to-t from-obsidian/90 via-obsidian/60 to-transparent"></div>
 
 									{/* Enhanced Content Overlay */}
-									<div className="absolute inset-0 content-padding flex flex-col justify-end text-white">
-										<h3 className="heading-sm mb-3 text-white">
+									<div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+										<h3 className="text-xl font-bold mb-2 text-white leading-tight">
 											{type.title}
 										</h3>
-										<p className="text-caption opacity-90 leading-relaxed">
+										<p className="text-sm opacity-95 leading-relaxed font-medium">
 											{type.description}
 										</p>
 									</div>
 								</div>
 							</div>
-						</Link>
+						</a>
 					))}
 				</div>
 			</div>

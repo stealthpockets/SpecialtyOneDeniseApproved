@@ -19,10 +19,6 @@ const PDFDownload: React.FC<PDFDownloadProps> = ({
   variant = 'card'
 }) => {
   const handleDownload = () => {
-    // Track download event (could be enhanced with analytics)
-    console.log('PDF download initiated:', pdfUrl);
-    
-    // Open PDF in new tab (browser will handle download)
     window.open(pdfUrl, '_blank');
   };
 

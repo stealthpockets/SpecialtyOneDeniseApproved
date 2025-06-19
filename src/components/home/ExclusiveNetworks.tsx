@@ -49,7 +49,7 @@ export const ExclusiveNetworks = () => {
             
             <div className="text-center">
               <Button 
-                to="/exclusive-buyers" 
+                to="https://form.typeform.com/to/B0GIZ1ht" 
                 variant="primary"
               >
                 Apply for Access
@@ -91,7 +91,7 @@ export const ExclusiveNetworks = () => {
             
             <div className="text-center">
               <Button 
-                to="/exclusive-sellers" 
+                to="https://form.typeform.com/to/I3hYeHFX" 
                 variant="primary"
               >
                 Request Confidential Sale

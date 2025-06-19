@@ -7,7 +7,7 @@
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   color: #000000 !important;
   line-height: 1.75;
-  font-size: 1.125rem;
+  font-size: 1.25rem !important; /* Increased from 1.125rem */
   letter-spacing: -0.01em;
   max-width: none;
 }
@@ -15,7 +15,7 @@
 /* Professional Heading Hierarchy */
 .markdown-content h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 2.5rem;
+  font-size: 2.75rem !important; /* Increased from 2.5rem */
   font-weight: 700;
   line-height: 1.2;
   margin-top: 3rem;
@@ -28,7 +28,7 @@
 
 .markdown-content h2 {
   font-family: 'Playfair Display', serif;
-  font-size: 2rem;
+  font-size: 2.25rem !important; /* Increased from 2rem */
   font-weight: 600;
   line-height: 1.3;
   margin-top: 2.5rem;
@@ -41,7 +41,7 @@
 
 .markdown-content h3 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.75rem !important; /* Increased from 1.5rem */
   font-weight: 600;
   line-height: 1.4;
   margin-top: 2rem;
@@ -52,7 +52,7 @@
 
 .markdown-content h4 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.5rem !important; /* Increased from 1.25rem */
   font-weight: 600;
   line-height: 1.4;
   margin-top: 1.75rem;
@@ -65,7 +65,7 @@
   margin-bottom: 1.75rem;
   line-height: 1.8;
   color: #000000 !important;
-  font-size: 1.125rem;
+  font-size: 1.25rem !important; /* Increased from 1.125rem */
   text-align: justify;
   hyphens: auto;
 }
@@ -164,6 +164,7 @@
   position: relative;
   padding-left: 0.5rem;
   color: #000000 !important;
+  font-size: 1.25rem !important; /* Added larger font size */
 }
 
 .markdown-content ul li::marker {
@@ -176,6 +177,7 @@
   line-height: 1.7;
   padding-left: 0.5rem;
   color: #000000 !important;
+  font-size: 1.25rem !important; /* Added larger font size */
 }
 
 .markdown-content ol li::marker {
@@ -203,7 +205,7 @@
   position: relative;
   font-style: italic;
   color: #4b5563;
-  font-size: 1.1rem;
+  font-size: 1.25rem !important; /* Increased from 1.1rem */
   line-height: 1.7;
 }
 
