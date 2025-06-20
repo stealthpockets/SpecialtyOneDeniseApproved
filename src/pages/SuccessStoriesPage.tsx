@@ -9,6 +9,7 @@ import { CloudinaryImage } from '../components/ui/CloudinaryImage';
 import { SocialShare } from '../components/ui/SocialShare';
 import { useCaseStudies } from '../hooks/useCaseStudies';
 import { CaseStudy } from '../types/caseStudy';
+import { LegalDisclaimer } from '../components/ui/LegalDisclaimer';
 
 const SuccessStoriesPage = () => {
   const { caseStudies, loading, error } = useCaseStudies();
@@ -296,6 +297,7 @@ const SuccessStoriesPage = () => {
           </div>
         </section>
       </div>
+      <LegalDisclaimer />
     </>
   );
 };

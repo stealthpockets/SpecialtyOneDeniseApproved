@@ -1,22 +1,23 @@
 import { PropertyImage } from '../ui/CloudinaryImage';
+import { Link } from 'react-router-dom';
 
 const propertyTypes = [
 	{
 		title: 'Manufactured Housing',
 		description: '$304M+ closed. No listings left behind.',
-		path: 'https://form.typeform.com/to/Isxy11zm',
+		path: '/manufactured-housing',
 		image: 'manufactured-housing-community-investment.webp',
 	},
 	{
 		title: 'RV Parks & Outdoor Hospitality',
 		description: 'Seasonal or year-round, we optimize outcome.',
-		path: 'https://form.typeform.com/to/CpdFYMm6',
+		path: '/rv-parks',
 		image: 'rv-park-investment-opportunity.webp',
 	},
 	{
 		title: 'Self-Storage',
 		description: '$721M+ sold. Led by our 25-year storage expert.',
-		path: 'https://form.typeform.com/to/bWvmdW4G',
+		path: '/self-storage',
 		image: 'self-storage-facility-investment.webp',
 	},
 ];
@@ -41,11 +42,9 @@ export const PropertyTypes = () => {
 
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-10">
 					{propertyTypes.map((type, index) => (
-						<a
-							href={type.path}
+					<Link
+							to={type.path}
 							key={index}
-							target="_blank"
-							rel="noopener noreferrer"
 							className="group block animate-fade-in rounded-lg shadow-card overflow-hidden transition-all duration-300 hover:shadow-card-hover card-luxury-white"
 							style={{ animationDelay: `${0.2 * index}s` }}
 						>
@@ -71,7 +70,7 @@ export const PropertyTypes = () => {
 									</div>
 								</div>
 							</div>
-						</a>
+						</Link>
 					))}
 				</div>
 			</div>

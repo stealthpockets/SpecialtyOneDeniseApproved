@@ -5,6 +5,7 @@ import { Badge } from '../components/ui/Badge';
 import { ProfileImage, CloudinaryImage } from '../components/ui/CloudinaryImage';
 import { InsightsByCategorySimple } from '../components/insights/InsightsByCategorySimple';
 import { SEOHead } from '../components/ui/SEOHead';
+import { LegalDisclaimer } from '../components/ui/LegalDisclaimer';
 
 const strategies = [
 	{
@@ -448,6 +449,7 @@ const ExchangePage = () => {
 				</div>
 			</section>
 			</div>
+			<LegalDisclaimer />
 		</>
 	);
 };

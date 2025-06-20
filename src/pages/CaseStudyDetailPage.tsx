@@ -6,6 +6,7 @@ import { CloudinaryImage } from '../components/ui/CloudinaryImage';
 import { CaseStudyTemplate } from '../components/case-studies/CaseStudyTemplate';
 import { useCaseStudy, useCaseStudies } from '../hooks/useCaseStudies';
 import { transformCaseStudy } from '../utils/dataTransformers';
+import { LegalDisclaimer } from '../components/ui/LegalDisclaimer';
 
 const CaseStudyDetailPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -152,6 +153,7 @@ const CaseStudyDetailPage = () => {
           </div>
         </section>
       )}
+      <LegalDisclaimer />
     </>
   );
 };

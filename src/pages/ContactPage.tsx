@@ -298,21 +298,76 @@ const ContactPage = () => {
 						How Can We Help You?
 					</h2>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-						{contactReasons.map((reason, index) => (
-							<Card
-								key={index}
-								className="text-center py-12 px-8 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300"
-							>
-								<CardContent>
-									<div className="text-6xl mb-6">{reason.icon}</div>
-									<h3 className="text-xl font-bold mb-4 text-luxury-dark">{reason.title}</h3>
-									<p className="text-luxury-dark/70 mb-6 leading-relaxed">{reason.description}</p>
+						{/* Selling Your Property */}
+						<Card className="text-center py-12 px-8 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300">
+							<CardContent>
+								<div className="text-6xl mb-6">🏘</div>
+								<h3 className="text-xl font-bold mb-4 text-luxury-dark">Selling Your Property</h3>
+								<p className="text-luxury-dark/70 mb-6 leading-relaxed">Get a confidential valuation and exit strategy consultation</p>
+								<a
+									href="https://form.typeform.com/to/NKQAZkUv"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="inline-block w-full"
+								>
 									<Button variant="outline" size="lg" className="w-full">
-										{reason.cta}
+										Request Valuation
 									</Button>
-								</CardContent>
-							</Card>
-						))}
+								</a>
+							</CardContent>
+						</Card>
+						{/* Looking to Buy */}
+						<Card className="text-center py-12 px-8 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300">
+							<CardContent>
+								<div className="text-6xl mb-6">🔍</div>
+								<h3 className="text-xl font-bold mb-4 text-luxury-dark">Looking to Buy</h3>
+								<p className="text-luxury-dark/70 mb-6 leading-relaxed">Access our exclusive off-market listings and buyer network</p>
+								<a
+									href="https://form.typeform.com/to/B0GIZ1ht"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="inline-block w-full"
+								>
+									<Button variant="outline" size="lg" className="w-full">
+										Join Buyer Network
+									</Button>
+								</a>
+							</CardContent>
+						</Card>
+						{/* 1031 Exchange Planning */}
+						<Card className="text-center py-12 px-8 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300">
+							<CardContent>
+								<div className="text-6xl mb-6">🔁</div>
+								<h3 className="text-xl font-bold mb-4 text-luxury-dark">1031 Exchange Planning</h3>
+								<p className="text-luxury-dark/70 mb-6 leading-relaxed">Strategic tax-deferred exchange consultation and execution</p>
+								<a
+									href="https://form.typeform.com/to/oX1bWHD5"
+									target="_blank"
+									rel="noopener noreferrer"
+									className="inline-block w-full"
+								>
+									<Button variant="outline" size="lg" className="w-full">
+										Plan Exchange
+									</Button>
+								</a>
+							</CardContent>
+						</Card>
+						{/* Market Intelligence */}
+						<Card className="text-center py-12 px-8 bg-gradient-subtle backdrop-blur-sm border border-luxury-light/20 hover:bg-white/80 transition-all duration-300">
+							<CardContent>
+								<div className="text-6xl mb-6">📊</div>
+								<h3 className="text-xl font-bold mb-4 text-luxury-dark">Market Intelligence</h3>
+								<p className="text-luxury-dark/70 mb-6 leading-relaxed">Custom research and market analysis for your investment decisions</p>
+								<a
+									href="/market-reports"
+									className="inline-block w-full"
+								>
+									<Button variant="outline" size="lg" className="w-full">
+										Request Research
+									</Button>
+								</a>
+							</CardContent>
+						</Card>
 					</div>
 				</div>
 			</section>
@@ -463,12 +518,12 @@ const ContactPage = () => {
 										>
 											Property Type of Interest
 										</label>
-										<select
+<select
 											id="propertyType"
 											name="property_type"
 											value={formData.property_type}
 											onChange={handleInputChange}
-											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-black placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
 												getFieldError('property_type') ? 'border-red-500/50' : 'border-white/30'
 											}`}
 										>
@@ -489,13 +544,13 @@ const ContactPage = () => {
 										>
 											Reason for Inquiry *
 										</label>
-										<select
+<select
 											id="inquiryType"
 											name="inquiry_type"
 											required
 											value={formData.inquiry_type}
 											onChange={handleInputChange}
-											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-black placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
 												getFieldError('inquiry_type') ? 'border-red-500/50' : 'border-white/30'
 											}`}
 										>
@@ -570,26 +625,12 @@ const ContactPage = () => {
 									</div>
 								</div>
 
-								{/* File Upload */}
-								<div className="mb-6">
-									<label htmlFor="attachment" className="block text-sm font-medium text-gray-700 mb-2">
-										Attach a File (Optional)
-									</label>
-									<input
-										type="file"
-										name="attachment"
-										id="attachment"
-										onChange={handleFileChange}
-										className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-shadow duration-200 ease-in-out shadow-sm"
-									/>
-									<p className="text-xs text-gray-500 mt-2">Max file size: 5MB. Allowed types: PDF, PNG, JPG.</p>
-								</div>
 
 								<div className="mt-8">
-									<button
+<button
 										type="submit"
 										disabled={isSubmitting}
-										className="w-full flex items-center justify-center text-lg py-4 bg-gradient-to-r from-luxury-accent via-plum to-luxury-accent text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+										className="w-full flex items-center justify-center text-lg py-4 bg-gradient-to-r from-purple-900 to-plum-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden after:content-[''] after:absolute after:top-0 after:right-0 after:w-1/3 after:h-full after:border-r-2 after:border-plum-400 after:rounded-r-xl"
 									>
 										{isSubmitting ? (
 											<>

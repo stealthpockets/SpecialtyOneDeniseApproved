@@ -92,11 +92,27 @@ export const SEOHead = ({
       "addressRegion": "AZ",
       "addressCountry": "US"
     },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+1-602-697-8868",
-      "contactType": "customer service"
-    },
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "name": "Andrew Warner, CCIM",
+        "telephone": "+1-602-703-7308",
+        "contactType": "President | Manufactured Housing & RV Resorts",
+        "email": "andrew@specialtyone.com"
+      },
+      {
+        "@type": "ContactPoint",
+        "name": "Denise Nunez",
+        "telephone": "+1-602-697-8868",
+        "contactType": "President | Nunez Storage Group",
+        "email": "Denise@SpecialtyOne.com"
+      },
+      {
+        "@type": "ContactPoint",
+        "telephone": "+1-602-730-9967",
+        "contactType": "Office"
+      }
+    ],
     "sameAs": [
       "https://www.linkedin.com/company/specialty-one",
       "https://www.facebook.com/specialtyone",
@@ -115,11 +131,11 @@ export const SEOHead = ({
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       
       {/* Open Graph Tags */}
-      <meta property="og:title" content={cleanTitle} />
-      <meta property="og:description" content={cleanDescription} />
-      <meta property="og:image" content={imageUrl} />
-      <meta property="og:url" content={currentUrl} />
-      <meta property="og:type" content={type} />
+      <meta property="og:title" content="Specialty One | Experts in RV Parks, MHPs & Self-Storage Sales" />
+      <meta property="og:description" content="Trusted investment brokerage for RV Parks, Mobile Home Parks, and Self-Storage nationwide." />
+      <meta property="og:image" content="https://www.specialtyone.com/og-image.jpg" />
+      <meta property="og:url" content="https://www.specialtyone.com" />
+      <meta property="og:type" content="website" />
       <meta property="og:site_name" content={siteTitle} />
         {/* Twitter Card Tags */}
       <meta name="twitter:card" content="summary_large_image" />

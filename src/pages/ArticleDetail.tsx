@@ -11,6 +11,7 @@ import { useInsights } from '../hooks/useInsights';
 import { useMarketReports } from '../hooks/useMarketReports';
 import { supabase } from '../lib/supabase';
 import '../styles/markdown-content.css';
+import { LegalDisclaimer } from '../components/ui/LegalDisclaimer';
 
 interface ArticleDetailProps {
   type: 'insights' | 'market_reports';
@@ -513,6 +514,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
             <ArrowUp size={20} className="hidden md:block" />
           </button>
         )}
+        <LegalDisclaimer />
       </div>
     </>
   );

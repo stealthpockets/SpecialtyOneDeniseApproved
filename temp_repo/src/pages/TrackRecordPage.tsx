@@ -24,8 +24,11 @@ const TrackRecordPage: React.FC = () => {
       <Helmet>
         <title>Track Record | Specialty One Investment Brokerage</title>
         <meta name="description" content="Explore our track record in specialized commercial real estate transactions. Mobile homes, RV parks, and self-storage properties nationwide." />
-        <meta property="og:title" content="Track Record | Specialty One Investment Brokerage" />
-        <meta property="og:description" content="Explore our track record in specialized commercial real estate transactions. Mobile homes, RV parks, and self-storage properties nationwide." />
+        <meta property="og:title" content="Recent Closings: RV Parks, MHPs & Self-Storage | Specialty One" />
+        <meta property="og:description" content="Explore our successful transaction history in niche CRE investments." />
+        <meta property="og:image" content="https://www.specialtyone.com/deal-summary.jpg" />
+        <meta property="og:url" content="https://www.specialtyone.com/track-record" />
+        <meta property="og:type" content="website" />
         <meta name="twitter:title" content="Track Record | Specialty One Investment Brokerage" />
         <meta name="twitter:description" content="Explore our track record in specialized commercial real estate transactions. Mobile homes, RV parks, and self-storage properties nationwide." />
       </Helmet>
@@ -86,6 +89,29 @@ const TrackRecordPage: React.FC = () => {
           </div>
         </section>
       </div>
+
+      <script type="application/ld+json">
+        {`
+        {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": "Recent Transactions - Specialty One",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "url": "https://www.specialtyone.com/track-record/deal-1"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "url": "https://www.specialtyone.com/track-record/deal-2"
+            }
+            // Add more deals as needed
+          ]
+        }
+        `}
+      </script>
     </>
   );
 };

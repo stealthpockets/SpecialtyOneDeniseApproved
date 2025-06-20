@@ -11,6 +11,20 @@ import { SimpleChartProcessor } from '../lib/simpleChartProcessor';
 import PDFDownload from '../components/PDFDownload';
 import '../styles/markdown-content.css';
 
+// Define the expected data type for Supabase response
+interface ArticleData {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  summary: string;
+  published_at: string;
+  image_url?: string;
+  pdf_url?: string;
+  reading_time?: number;
+  author_id?: string;
+}
+
 interface ArticleDetailProps {
   type: 'insights' | 'market_reports';
 }
@@ -21,10 +35,10 @@ interface Article {
   title: string;
   content: string;
   summary: string;
-  published_at: string;
   image_url?: string;
-  pdf_url?: string;
+  published_at: string;
   reading_time?: number;
+  pdf_url?: string;
   authors: {
     name: string;
     avatar_url?: string;
@@ -80,11 +94,15 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
     window.scrollTo(0, 0);
   }, [slug]);
 
+  const typeUrl = type === 'insights' ? 'insights' : 'market-reports';
+  const pageTitle = type === 'insights' ? 'Insights' : 'Market Reports';
+
   useEffect(() => {
     const fetchArticle = async () => {
       if (!slug) return;
 
-      try {        const { data, error } = await supabase
+      try {
+        const { data, error } = await supabase
           .from(type)
           .select(`
             id,
@@ -100,31 +118,34 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
           `)
           .eq('slug', slug)
           .eq('status', 'published')
-          .single();if (error) {
+          .single();
+        if (error || !data) {
           setError('Article not found');
           return;
         }
 
+        // At this point, data is ArticleData
+        const articleData = data as unknown as ArticleData;
         // Fetch author separately if author_id exists
         let authors = null;
-        if (data.author_id) {
+        if (articleData.author_id) {
           const { data: authorData } = await supabase
             .from('authors')
             .select('name, avatar_url')
-            .eq('id', data.author_id)
+            .eq('id', articleData.author_id)
             .single();
-          
           if (authorData) {
             authors = { name: authorData.name, avatar_url: authorData.avatar_url };
           }
-        }        const transformedData: Article = {
-          ...data,
-          pdf_url: data.pdf_url || undefined, // Handle optional pdf_url
+        }
+        const transformedData: Article = {
+          ...articleData,
+          pdf_url: articleData.pdf_url || undefined, // Handle optional pdf_url
           authors
         };
 
         setArticle(transformedData);
-        fetchRelatedArticles(data.id);
+        fetchRelatedArticles(articleData.id);
       } catch (err) {
         setError('Failed to load article');
       } finally {
@@ -222,17 +243,16 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
     return (
       <div className="min-h-screen bg-sand flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>          <Link to={`/${typeUrl}`} className="text-plum hover:underline">
+          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
+          <Link to={`/${typeUrl}`} className="text-plum hover:underline">
             Back to {type === 'insights' ? 'Insights' : 'Market Reports'}
           </Link>
         </div>
       </div>
     );
   }
+
   const shareUrl = window.location.href;
-  const pageTitle = type === 'insights' ? 'Insights' : 'Market Reports';
-  const typeUrl = type === 'insights' ? 'insights' : 'market-reports';
-  
   // Default fallback image
   const defaultImage = '/assets/property-types/manufactured-housing-community-investment.webp';
   const articleImage = article.image_url || defaultImage;
@@ -242,9 +262,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
       <Helmet>
         <title>{article.title} - Specialty One</title>
         <meta name="description" content={article.summary} />
-        <meta property="og:title" content={article.title} />
+        <meta property="og:title" content={`${article.title} | RV Park & MHP Insights - Specialty One`} />
         <meta property="og:description" content={article.summary} />
-        <meta property="og:image" content={articleImage} />
+        <meta property="og:image" content={article.image_url || defaultImage} />
         <meta property="og:url" content={shareUrl} />
         <meta property="og:type" content="article" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -253,7 +273,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
       <div className="min-h-screen bg-sand">
         {/* Professional Breadcrumb Navigation */}
         <nav className="bg-navy border-b border-gray-700">
-          <div className="container-custom px-4 sm:px-6 lg:px-8 py-3 md:py-4">            <div className="flex items-center text-xs sm:text-sm text-gray-300">
+          <div className="container-custom px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+            <div className="flex items-center text-xs sm:text-sm text-gray-300">
               <Link to="/" className="hover:text-sage transition-colors">
                 Home
               </Link>
@@ -266,9 +287,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                 {article.title}
               </span>
             </div>
-            
             {/* Integrated Back Navigation */}
-            <Link 
+            <Link
               to={`/${typeUrl}`}
               className="inline-flex items-center gap-2 mt-2 md:mt-3 text-sage hover:text-white transition-colors font-medium text-sm md:text-base"
             >
@@ -282,20 +302,18 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
         {/* Main Content Grid */}
         <div className="container-custom px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-8 py-4 md:py-8 lg:py-16">
-            
             {/* Article Content - Main Column */}
             <article className="lg:col-span-8 xl:col-span-9 order-first">
               {/* Article Header */}
-              <header className="mb-6 md:mb-8 lg:mb-12">                {/* Article Title */}
+              <header className="mb-6 md:mb-8 lg:mb-12">
+                {/* Article Title */}
                 <h1 className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 lg:mb-8 text-gray-900" style={{ lineHeight: '1.4' }}>
                   {article.title}
                 </h1>
-                
                 {/* Article Summary */}
                 <div className="text-base md:text-lg lg:text-xl text-gray-700 mb-6 md:mb-8 leading-relaxed max-w-3xl">
                   {article.summary}
                 </div>
-                
                 {/* Article Meta */}
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 md:gap-6 text-sm md:text-base text-gray-600 mb-6 md:mb-8 pb-4 md:pb-6 lg:pb-8 border-b border-gray-200">
                   <div className="flex items-center gap-2">
@@ -306,10 +324,10 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   <div className="flex items-center gap-2">
                     <Calendar size={16} className="sm:hidden text-plum" />
                     <Calendar size={18} className="hidden sm:block text-plum" />
-                    <span>{new Date(article.published_at).toLocaleDateString('en-US', { 
-                      year: 'numeric', 
-                      month: window.innerWidth < 640 ? 'short' : 'long', 
-                      day: 'numeric' 
+                    <span>{new Date(article.published_at).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: window.innerWidth < 640 ? 'short' : 'long',
+                      day: 'numeric'
                     })}</span>
                   </div>
                   {article.reading_time && (
@@ -320,7 +338,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     </div>
                   )}
                 </div>
-
                 {/* Featured Image */}
                 <div className="relative mb-6 md:mb-8 lg:mb-12">
                   <img
@@ -336,16 +353,16 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     }}
                   />
                 </div>
-              </header>              {/* Professional Article Content with Enhanced Styling and Chart Integration */}
+              </header>
+              {/* Professional Article Content with Enhanced Styling and Chart Integration */}
               <div className="markdown-content mb-8 md:mb-12 lg:mb-16">
                 {chartProcessor ? (
                   (() => {
-                    const result = chartProcessor.processContent(article.content.replace(/\\n/g, '\n'));
-                    
+                    const result = chartProcessor.processContent(article.content.replace(/\n/g, '\n'));
                     if (!result.hasCharts) {
                       // No charts, use regular ReactMarkdown
                       return (
-                        <ReactMarkdown 
+                        <ReactMarkdown
                           remarkPlugins={[remarkGfm]}
                           components={{
                             table: ({ children, ...props }) => (
@@ -355,14 +372,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                             ),
                           }}
                         >
-                          {article.content.replace(/\\n/g, '\n')}
+                          {article.content.replace(/\n/g, '\n')}
                         </ReactMarkdown>
                       );
                     }
-
                     // Process content with charts
                     const segments = chartProcessor.splitContentWithCharts(result.content, result.chartComponents);
-                    
                     return (
                       <>
                         {segments.map((segment: any) => {
@@ -370,7 +385,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                             return <div key={segment.key}>{segment.component}</div>;
                           } else {
                             return (
-                              <ReactMarkdown 
+                              <ReactMarkdown
                                 key={segment.key}
                                 remarkPlugins={[remarkGfm]}
                                 components={{
@@ -391,7 +406,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   })()
                 ) : (
                   // Fallback while charts are loading
-                  <ReactMarkdown 
+                  <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
                     components={{
                       table: ({ children, ...props }) => (
@@ -401,11 +416,10 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                       ),
                     }}
                   >
-                    {article.content.replace(/\\n/g, '\n')}
+                    {article.content.replace(/\n/g, '\n')}
                   </ReactMarkdown>
                 )}
               </div>
-
               {/* PDF Download Section */}
               {article.pdf_url && (
                 <PDFDownload
@@ -415,7 +429,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   className="mb-8 md:mb-12 lg:mb-16"
                 />
               )}
-
               {/* Professional CTA Section */}
               <div className="bg-gradient-to-br from-plum/5 to-amethyst/5 rounded-xl md:rounded-2xl p-6 md:p-8 lg:p-10 mb-8 md:mb-12 lg:mb-16 border border-plum/10">
                 <div className="text-center max-w-2xl mx-auto">
@@ -426,14 +439,14 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     Get expert insights and access to our exclusive network of pre-market opportunities in manufactured housing, RV parks, and self-storage.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-                    <Link 
-                      to="/contact" 
+                    <Link
+                      to="/contact"
                       className="px-6 sm:px-8 py-3 md:py-4 min-h-[44px] bg-gradient-to-r from-plum to-amethyst text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105 text-center flex items-center justify-center"
                     >
                       Schedule Consultation
                     </Link>
-                    <Link 
-                      to="/exclusive-buyer-network" 
+                    <Link
+                      to="/exclusive-buyer-network"
                       className="px-6 sm:px-8 py-3 md:py-4 min-h-[44px] border-2 border-plum text-plum font-semibold rounded-lg hover:bg-plum hover:text-white transition-all duration-300 text-center flex items-center justify-center"
                     >
                       Join Buyer Network
@@ -441,13 +454,13 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   </div>
                 </div>
               </div>
-
               {/* Social Sharing */}
               <div className="border-t border-gray-200 pt-6 md:pt-8 mb-8 md:mb-12">
                 <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
                   <div className="w-full md:w-auto">
                     <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">Share this article</h3>
-                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4">                      <TwitterShareButton url={shareUrl} title={article.title}>
+                    <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+                      <TwitterShareButton url={shareUrl} title={article.title}>
                         <div className="px-4 sm:px-6 py-3 min-h-[44px] border-2 border-gray-300 text-gray-700 hover:border-plum hover:text-plum transition-all duration-200 rounded-lg font-medium text-sm md:text-base w-full sm:w-auto text-center cursor-pointer">
                           Share on Twitter
                         </div>
@@ -462,22 +475,21 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                 </div>
               </div>
             </article>
-
             {/* Sidebar - Secondary Column */}
             <aside className="lg:col-span-4 xl:col-span-3 order-last lg:order-none">
               <div className="lg:sticky lg:top-[5.5rem] space-y-4 md:space-y-6 lg:space-y-8">
-                
                 {/* Quick Navigation */}
                 <div className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-sm border border-gray-200">
                   <h3 className="font-display text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4">Quick Navigation</h3>
-                  <div className="space-y-2 md:space-y-3">                    <Link 
+                  <div className="space-y-2 md:space-y-3">
+                    <Link
                       to={`/${typeUrl}`}
                       className="flex items-center gap-2 text-gray-600 hover:text-plum transition-colors text-sm md:text-base min-h-[44px] md:min-h-auto py-2 md:py-0"
                     >
                       <ArrowLeft size={16} />
                       Back to {pageTitle}
                     </Link>
-                    <button 
+                    <button
                       onClick={scrollToTop}
                       className="flex items-center gap-2 text-gray-600 hover:text-plum transition-colors w-full text-left text-sm md:text-base min-h-[44px] md:min-h-auto py-2 md:py-0"
                     >
@@ -486,7 +498,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     </button>
                   </div>
                 </div>
-
                 {/* Article Info */}
                 <div className="bg-white rounded-lg md:rounded-xl p-4 md:p-6 shadow-sm border border-gray-200">
                   <h3 className="font-display text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4">Article Details</h3>
@@ -511,13 +522,13 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                     </div>
                   </div>
                 </div>
-
                 {/* Contact CTA */}
                 <div className="bg-gradient-to-br from-plum to-amethyst rounded-lg md:rounded-xl p-4 md:p-6 text-white">
                   <h3 className="font-display text-base md:text-lg font-bold mb-2 md:mb-3">Need Expert Guidance?</h3>
                   <p className="text-plum-100 mb-3 md:mb-4 text-xs md:text-sm leading-relaxed">
                     Get personalized insights for your specific investment goals.
-                  </p>                  <Link 
+                  </p>
+                  <Link
                     to="/contact"
                     className="w-full text-center py-3 min-h-[44px] bg-white text-plum font-semibold rounded-lg hover:bg-gray-50 transition-colors text-sm md:text-base flex items-center justify-center"
                   >
@@ -527,7 +538,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
               </div>
             </aside>
           </div>
-
           {/* Related Articles */}
           {relatedArticles.length > 0 && (
             <section className="border-t border-gray-200 pt-8 md:pt-12 lg:pt-16 pb-8 md:pb-12 lg:pb-16">
@@ -536,8 +546,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
                   Related Articles
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-                  {relatedArticles.map((related) => (                    <Link 
-                      key={related.id} 
+                  {relatedArticles.map((related) => (
+                    <Link
+                      key={related.id}
                       to={`/${typeUrl}/${related.slug}`}
                       className="block group"
                     >
@@ -580,7 +591,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
             </section>
           )}
         </div>
-
         {/* Floating Back to Top Button */}
         {showScrollTop && (
           <button
@@ -593,6 +603,32 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ type }) => {
           </button>
         )}
       </div>
+      {/* Structured Data - Article Schema */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: article.title,
+          author: {
+            '@type': 'Organization',
+            name: 'Specialty One Investment Brokerage',
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'Specialty One',
+            logo: {
+              '@type': 'ImageObject',
+              url: 'https://www.specialtyone.com/logo.png',
+            },
+          },
+          datePublished: new Date(article.published_at).toISOString(),
+          description: article.summary,
+          mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': shareUrl,
+          },
+        })}
+      </script>
     </>
   );
 };
