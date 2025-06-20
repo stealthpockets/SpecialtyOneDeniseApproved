@@ -18,7 +18,7 @@ const teamMembers = [
 			'RV Parks & Outdoor Hospitality',
 			'1031 Exchange Strategy',
 		],
-		image: '/dist/assets/Leadership/andrew-headshot-image.webp',
+		image: 'https://res.cloudinary.com/du4bjp4am/image/upload/v1749676312/andrew-headshot-image_fzmfgj.webp',
 		bio: 'Andrew leads our MH and RV practice with deep expertise in complex transactions. His track record includes $304M+ in closings with a 100% success rate on exclusive listings.',
 	},
 	{
@@ -27,7 +27,7 @@ const teamMembers = [
 		phone: '602-697-8868',
 		email: 'denise@specialtyone.com',
 		specialties: ['Self-Storage Facilities', 'Climate-Controlled Operations', 'Value-Add Positioning'],
-		image: '/dist/assets/Leadership/denise-nunez-self-storage.webp',
+		image: 'https://res.cloudinary.com/du4bjp4am/image/upload/v1749676315/denise-nunez-self-storage_oylilw.webp',
 		bio: "Denise brings 25+ years of self-storage expertise to every transaction. She's led $721M+ in storage deals and understands the operational nuances that drive value.",
 	},
 ];
@@ -84,22 +84,21 @@ const faqs = [
 
 const ContactPage = () => {
 	const [formData, setFormData] = useState({
-		first_name: '',
-		last_name: '',
+		firstName: '',
+		lastName: '',
 		email: '',
 		phone: '',
 		company: '',
-		property_type: '',
-		inquiry_type: '',
+		propertyType: '',
+		inquiryType: '',
 		message: '',
-		preferred_contact: 'email' as 'email' | 'phone',
+		preferredContact: 'email' as 'email' | 'phone',
 	});
 
 	const [isSubmitted, setIsSubmitted] = useState(false);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
 	const [submitError, setSubmitError] = useState<string>('');
-	const [file, setFile] = useState<File | null>(null);
 
 	// Enforce HTTPS on component mount
 	useEffect(() => {
@@ -108,39 +107,21 @@ const ContactPage = () => {
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
 		const { name, value } = e.target;
-		
-		// Clear validation errors for this field
-		setValidationErrors(prev => prev.filter(error => error.field !== name));
+		// Map snake_case to camelCase for legacy support
+		const nameMap: Record<string, string> = {
+			first_name: 'firstName',
+			last_name: 'lastName',
+			property_type: 'propertyType',
+			inquiry_type: 'inquiryType',
+			preferred_contact: 'preferredContact',
+		};
+		const key = nameMap[name] || name;
+		setValidationErrors(prev => prev.filter(error => error.field !== key));
 		setSubmitError('');
-		
 		setFormData((prev) => ({
 			...prev,
-			[name]: value,
+			[key]: value,
 		}));
-	};
-
-	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const selectedFile = e.target.files?.[0];
-		if (selectedFile) {
-			// Validate file type and size
-			const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-			const maxSize = 5 * 1024 * 1024; // 5MB
-
-			if (!allowedTypes.includes(selectedFile.type)) {
-				setSubmitError('Invalid file type. Please upload a PDF, JPG, or PNG.');
-				setFile(null);
-				return;
-			}
-
-			if (selectedFile.size > maxSize) {
-				setSubmitError('File size exceeds 5MB. Please upload a smaller file.');
-				setFile(null);
-				return;
-			}
-
-			setFile(selectedFile);
-			setSubmitError('');
-		}
 	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -152,6 +133,7 @@ const ContactPage = () => {
 		try {
 			// Check rate limiting
 			const rateLimitCheck = RateLimiter.canSubmit();
+			console.log('Rate limit check:', rateLimitCheck);
 			if (!rateLimitCheck.allowed) {
 				setSubmitError(rateLimitCheck.message || 'Too many submissions');
 				return;
@@ -159,6 +141,7 @@ const ContactPage = () => {
 
 			// Validate form data
 			const validation = FormValidator.validateContactForm(formData);
+			console.log('Validation result:', validation);
 			if (!validation.isValid) {
 				setValidationErrors(validation.errors);
 				setSubmitError('Please correct the errors below');
@@ -166,42 +149,50 @@ const ContactPage = () => {
 			}
 
 			// Check if we're in a secure context
+			console.log('Is secure context:', SecurityEnforcer.isSecureContext());
 			if (!SecurityEnforcer.isSecureContext()) {
 				setSubmitError('This form requires a secure connection. Please ensure you\'re using HTTPS.');
 				return;
 			}
 
 			// Prevent sensitive data storage
+			console.log('Sanitized data for storage:', validation.sanitizedData);
 			if (!SecurityEnforcer.preventSensitiveStorage(validation.sanitizedData)) {
 				setSubmitError('Invalid data detected. Please review your submission.');
 				return;
 			}
 
-			let attachmentUrl = '';
-			if (file) {
-				const formData = new FormData();
-				formData.append('attachment', file);
+			// Only send fields that exist in the table
+			const {
+				firstName,
+				lastName,
+				email,
+				phone,
+				company,
+				message,
+				propertyType,
+				inquiryType,
+				preferredContact
+			} = validation.sanitizedData;
 
-				const response = await fetch('/api/secure-file-upload', {
-					method: 'POST',
-					body: formData,
-				});
+			// Map camelCase to snake_case for backend compatibility
+			const submissionDataSnake = {
+				first_name: firstName,
+				last_name: lastName,
+				email,
+				phone,
+				company,
+				message,
+				property_type: propertyType,
+				inquiry_type: inquiryType,
+				preferred_contact: preferredContact
+			};
 
-				if (!response.ok) {
-					const { error } = await response.json();
-					throw new Error(error || 'File upload failed.');
-				}
-
-				const { publicUrl } = await response.json();
-				attachmentUrl = publicUrl;
-			}
-
-			// Submit to Supabase with attachment URL
-			await submitContactForm({ ...validation.sanitizedData, attachment_url: attachmentUrl } as ContactFormData);
-			
+			console.log('Submitting to Supabase:', submissionDataSnake);
+			await submitContactForm(submissionDataSnake as ContactFormData);
+			console.log('Submission to Supabase successful');
 			// Record submission for rate limiting
 			RateLimiter.recordSubmission();
-			
 			setIsSubmitted(true);
 		} catch (error) {
 			console.error('Form submission error:', error);
@@ -391,61 +382,42 @@ const ContactPage = () => {
 							<form onSubmit={handleSubmit} className="space-y-6">
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 									<div>
-										<label
-											htmlFor="firstName"
-											className="block text-white/90 font-medium mb-3"
-										>
-											First Name *
-										</label>
+										<label htmlFor="firstName" className="block text-white/90 font-medium mb-3">First Name *</label>
 										<input
 											type="text"
 											id="firstName"
-											name="first_name"
+											name="firstName"
 											required
 											maxLength={100}
-											value={formData.first_name}
+											value={formData.firstName}
 											onChange={handleInputChange}
-											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-												getFieldError('first_name') ? 'border-red-500/50' : 'border-white/30'
-											}`}
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${getFieldError('firstName') ? 'border-red-500/50' : 'border-white/30'}`}
 										/>
-										{getFieldError('first_name') && (
-											<p className="mt-2 text-red-300 text-sm">{getFieldError('first_name')}</p>
+										{getFieldError('firstName') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('firstName')}</p>
 										)}
 									</div>
 									<div>
-										<label
-											htmlFor="lastName"
-											className="block text-white/90 font-medium mb-3"
-										>
-											Last Name *
-										</label>
+										<label htmlFor="lastName" className="block text-white/90 font-medium mb-3">Last Name *</label>
 										<input
 											type="text"
 											id="lastName"
-											name="last_name"
+											name="lastName"
 											required
 											maxLength={100}
-											value={formData.last_name}
+											value={formData.lastName}
 											onChange={handleInputChange}
-											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-												getFieldError('last_name') ? 'border-red-500/50' : 'border-white/30'
-											}`}
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${getFieldError('lastName') ? 'border-red-500/50' : 'border-white/30'}`}
 										/>
-										{getFieldError('last_name') && (
-											<p className="mt-2 text-red-300 text-sm">{getFieldError('last_name')}</p>
+										{getFieldError('lastName') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('lastName')}</p>
 										)}
 									</div>
 								</div>
 
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 									<div>
-										<label
-											htmlFor="email"
-											className="block text-white/90 font-medium mb-3"
-										>
-											Email Address *
-										</label>
+										<label htmlFor="email" className="block text-white/90 font-medium mb-3">Email Address *</label>
 										<input
 											type="email"
 											id="email"
@@ -454,21 +426,14 @@ const ContactPage = () => {
 											maxLength={255}
 											value={formData.email}
 											onChange={handleInputChange}
-											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-												getFieldError('email') ? 'border-red-500/50' : 'border-white/30'
-											}`}
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${getFieldError('email') ? 'border-red-500/50' : 'border-white/30'}`}
 										/>
 										{getFieldError('email') && (
 											<p className="mt-2 text-red-300 text-sm">{getFieldError('email')}</p>
 										)}
 									</div>
 									<div>
-										<label
-											htmlFor="phone"
-											className="block text-white/90 font-medium mb-3"
-										>
-											Phone Number
-										</label>
+										<label htmlFor="phone" className="block text-white/90 font-medium mb-3">Phone Number</label>
 										<input
 											type="tel"
 											id="phone"
@@ -477,9 +442,7 @@ const ContactPage = () => {
 											maxLength={20}
 											value={formData.phone}
 											onChange={handleInputChange}
-											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-												getFieldError('phone') ? 'border-red-500/50' : 'border-white/30'
-											}`}
+											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${getFieldError('phone') ? 'border-red-500/50' : 'border-white/30'}`}
 										/>
 										{getFieldError('phone') && (
 											<p className="mt-2 text-red-300 text-sm">{getFieldError('phone')}</p>
@@ -488,12 +451,7 @@ const ContactPage = () => {
 								</div>
 
 								<div>
-									<label
-										htmlFor="company"
-										className="block text-white/90 font-medium mb-3"
-									>
-										Company/Organization
-									</label>
+									<label htmlFor="company" className="block text-white/90 font-medium mb-3">Company/Organization</label>
 									<input
 										type="text"
 										id="company"
@@ -501,9 +459,7 @@ const ContactPage = () => {
 										maxLength={200}
 										value={formData.company}
 										onChange={handleInputChange}
-										className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-											getFieldError('company') ? 'border-red-500/50' : 'border-white/30'
-										}`}
+										className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${getFieldError('company') ? 'border-red-500/50' : 'border-white/30'}`}
 									/>
 									{getFieldError('company') && (
 										<p className="mt-2 text-red-300 text-sm">{getFieldError('company')}</p>
@@ -512,19 +468,14 @@ const ContactPage = () => {
 
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
 									<div>
-										<label
-											htmlFor="propertyType"
-											className="block text-white/90 font-medium mb-3"
-										>
-											Property Type of Interest
-										</label>
+										<label htmlFor="propertyType" className="block text-white/90 font-medium mb-3">Property Type of Interest</label>
 <select
 											id="propertyType"
-											name="property_type"
-											value={formData.property_type}
+											name="propertyType"
+											value={formData.propertyType}
 											onChange={handleInputChange}
 											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-black placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-												getFieldError('property_type') ? 'border-red-500/50' : 'border-white/30'
+												getFieldError('propertyType') ? 'border-red-500/50' : 'border-white/30'
 											}`}
 										>
 											<option value="">Select Property Type</option>
@@ -533,25 +484,20 @@ const ContactPage = () => {
 											<option value="self-storage">Self-Storage</option>
 											<option value="other">Other</option>
 										</select>
-										{getFieldError('property_type') && (
-											<p className="mt-2 text-red-300 text-sm">{getFieldError('property_type')}</p>
+										{getFieldError('propertyType') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('propertyType')}</p>
 										)}
 									</div>
 									<div>
-										<label
-											htmlFor="inquiryType"
-											className="block text-white/90 font-medium mb-3"
-										>
-											Reason for Inquiry *
-										</label>
+										<label htmlFor="inquiryType" className="block text-white/90 font-medium mb-3">Reason for Inquiry *</label>
 <select
 											id="inquiryType"
-											name="inquiry_type"
+											name="inquiryType"
 											required
-											value={formData.inquiry_type}
+											value={formData.inquiryType}
 											onChange={handleInputChange}
 											className={`w-full px-4 py-4 bg-white/10 border rounded-xl text-black placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-luxury-accent focus:border-transparent backdrop-blur-sm ${
-												getFieldError('inquiry_type') ? 'border-red-500/50' : 'border-white/30'
+												getFieldError('inquiryType') ? 'border-red-500/50' : 'border-white/30'
 											}`}
 										>
 											<option value="">Select Reason</option>
@@ -561,19 +507,14 @@ const ContactPage = () => {
 											<option value="market-info">Market Information</option>
 											<option value="general">General Inquiry</option>
 										</select>
-										{getFieldError('inquiry_type') && (
-											<p className="mt-2 text-red-300 text-sm">{getFieldError('inquiry_type')}</p>
+										{getFieldError('inquiryType') && (
+											<p className="mt-2 text-red-300 text-sm">{getFieldError('inquiryType')}</p>
 										)}
 									</div>
 								</div>
 
 								<div>
-									<label
-										htmlFor="message"
-										className="block text-white/90 font-medium mb-3"
-									>
-										Message *
-									</label>
+									<label htmlFor="message" className="block text-white/90 font-medium mb-3">Message *</label>
 									<textarea
 										id="message"
 										name="message"
@@ -602,9 +543,9 @@ const ContactPage = () => {
 											<input
 												type="radio"
 												id="contact-email"
-												name="preferred_contact"
+												name="preferredContact"
 												value="email"
-												checked={formData.preferred_contact === 'email'}
+												checked={formData.preferredContact === 'email'}
 												onChange={handleInputChange}
 												className="focus:ring-luxury-accent h-5 w-5 text-luxury-accent border-white/30 bg-white/10"
 											/>
@@ -614,9 +555,9 @@ const ContactPage = () => {
 											<input
 												type="radio"
 												id="contact-phone"
-												name="preferred_contact"
+												name="preferredContact"
 												value="phone"
-												checked={formData.preferred_contact === 'phone'}
+												checked={formData.preferredContact === 'phone'}
 												onChange={handleInputChange}
 												className="focus:ring-luxury-accent h-5 w-5 text-luxury-accent border-white/30 bg-white/10"
 											/>
@@ -676,8 +617,12 @@ const ContactPage = () => {
 									<Mail size={28} className="text-luxury-accent mr-6 mt-1" />
 									<div>
 										<h3 className="font-bold text-xl text-white mb-2">Email Us</h3>
-										<a href="mailto:info@specialtyone.com" className="text-white/80 hover:text-luxury-accent text-lg transition-colors">
-											info@specialtyone.com
+										<a href="mailto:andrew@specialtyone.com" className="text-white/80 hover:text-luxury-accent text-lg transition-colors">
+											andrew@specialtyone.com
+										</a>
+										<br />
+										<a href="mailto:denise@specialtyone.com" className="text-white/80 hover:text-luxury-accent text-lg transition-colors">
+											denise@specialtyone.com
 										</a>
 									</div>
 								</div>
@@ -748,15 +693,28 @@ const ContactPage = () => {
 											</span>
 										))}
 									</div>
-									<Button
-										variant="outline"
-										size="lg"
-										className="w-full"
-										icon={<ArrowRight size={16} />}
-										iconPosition="right"
+									<a
+										href={
+											member.name.includes('Andrew')
+												? 'https://www.linkedin.com/in/andrewewarner/'
+											: member.name.includes('Denise')
+												? 'https://www.linkedin.com/in/denise-nunez-319b763/'
+												: '#'
+										}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="w-full inline-block"
 									>
-										Learn More
-									</Button>
+										<Button
+											variant="outline"
+											size="lg"
+											className="w-full"
+											icon={<ArrowRight size={16} />}
+											iconPosition="right"
+										>
+											Learn More
+										</Button>
+									</a>
 								</CardContent>
 							</Card>
 						))}

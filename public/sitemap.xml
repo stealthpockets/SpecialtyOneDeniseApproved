@@ -1,101 +1,601 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset 
+  xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+>
+  <!-- Static Pages -->
   <url>
-    <loc>https://specialtyone.com/</loc>
-    <lastmod>2025-06-19</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://www.specialtyone.com/</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/about</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/about</loc>
+    <lastmod>2025-06-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/contact</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/contact</loc>
+    <lastmod>2025-06-10</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/manufactured-housing</loc>
+    <loc>https://www.specialtyone.com/insights</loc>
     <lastmod>2025-06-19</lastmod>
-    <changefreq>monthly</changefreq>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/rv-parks</loc>
-    <lastmod>2025-06-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://specialtyone.com/self-storage</loc>
-    <lastmod>2025-06-19</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://specialtyone.com/success-stories</loc>
+    <loc>https://www.specialtyone.com/market-reports</loc>
     <lastmod>2025-06-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/insights</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/success-stories</loc>
+    <lastmod>2025-06-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/market-reports</loc>
-    <lastmod>2025-06-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://specialtyone.com/advantage</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/property-types/manufactured-housing</loc>
+    <lastmod>2025-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/exclusive-buyer-network</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/property-types/rv-parks</loc>
+    <lastmod>2025-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/exclusive-seller-network</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/property-types/self-storage</loc>
+    <lastmod>2025-06-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
+  <!-- Dynamic Content: Success Stories (Case Studies) -->
   <url>
-    <loc>https://specialtyone.com/1031-exchange</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/success-stories/american-self-storage</loc>
+    <lastmod>2025-06-18T22:13:39+00:00</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/american-ss-mail.webp</image:loc>
+      <image:title>American Self Storage & Mail Success Story</image:title>
+    </image:image>
   </url>
   <url>
-    <loc>https://specialtyone.com/privacy</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/success-stories/caravan-oasis</loc>
+    <lastmod>2025-06-18T22:11:53+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/caravan-oasis.webp</image:loc>
+      <image:title>Caravan Oasis – 550-Site RV Park with Complex Utilities, Clean Close</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/desert-trails-rv-park</loc>
+    <lastmod>2025-06-18T22:12:03+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-trails.webp</image:loc>
+      <image:title>Desert Trails – Zoning Solved, Pandemic Navigated, Full-Price RV Park Exit</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/the-palms</loc>
+    <lastmod>2025-06-18T22:12:26+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/the-palms.webp</image:loc>
+      <image:title>The Palms – Sub-3% Cap Sale for 88-Site MHC via Strategic Buyer Synergy</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/desert-retreat</loc>
+    <lastmod>2025-06-18T22:13:29+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Desert Retreat – Broker Revives Stalled Listing with Strategic Rent Repositioning</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/mogollon-rv-park</loc>
+    <lastmod>2025-06-18T22:56:29+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/mogollon-rv.webp</image:loc>
+      <image:title>Mogollon RV Park – 5% Cap Sale with Gravel Roads and Private Utilities</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/confidential-200-site-55-plus-mhc-acquisition</loc>
+    <lastmod>2025-06-18T22:32:11+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/confidential-mhc-buyer.webp</image:loc>
+      <image:title>Confidential 200-Site 55+ MHC – Off-Market Phoenix Trophy Closed Pre-Launch</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/confidential-700-800-site-rv-resort</loc>
+    <lastmod>2025-06-18T22:13:01+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/confidential-rv-resort.webp</image:loc>
+      <image:title>Confidential 800-Site RV Resort – Closed Quietly at Premium Over Market</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/success-stories/the-meadows-sun-valley-acquisition</loc>
+    <lastmod>2025-06-18T22:14:16+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/property-types/confidential-200+site-MHC-Sun_Valley.webp</image:loc>
+      <image:title>We Quietly Closed One of the Last Developable Parks in Sun Valley — 5.4% Cap, Zero Disruption</image:title>
+    </image:image>
+  </url>
+
+  <!-- Dynamic Content: Insights -->
+  <url>
+    <loc>https://www.specialtyone.com/insights/2025-manufactured-housing-regulatory-outlook</loc>
+    <lastmod>2025-06-19T20:47:03+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/du4bjp4am/image/upload/v1750362071/2025-manufactured-housing-regulatory-outlook_u9t83b.webp</image:loc>
+      <image:title>2025 Regulatory Outlook for Manufactured Housing</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/insights/institutional-capital-manufactured-housing-2025</loc>
+    <lastmod>2025-06-19T20:47:03+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/du4bjp4am/image/upload/v1750362069/institutional-capital-manufactured-housing-2025_sj58ou.webp</image:loc>
+      <image:title>Why Institutional Capital Is Backing Manufactured Housing in 2025</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/insights/1031-exchange-tax-strategies-2025</loc>
+    <lastmod>2025-06-20T04:19:39+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/du4bjp4am/image/upload/specialty-one/insights/1031-exchange-tax-strategies-2025.webp</image:loc>
+      <image:title>1031 Exchange and Tax Deferral Strategies for CRE Asset Sales</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/insights/mh-lot-rents-2025-update</loc>
+    <lastmod>2025-06-19T19:55:13+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/du4bjp4am/image/upload/mh-lot-rents-2025-update_ajduze.webp</image:loc>
+      <image:title>Manufactured Housing Lot Rents – Early 2025 Update</image:title>
+    </image:image>
+  </url>
+
+  <!-- Dynamic Content: Market Reports -->
+  <url>
+    <loc>https://www.specialtyone.com/market-reports/bullhead-city-rv-mh-market-report-2025</loc>
+    <lastmod>2025-06-17T04:25:30+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/insights/bullhead-city-rv-mh-market-report-2025.webp</image:loc>
+      <image:title>2025 Bullhead City RV Park Rent Survey & Investment Market Report</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/market-reports/wickenburg-mobile-home-park-market-report-2025</loc>
+    <lastmod>2025-06-17T04:36:22+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/insights/wickenburg-mobile-home-park-market-report-2025.webp</image:loc>
+      <image:title>Wickenburg Mobile Home Park Market Report: 2025 Rent Survey & Home Sales Analysis</image:title>
+    </image:image>
+  </url>
+
+  <!-- Dynamic Content: Track Record -->
+  <!-- 50 entries, use date_sold if present, else fallback to 2025-06-20 -->
+  <url>
+    <loc>https://www.specialtyone.com/track-record/sunny-crest</loc>
+    <lastmod>2025-06-20</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://specialtyone.com/terms</loc>
-    <lastmod>2025-06-19</lastmod>
+    <loc>https://www.specialtyone.com/track-record/tiki-tai-mobile-home-park</loc>
+    <lastmod>2025-06-20</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
-  <!-- Dynamic content URLs for case studies and insights will be added here programmatically with data from Supabase -->
-  <!-- Example placeholder: -->
-  <!-- <url> -->
-  <!--   <loc>https://specialtyone.com/success-stories/sample-slug</loc> -->
-  <!--   <lastmod>2025-06-19</lastmod> -->
-  <!--   <changefreq>monthly</changefreq> -->
-  <!--   <priority>0.7</priority> -->
-  <!-- </url> -->
+  <url>
+    <loc>https://www.specialtyone.com/track-record/phoenix-mobile-home</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/village-square-mobile</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/paradise-gardens</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/longhaven-west-mhp</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/mesa-village-mobile-home</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/casa-mh-park-embe</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/the-palms-mobile-home</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/the-meadows</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/white-sands-estates</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/pueblo-heights-mobile</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/sierra-springs-village</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/apache-junction-mobile</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/pueblo-mobile-manor</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/westglen-mobile-home</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/shadow-ridge-community</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/litchfield-village</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/lost-dutchman-rv-park</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/sunland-rv-park</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/fortuna-del-oro</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/leaf-verde-rv-resort</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/valley-of-the-sun</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/blue-sky-rv-park</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/destiny-phoenix-west</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/rock-shadows-rv-resort</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/arizona-sands</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/silver-sands</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/picacho-peak-rv-resort</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/del-pueblo-rv-park</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/las-quintas-oasis-rv</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/vip-rv-resort</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/envy-self-storage-rv</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/sacramento-portfolio</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/extra-space-storage</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/huntley-self-storage</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/arizona-self-storage</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/ukiak-self-storage</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/vault-storage-rv-tucson</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/track-record/life-storage-tucson</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Dynamic Content: Testimonials -->
+  <!-- 50 entries, slug: property_name-person-id, lowercased, hyphens, id at end, use updated_at for lastmod, priority 0.6, changefreq yearly -->
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/american-self-storage-mail-former-owner-2</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-5</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-7</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-8</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-9</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-10</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-11</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-12</loc>
+    <lastmod>2025-06-14T06:25:02+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-13</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-14</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/desert-retreat-betsy-cecil-15</loc>
+    <lastmod>2025-06-14T06:26:23+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/desert-retreat.webp</image:loc>
+      <image:title>Testimonial for Desert Retreat by Betsy & Cecil</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/testimonials/american-self-storage-mail-66</loc>
+    <lastmod>2025-06-14T05:53:42+00:00</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+    <image:image>
+      <image:loc>https://www.specialtyone.com/assets/success-stories/american-ss-mail.webp</image:loc>
+      <image:title>Testimonial for American Self Storage & Mail</image:title>
+    </image:image>
+  </url>
+
+  <!-- Dynamic Content: Authors -->
+  <url>
+    <loc>https://www.specialtyone.com/authors/denise-nunez</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/du4bjp4am/image/upload/v1749676315/denise-nunez-self-storage_oylilw.webp</image:loc>
+      <image:title>Denise Nunez Author Profile</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://www.specialtyone.com/authors/andrew-warner-ccim</loc>
+    <lastmod>2025-06-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/du4bjp4am/image/upload/v1749676312/andrew-headshot-image_fzmfgj.webp</image:loc>
+      <image:title>Andrew Warner, CCIM Author Profile</image:title>
+    </image:image>
+  </url>
 </urlset>
