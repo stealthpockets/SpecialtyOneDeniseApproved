@@ -172,7 +172,7 @@ const AboutPage = () => {
 								that can't be built overnight.
 							</p>
 							<p className="text-xl mb-8 text-luxury-dark/80 leading-relaxed">
-								Since our founding, we've closed over $1 billion in transactions across manufactured housing,
+								Since we've been in the industry, we've closed over $1 billion in transactions across manufactured housing,
 								RV parks, and self-storage. We've never failed to close an exclusive listing in the MH or RV space.
 								Our storage group, led by 25-year industry veteran Denise Nuñez, has sold over 200 facilities.
 							</p>
